@@ -24,6 +24,7 @@ MONAT_RE = re.compile(
     r"(?:(?:/|pro|im|je)\s*monat|monatlich)",
     re.IGNORECASE,
 )
+UNBEFRISTET = {"re": re.compile(r"\bunbefristet")}
 VERNEINUNG_RE = re.compile(r"\b(kein\w*|k e i n e?|ohne|nicht)\b[^.!?\n]{0,15}$")
 
 
@@ -77,7 +78,7 @@ def bewerten(anzeige, regeln):
     text = roh.lower()
     original = {"titel": titel_roh, "text": roh}
     p = regeln["punkte"]
-    gruende, punkte, jugend, saison = [], 0, False, bool(anzeige.befristet)
+    gruende, punkte, jugend, saison, ferien = [], 0, False, bool(anzeige.befristet), False
     if anzeige.befristet:
         gruende.append(Grund("info", "befristet laut Anzeige"))
 
@@ -86,6 +87,7 @@ def bewerten(anzeige, regeln):
             punkte += regel["punkte"]
             jugend |= regel.get("jugend", False)
             saison |= regel.get("saison", False)
+            ferien |= regel.get("ferien", False)
             gruende.append(Grund("plus", regel["grund"], regel["punkte"], stelle))
     for art in ("ausschluss", "warnung"):
         for regel in regeln.get(art, []):
@@ -97,6 +99,11 @@ def bewerten(anzeige, regeln):
         if jugend and (stelle := _suche(regel, titel, titel, False, {"titel": titel_roh, "text": titel_roh})) is not None:
             jugend = False
             gruende.append(Grund("info", regel["grund"], fundstelle=stelle))
+
+    # „befristet“ oder „Aushilfe für …“ im Text, aber der Vertrag ist laut Anzeige unbefristet: kein Ferienjob
+    if saison and anzeige.befristet is not True and not ferien and (stelle := _suche(UNBEFRISTET, text, text, False, original)):
+        saison = False
+        gruende.append(Grund("info", "laut Anzeige unbefristet", fundstelle=stelle))
 
     if anzeige.schicht_nacht_wochenende:
         gruende.append(Grund("warnung", "laut Anzeige Schicht-, Nacht- oder Wochenendarbeit"))
@@ -126,5 +133,5 @@ def bewerten(anzeige, regeln):
     if not anzeige.details_geladen and anzeige.quelle == "Jobbörse":
         gruende.append(Grund("info", "nur Titel geprüft, Anzeigentext nicht geladen"))
 
-    gruppen = [] if aus else (["ferien"] if saison else []) + (["schueler"] if jugend else []) or ["weitere"]
+    gruppen = [] if aus else ["ferien"] if ferien or jugend else ["saison"] if saison else ["weitere"]
     return Bewertung(punkte, eignung, gruende, lohn_h, lohn_m, lohn_quelle, gruppen)

@@ -5,18 +5,19 @@
 {% block main_klasse %} fj-main--start{% endblock %}
 {% block inhalt %}
 {% set summe = gebiete|sum(attribute="zahlen.ohne_ausschluss") %}
+{% set summe_ferien = gebiete|sum(attribute="zahlen.ferien") %}
 <section class="start-flaeche start-flaeche--grau start-buehne" aria-labelledby="titel">
   <div class="start-auftakt-text">
     <p class="kern-preline">Für alle zwischen 16 und 18 und für Eltern, die mitsuchen</p>
     <h1 class="kern-heading-display" id="titel"><span class="start-zeile">Dein Ferienjob</span> <span class="start-zeile">in Berlin &amp; Brandenburg</span></h1>
-    <p class="kern-body kern-body--large start-lead">Hier stehen Aushilfs-, Mini- und Ferienjobs aus der Jobbörse der Arbeitsagentur. Der Finder wertet jede Anzeige automatisch aus: ob sie für unter 18 machbar ist und ob sie einen Lohn nennt.</p>
+    <p class="kern-body kern-body--large start-lead">Der Finder sucht in der Jobbörse der Arbeitsagentur nach Jobs für die Ferien und zeigt zuerst die Anzeigen, die Ferien nennen, Schüler:innen ansprechen oder nur kurz laufen. Jede Anzeige wird automatisch geprüft: ob sie für unter 18 machbar ist und ob sie einen Lohn nennt.</p>
     <div class="start-knoepfe">
       {% for g in gebiete %}
-      <a class="kern-btn {{ 'kern-btn--primary' if loop.first else 'kern-btn--secondary' }}" href="{{ datei(g.slug) }}">{{ k.symbol("map-pin") }}<span class="kern-label">Jobs in {{ g.name }}</span></a>
+      <a class="kern-btn {{ 'kern-btn--primary' if loop.first else 'kern-btn--secondary' }}" href="{{ datei(g.slug) }}">{{ k.symbol("map-pin") }}<span class="kern-label">Ferienjobs in {{ g.name }}</span></a>
       {% endfor %}
     </div>
     <ul class="start-merkmale">
-      <li>{{ k.symbol("check") }}{{ summe }} Anzeigen ohne Ausschluss</li>
+      <li>{{ k.symbol("check") }}{{ summe_ferien }} Ferienjobs, {{ summe }} Anzeigen ohne Ausschluss</li>
       <li>{{ k.symbol("check") }}ohne Anmeldung</li>
       <li>{{ k.symbol("check") }}ohne Tracking</li>
     </ul>
@@ -53,7 +54,7 @@
         {% endfor %}
       </ul>
       <p class="kern-body kern-body--small">Dazu {{ g.zahlen.aussortiert }} aussortierte Anzeigen, <a class="kern-link" href="{{ datei(g.slug, 'aussortiert') }}">jeweils mit Begründung</a>.</p>
-      <a class="kern-btn kern-btn--secondary start-gebiet-knopf" href="{{ datei(g.slug) }}"><span class="kern-label">Jobs in {{ g.name }} ansehen</span></a>
+      <a class="kern-btn kern-btn--secondary start-gebiet-knopf" href="{{ datei(g.slug) }}"><span class="kern-label">Ferienjobs in {{ g.name }} ansehen</span></a>
     </li>
     {% endfor %}
   </ul>
@@ -64,7 +65,7 @@
   <div class="start-merkmal-bereiche">
     {% for titel, punkte in [
       ("Für dich", [
-        ("list-filter", "gastro", "Sortiert", "Befristete Jobs und Saisonjobs, Jobs für Schüler:innen und weitere Aushilfsjobs stehen getrennt."),
+        ("list-filter", "gastro", "Sortiert", "Ferienjobs zuerst, danach befristete und Saisonjobs, dann Aushilfsjobs, bei denen du nach den Ferien fragen kannst."),
         ("euro", "verkauf", "Lohn auf einen Blick", "Nennt die Anzeige einen Stundenlohn, siehst du ihn sofort und kannst danach filtern."),
         ("ban", "freizeit", "Aussortiert", "Fachberufe, Jobs ab 18 und Nachtarbeit sind raus. Warum, steht bei jeder Anzeige."),
         ("user", "betreuung", "Ohne Konto", "Du brauchst keine Anmeldung. Die Seite setzt keine Cookies und zählt niemanden."),
@@ -136,7 +137,7 @@
       <div><h2 class="kern-heading-large" id="ruf">Schau rein</h2><p class="kern-body">Wähle dein Gebiet und filter nach dem, was dir wichtig ist. Stand der Anzeigen: {{ stand }}.</p></div>
       <div class="start-ruf-knoepfe">
         {% for g in gebiete %}
-        <a class="kern-btn kern-btn--secondary start-ruf-knopf{{ ' start-ruf-knopf--linie' if not loop.first }}" href="{{ datei(g.slug) }}">{{ k.symbol("map-pin") }}<span class="kern-label">Jobs in {{ g.name }}</span></a>
+        <a class="kern-btn kern-btn--secondary start-ruf-knopf{{ ' start-ruf-knopf--linie' if not loop.first }}" href="{{ datei(g.slug) }}">{{ k.symbol("map-pin") }}<span class="kern-label">Ferienjobs in {{ g.name }}</span></a>
         {% endfor %}
       </div>
     </div>

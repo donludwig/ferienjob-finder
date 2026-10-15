@@ -35,7 +35,7 @@ def ferien_info():
     except (netz.Fehler, KeyError, IndexError, TypeError, ValueError) as x:
         log(f"  ! Ferienübersicht: {x}")
         tabelle = {}
-    return {"name": name, "start": fmt(start), "ende": fmt(ende), "laeuft": start <= heute,
+    return {"name": name, "start": fmt(start), "ende": fmt(ende), "ende_iso": ende.isoformat(), "laeuft": start <= heute,
             "land": cfg["land_name"], "tabelle": tabelle}
 
 

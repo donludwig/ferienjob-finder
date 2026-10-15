@@ -35,7 +35,7 @@ class Ergebnis:
         return {"anzeigen": len(t), "ohne_ausschluss": len(ohne),
                 "mit_lohn": sum(1 for x in ohne if x.bewertung.lohn_stunde or x.bewertung.lohn_monat),
                 "passt": sum(1 for x in t if x.bewertung.eignung == "passt"),
-                "ferien": gruppe("ferien"), "schueler": gruppe("schueler"), "weitere": gruppe("weitere"),
+                "ferien": gruppe("ferien"), "saison": gruppe("saison"), "weitere": gruppe("weitere"),
                 "aussortiert": len(t) - len(ohne)}
 
 

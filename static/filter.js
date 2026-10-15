@@ -48,7 +48,9 @@
     lohnFeld.style.setProperty("--anteil", (lohn / Number(lohnFeld.max || 20)) * 100 + "%");  // gefüllte Spur bis zum Knopf
     const nurLohn = form.elements.nur_lohn.checked;
     const ohneWarnung = form.elements.ohne_warnung.checked;
-    const bis = form.elements.start.value;  // natives Datumsfeld liefert JJJJ-MM-TT oder leer
+    const ferien = form.elements.ferien?.checked ? form.elements.ferien.value : "";  // Ende der nächsten Ferien, JJJJ-MM-TT
+    const datum = form.elements.start.value;  // natives Datumsfeld liefert JJJJ-MM-TT oder leer
+    const bis = ferien && datum ? (ferien < datum ? ferien : datum) : ferien || datum;
     const k = { punkte: (d) => Number(d.punkte), lohn: (d) => Number(d.lohn), datum: (d) => d.datum }[form.elements.sortierung.value];
 
     passend = eintraege.filter((e) => {

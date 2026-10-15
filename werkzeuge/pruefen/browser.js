@@ -6,7 +6,7 @@ const { chromium, firefox, webkit } = require("playwright");
 const { AxeBuilder } = require("@axe-core/playwright");
 
 const BASIS = process.argv[2] || "https://ferienjobs.thinkrepeat.com/";
-const SEITEN = ["index.html", "berlin.html", "berlin-tabelle.html", "brandenburg-schueler.html", "berlin-aussortiert-tabelle.html",
+const SEITEN = ["index.html", "berlin.html", "berlin-tabelle.html", "brandenburg-saison.html", "berlin-aussortiert-tabelle.html",
   "so-funktionierts.html", "regeln.html", "anlaufstellen.html", "ferien.html", "ueber.html", "dokumentation.html", "impressum.html", "datenschutz.html", "403.html", "404.html"];
 
 (async () => {

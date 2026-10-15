@@ -105,8 +105,8 @@ def test_passt_braucht_jugend_signal():
 
 
 def test_unbefristet_ist_nicht_befristet():
-    assert all(g.text != "befristet oder kurzfristig" for g in bew("Aushilfe", "Vertrag unbefristet").gruende)
-    assert any(g.text == "befristet oder kurzfristig" for g in bew("Aushilfe", "befristet bis Dezember").gruende)
+    assert all(g.text != "befristet" for g in bew("Aushilfe", "Vertrag unbefristet").gruende)
+    assert any(g.text == "befristet" for g in bew("Aushilfe", "befristet bis Dezember").gruende)
 
 
 def test_keine_schueler():
@@ -116,10 +116,11 @@ def test_keine_schueler():
 
 
 def test_gruppen():
-    assert bew("Aushilfe Verkauf", befristet=True).gruppen == ["ferien"]
-    assert bew("Aushilfe Pop-Up-Store Weihnachtsmarkt").gruppen == ["ferien"]
-    assert bew("Schülerjob im Verkauf").gruppen == ["schueler"]
-    assert bew("Ferienjob für Schüler ab 16").gruppen == ["ferien", "schueler"]
+    assert bew("Aushilfe Verkauf", befristet=True).gruppen == ["saison"]
+    assert bew("Aushilfe Pop-Up-Store Weihnachtsmarkt").gruppen == ["saison"]
+    assert bew("Schülerjob im Verkauf").gruppen == ["ferien"]
+    assert bew("Ferienjob für Schüler ab 16").gruppen == ["ferien"]
+    assert bew("Ferienjob", befristet=True).gruppen == ["ferien"]          # Ferien vor Befristung
     assert bew("Aushilfe Kasse Minijob", befristet=False).gruppen == ["weitere"]
     assert bew("Friseur/in gesucht").gruppen == []                        # Fachberuf ausgeschlossen
     assert bew("Aushilfe", beruf="Koch/Köchin").gruppen == []             # Beruf der Quelle zählt mit
@@ -127,9 +128,9 @@ def test_gruppen():
 
 def test_falsche_jugendtreffer():
     b = bew("Schulsozialarbeiter:in an einer Grundschule", "Unterstützung der Schüler")
-    assert "schueler" not in b.gruppen
+    assert "ferien" not in b.gruppen
     assert bew("Schülerpraktikant:in").gruppen == []                        # Praktikum ist kein Job
-    assert "schueler" not in bew("Kurstrainer:in", "Kurse für Jugendliche").gruppen
+    assert "ferien" not in bew("Kurstrainer:in", "Kurse für Jugendliche").gruppen
     assert bew("Wegbegleiter Aushilfe").gruppen == ["weitere"]               # „leiter“ nur als Wort
 
 
@@ -141,3 +142,56 @@ def test_ausschnitt_an_wortgrenzen():
     assert stelle.startswith("…") and stelle.endswith("…")
     worte = stelle.strip("…").split()
     assert all(w in text.split() for w in worte)          # nur ganze Wörter
+
+
+def test_unbefristet_ist_kein_ferienjob():
+    b = bew("Reinigungskraft Minijob", "Aushilfe für die Filiale, kurzfristig gesucht. Du erhältst einen unbefristeten Arbeitsvertrag.")
+    assert b.gruppen == ["weitere"]
+    assert any(g.text == "laut Anzeige unbefristet" for g in b.gruende)
+    assert "ferien" in bew("Ferienjob in den Herbstferien", "danach gern unbefristet").gruppen   # Ferien ausdrücklich
+    assert "saison" in bew("Aushilfe", "unbefristet", befristet=True).gruppen                     # Angabe der Quelle zählt
+
+
+def test_weihnachten_ist_saison_mit_hinweis():
+    b = bew("Aushilfe WEIHNACHTEN in Teilzeit")
+    assert b.gruppen == ["saison"]
+    assert any("November und Dezember" in g.text for g in b.gruende)
+    assert bew("Küchenhilfe", "Wir zahlen Weihnachtsgeld").gruppen == ["weitere"]
+
+
+@pytest.mark.parametrize("titel, text", [
+    ("Küchenhilfe Restaurant", "Hilfe bei der Essensausgabe an die Schüler"),
+    ("Sekretär *in im Schulsekretariat - Minijob", "ein offenes Ohr für die Schülerschaft"),
+    ("Praxis sucht MFA (m/w/d)", "Freude an der Arbeit mit Kindern und Jugendlichen"),
+    ("Küchenhilfe in Werder, Gesamtschule", "Du begegnest unseren jungen Schülern positiv"),
+    ("Küchenhilfe im Internat", "Es bietet bis zu 50 Schüler:innen Platz"),
+    ("Küchenhilfe gesucht", "Ob Schülerprojekt oder Konferenz"),
+    ("Küchenhilfe gesucht", "Wir betreuen überwiegend weibliche Jugendliche"),
+])
+def test_schueler_als_zielgruppe_ist_kein_schuelerjob(titel, text):
+    assert "ferien" not in bew(titel, text).gruppen
+
+
+def test_schueler_und_jugendliche_als_bewerber():
+    assert "ferien" in bew("Aushilfe", "Du bist Schüler:in (ab 16 Jahren)").gruppen
+    assert "ferien" in bew("Aushilfe", "Ferienjob für Jugendliche").gruppen
+    assert "ferien" in bew("Helfer Minijob", "für junggebliebene Ruheständler und/oder Schüler").gruppen
+    assert "ferien" in bew("Aushilfe", "Schüler/innen und Studierende willkommen").gruppen
+    assert "ferien" in bew("Schülerjob im Verkauf").gruppen
+
+
+@pytest.mark.parametrize("text", [
+    "Mitarbeit an der Inventur und Bestellungen",
+    "Bereitschaft, auf kurzfristigen Abruf zu arbeiten",
+    "Die Stelle ist kurzfristig zu besetzen",
+    "Sonntag (nur saisonell) von 11 bis 18 Uhr",
+])
+def test_aufgaben_sind_kein_kurzzeitjob(text):
+    assert bew("Verkaufshilfe", text).gruppen == ["weitere"]
+
+
+@pytest.mark.parametrize("titel, gruppe", [("Inventurhelfer gesucht", "saison"), ("Saisonkraft Freibad", "saison"),
+                                           ("Aushilfe für die Sommersaison", "saison"),
+                                           ("Kurzfristige Beschäftigung Hallenaufbau", "ferien")])
+def test_kurzzeitjobs(titel, gruppe):
+    assert bew(titel).gruppen == [gruppe]

@@ -7,12 +7,13 @@
 # warnung:    Hinweis zum Prüfen, keine Punkte
 # nur_titel:  Regel nur auf den Titel anwenden (für Wörter, die im Fließtext oft anders gemeint sind)
 # jugend:     Regel spricht ausdrücklich junge Leute an. „passt“ gibt es nur mit mindestens einem solchen Treffer.
-# saison:     Regel deutet auf einen Ferien-, Saison- oder Kurzzeitjob (Gruppe „Ferien- und Saisonjobs“).
+# ferien:     Regel nennt Ferien oder eine kurzfristige Beschäftigung (Gruppe „Ferienjobs“).
+# saison:     Regel deutet auf einen befristeten oder Saisonjob (Gruppe „Befristet & Saison“).
 # nicht_jugend: Kinder oder Jugendliche sind Zielgruppe der Arbeit, nicht die Bewerber:innen. Treffer dort
 #             heben die jugend-Treffer auf (z. B. „Schulsozialarbeit“, „Trainer:in für Jugendliche“).
 #
-# Gruppen je Anzeige (ohne Ausschluss): „ferien“ = befristet laut Quelle oder saison-Treffer,
-# „schueler“ = jugend-Treffer, „weitere“ = alle übrigen. nur_titel prüft Titel und Berufsbezeichnung.
+# Genau eine Gruppe je Anzeige (ohne Ausschluss), in dieser Reihenfolge: „ferien“ = ferien- oder jugend-Treffer,
+# „saison“ = befristet laut Quelle oder saison-Treffer, „weitere“ = alle übrigen. nur_titel prüft Titel und Berufsbezeichnung.
 #
 # Regeln greifen nicht, wenn kurz davor „kein“, „keine“ (auch gesperrt: „k e i n e“), „ohne“ oder „nicht“ steht
 # („keine Nachtarbeit“, „kein Führerschein nötig“, „keine Schüler“).
@@ -24,7 +25,8 @@ lohn_angegeben = 2
 minijob = 1
 
 [[plus]]
-muster = '\bsch[üu]ler'
+# Schüler:innen nur als Bewerber:innen, nicht als Zielgruppe („Essensausgabe an die Schüler“, „unseren jungen Schülern“)
+muster = 'sch[üu]lerjob|sch[üu]leraushilf|\b(auch|als|für|du bist|bist du|sie sind)\s+(eine?\s+)?sch[üu]ler|\bsch[üu]ler\S*\s*(\(?ab\s*1[456]|willkommen|geeignet|gesucht|(und|oder|/|,)\s*stud)|(student|rentner|ruheständler|hausfrau)\S*\s*(,|und/oder|und|oder|/)\s*sch[üu]ler'
 punkte = 3
 grund = "spricht Schüler:innen an"
 jugend = true
@@ -34,14 +36,14 @@ muster = 'ferienjob|ferienaushilfe|ferienarbeit'
 punkte = 3
 grund = "ausdrücklich Ferienjob"
 jugend = true
-saison = true
+ferien = true
 
 [[plus]]
 muster = 'herbstferien|sommerferien|osterferien|winterferien'
 punkte = 4
 grund = "nennt Schulferien"
 jugend = true
-saison = true
+ferien = true
 
 [[plus]]
 muster = '\bab\s*1[56]\b(?![,.]\d|\s*(uhr|:|std|stunden|€|eur))|ab\s*1[56]\s*jahre'
@@ -50,7 +52,8 @@ grund = "ab 15 oder 16 Jahren"
 jugend = true
 
 [[plus]]
-muster = 'jugendliche'
+# wie oben: angesprochen, nicht betreut („Arbeit mit Kindern und Jugendlichen“)
+muster = '\b(auch|für)\s+jugendliche\b|jugendliche\S*\s*(\(?ab\s*1[456]|willkommen|gesucht)'
 punkte = 2
 grund = "spricht Jugendliche an"
 jugend = true
@@ -72,15 +75,27 @@ punkte = 1
 grund = "Aushilfe"
 
 [[plus]]
-muster = '(?<!un)befristet|kurzfristig'
+muster = '(?<!un)befristet'
 punkte = 1
-grund = "befristet oder kurzfristig"
+grund = "befristet"
 saison = true
 
 [[plus]]
-muster = 'saison|weihnachtsmarkt|weihnachtsgeschäft|inventur|ernte|spargel|erdbeer|pop-?up|aushilfe für (den|die|ca\.?)\s|für (die|den) (zeit|zeitraum|sommer|winter|dezember|monat)'
+muster = 'kurzfristige (beschäftigung|aushilfe|einsätze?|jobs?)'   # nicht: „kurzfristig zu besetzen“, „auf kurzfristigen Abruf“
+punkte = 1
+grund = "kurzfristige Beschäftigung"
+ferien = true
+
+[[plus]]
+muster = 'saison(kr[aä]ft|job|aushilf|arbeit|stelle|personal|betrieb)|(sommer|winter|bade|frei)saison|für die saison|inventurhelf|inventuraushilf|aushilfe\W+(für die )?inventur|ernte|spargel|erdbeer|pop-?up|aushilfe für (den|die|ca\.?)\s|für (die|den) (zeit|zeitraum|sommer|winter|dezember|monat)'
 punkte = 2
 grund = "Saison- oder Kurzzeitjob"
+saison = true
+
+[[plus]]
+muster = 'weihnachts(markt|geschäft|aushilf|saison|zeit)|aushilfe\W+weihnacht'   # nicht: Weihnachtsgeld
+punkte = 2
+grund = "Weihnachtsgeschäft, meist November und Dezember"
 saison = true
 
 [[ausschluss]]
@@ -103,7 +118,7 @@ grund = "Praktikum, kein bezahlter Job"
 nur_titel = true
 
 [[ausschluss]]
-muster = 'friseur|kraftfahrer|berufskraftfahr|lkw|erzieher|pflegefach|altenpfleg|krankenpfleg|\bkoch\b|köchin|meister|ingenieur|techniker|elektriker|mechani|mechatroni|buchhalt|steuerfach|kaufmann|kauffrau|therapeut|ärzt|arzt\b|apothek|lehrer|lehrkraft|pädagog|sozialarbeit|jurist|architekt|entwickler|informatik|sachbearbeit|manager|(?<!beg)leit(er|ung)'
+muster = 'friseur|kraftfahrer|berufskraftfahr|lkw|erzieher|pflegefach|altenpfleg|krankenpfleg|\bkoch\b|köchin|meister|ingenieur|techniker|elektriker|mechani|mechatroni|buchhalt|steuerfach|kaufmann|kauffrau|therapeut|ärzt|arzt\b|apothek|lehrer|lehrkraft|pädagog|sozialarbeit|jurist|architekt|entwickler|informatik|sachbearbeit|sekretär|fachangestellte|arztfachhelf|\bmfa\b|manager|(?<!beg)leit(er|ung)'
 grund = "Fachberuf: Ausbildung, Studium oder Erfahrung nötig"
 nur_titel = true
 

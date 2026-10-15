@@ -57,7 +57,7 @@ Favicon und Vorschaubild liegen in `static/` (`favicon.svg`, `favicon-32.png`, `
 ## Grenzen der Bewertung
 
 - Die Bewertung ist eine Textauswertung, keine Rechtsprüfung. Sie erkennt Wörter, nicht Zusammenhänge.
-- Der Volltext wird nur für die vielversprechendsten Anzeigen geladen (Standard 150), bei den übrigen zählt nur der Titel.
+- Der Volltext wird für alle Anzeigen der Jobbörse geladen (`details` in `einstellungen.toml`, 24 Stunden im Cache); fehlt er, zählt nur der Titel.
 - Die Anzeigen der Jobbörse sprechen Jugendliche fast nie ausdrücklich an. „prüfen“ ist deshalb der Normalfall, „passt“ die Ausnahme.
 - Viele Anzeigen nennen keinen Lohn. Unter 18 ohne Berufsabschluss gilt kein gesetzlicher Mindestlohn (MiLoG § 22 Abs. 2).
 - Ob für Schüler:innen die Regeln für Kinder gelten (Vollzeitschulpflicht, JArbSchG § 2 Abs. 3), hängt vom Schulrecht des Landes ab. Die App entscheidet das nicht.

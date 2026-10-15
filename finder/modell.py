@@ -45,7 +45,7 @@ class Bewertung:
     lohn_stunde: float | None
     lohn_monat: float | None
     lohn_quelle: str       # "Angabe", "Text" oder ""
-    gruppen: list[str] = field(default_factory=list)   # "ferien", "schueler", "weitere"
+    gruppen: list[str] = field(default_factory=list)   # genau eine: "ferien", "saison" oder "weitere"; leer = aussortiert
 
     @property
     def ausschluesse(self):

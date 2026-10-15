@@ -459,8 +459,9 @@ main [id] { scroll-margin-top: 1.25rem; }
 /* Info-Kasten als ruhige, getönte Fläche wie die Kästen der Startseite (Radius 12 px, kein Rahmen um Kopf und Inhalt) */
 .kern-alert--info { outline-color: transparent; border-radius: 12px; }
 .kern-alert--info .kern-alert__body { outline-color: transparent; background: transparent; padding-top: 0; }
-.kern-alert--info .kern-alert__header { background: transparent; }
-.kern-alert--info .kern-title, .kern-alert--info .kern-heading-small { font-size: var(--kern-typography-font-size-medium-static, 18px); }
+/* Text rückt an die Überschrift; Symbol (32 px) mittig zur ersten Zeile: 4 px + halbe Zeilenhöhe 12 px = 16 px */
+.kern-alert--info .kern-alert__header { background: transparent; padding-bottom: 0; align-items: flex-start; }
+.kern-alert--info .kern-title, .kern-alert--info .kern-heading-small { font-size: var(--kern-typography-font-size-medium-static, 18px); line-height: 24px; padding-top: 4px; padding-bottom: 0; }
 /* Link zu allen Ferienterminen: zurückhaltend rechts im Hinweis, Textfarbe, klein, unterstrichen */
 .fj-banner__inhalt { align-items: center; }
 .fj-banner__link { flex: none; color: var(--kern-color-layout-text-default, #131525); font-size: .875rem; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; }

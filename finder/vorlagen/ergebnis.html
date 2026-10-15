@@ -8,9 +8,9 @@
   <div class="fj-listenkopf__text">
     <h1 class="kern-label fj-listenkopf__titel" id="liste-titel">{{ filter_text }} in {{ gebiet.name }}: <span id="anzahl">{{ gesamt }}</span></h1>
     <p class="kern-body fj-gruppenhinweis">{{ {
-      "ferien": "Befristete Jobs und Saisonjobs, nicht alle ausdrücklich für Schüler:innen.",
-      "schueler": "Anzeigen, die Schüler:innen oder ein Alter ab 15 oder 16 nennen.",
-      "weitere": "Aushilfs- und Minijobs ohne Befristung, oft auch für Jugendliche machbar.",
+      "ferien": "Anzeigen, die Ferien nennen, Schüler:innen oder ein Alter ab 15 oder 16 ansprechen oder ausdrücklich kurzfristig sind.",
+      "saison": "Befristete Jobs und Saisonjobs, nicht ausdrücklich für Schüler:innen. Frag nach, ob es auch nur für die Ferien geht.",
+      "weitere": "Unbefristete Aushilfs- und Minijobs. Manche Betriebe nehmen auch Hilfe nur für die Ferien: Frag nach.",
       "aussortiert": "Fachberufe, ab 18, Nachtarbeit und Ähnliches, jeweils mit Begründung."}[filter] }} Anzeigen der letzten 30 Tage<span class="fj-nur-breit">, ohne Zeitarbeit, automatisch ausgewertet</span>: <a class="kern-link" href="regeln.html">Regeln für Ferienjobs</a></p>
   </div>
       {# Ansicht und Sortierung: am Desktop offen ohne Kopf, auf dem Handy eingeklappt (filter.js) #}
@@ -103,8 +103,14 @@
 
       <div class="fj-abschnitt">
       <fieldset class="kern-fieldset">
-        <legend class="kern-label">Arbeitszeit</legend>
+        <legend class="kern-label">Zeit</legend>
         <div class="kern-fieldset__body">
+          {% if ferien %}
+          <div class="kern-form-check">
+            <input class="kern-form-check__checkbox" id="f-ferien" name="ferien" type="checkbox" value="{{ ferien.ende_iso }}">
+            <label class="kern-label" for="f-ferien">Beginn spätestens zum Ende der {{ ferien.name }} ({{ ferien.ende[:6] }})</label>
+          </div>
+          {% endif %}
           <div class="kern-form-check">
             <input class="kern-form-check__checkbox" id="f-ohne-warnung" name="ohne_warnung" type="checkbox">
             <label class="kern-label" for="f-ohne-warnung">Ohne Hinweis auf späte Zeiten, Wochenende oder Bar</label>
@@ -157,9 +163,14 @@
     </div>
     {% endif %}
 
-    {% if gesamt < 10 and filter != "aussortiert" %}
+    {% if filter == "ferien" and gesamt < 10 %}
+    {% set andere = gebiete|rejectattr("slug", "equalto", gebiet.slug)|selectattr("zahlen.ferien")|list %}
+    {% call k.alert("info", ("Gerade keine ausdrücklichen" if gesamt == 0 else "Gerade nur wenige ausdrückliche") ~ " Ferienjobs in " ~ gebiet.name, ebene=3) %}
+    <p class="kern-body">Die meisten Betriebe schreiben kurze Ferienjobs nicht aus.{% for g in andere %} In {{ g.name }} sind es gerade <a class="kern-link" href="{{ datei(g.slug, 'ferien', ansicht) }}">{{ g.zahlen.ferien }}</a>.{% endfor %} Schau auch unter <a class="kern-link" href="{{ datei(gebiet.slug, 'saison', ansicht) }}">{{ FILTER.saison[0] }}</a> und <a class="kern-link" href="{{ datei(gebiet.slug, 'weitere', ansicht) }}">{{ FILTER.weitere[0] }}</a> und frag dort, ob es auch nur für die Ferien geht. <a class="kern-link" href="anlaufstellen.html#nichts-gefunden">Was du sonst tun kannst</a>.</p>
+    {% endcall %}
+    {% elif gesamt < 10 and filter != "aussortiert" %}
     {% call k.alert("info", "Gerade wenige Treffer in dieser Gruppe", ebene=3) %}
-    <p class="kern-body">Schau auch unter {% for f, (text, _) in FILTER.items() if f not in (filter, "aussortiert") %}<a class="kern-link" href="{{ datei(gebiet.slug, f, ansicht) }}">{{ text }}</a>{{ " und " if loop.first }}{% endfor %} oder bei den <a class="kern-link" href="index.html#arbeitgeber">Arbeitgebern, die regelmäßig Schüler:innen suchen</a>. Viele Ferienjobs stehen in keiner Jobbörse: <a class="kern-link" href="anlaufstellen.html">weitere Anlaufstellen</a>.</p>
+    <p class="kern-body">Schau auch unter {% for f, (text, _) in FILTER.items() if f not in (filter, "aussortiert") %}<a class="kern-link" href="{{ datei(gebiet.slug, f, ansicht) }}">{{ text }}</a>{{ " und " if loop.first }}{% endfor %} oder bei den <a class="kern-link" href="index.html#arbeitgeber">Arbeitgebern, die regelmäßig Schüler:innen suchen</a>. Viele Ferienjobs stehen in keiner Jobbörse. <a class="kern-link" href="anlaufstellen.html#nichts-gefunden">Was du tun kannst, wenn du nichts findest</a>.</p>
     {% endcall %}
     {% endif %}
 
@@ -202,6 +213,7 @@
 
     {# Erweiterung: Seitennavigation, wird von filter.js gefüllt; ohne JavaScript stehen alle Anzeigen untereinander #}
     <nav class="fj-seiten" id="seiten" aria-label="Seiten der Liste" hidden></nav>
+    {% if gesamt >= 10 and filter != "aussortiert" %}<p class="kern-body">Nichts Passendes dabei? <a class="kern-link" href="anlaufstellen.html#nichts-gefunden">Was du dann tun kannst</a></p>{% endif %}
   </div>
 </div>
 {% endblock %}

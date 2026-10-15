@@ -22,9 +22,9 @@ STATIC = WURZEL / "static"
 # Kartenseiten (Stöbern, ohne JavaScript) gibt es für diese Vorfilter, je 50 pro Seite.
 # Alle Anzeigen stehen in einer Tabelle pro Gebiet; dort filtert JavaScript.
 FILTER = {  # Gruppen laut Bewertung (regeln.toml); die erste ist die Startseite eines Gebiets
-    "ferien": ("Befristet & Saison", lambda t: "ferien" in t.bewertung.gruppen),
-    "schueler": ("Für Schüler:innen", lambda t: "schueler" in t.bewertung.gruppen),
-    "weitere": ("Weitere Aushilfsjobs", lambda t: "weitere" in t.bewertung.gruppen),
+    "ferien": ("Ferienjobs", lambda t: "ferien" in t.bewertung.gruppen),
+    "saison": ("Befristet & Saison", lambda t: "saison" in t.bewertung.gruppen),
+    "weitere": ("Vielleicht für die Ferien", lambda t: "weitere" in t.bewertung.gruppen),
     "aussortiert": ("Aussortiert", lambda t: not t.bewertung.gruppen),
 }
 PRO_SEITE = {"karten": 24, "tabelle": 50}  # Blättern im Browser (filter.js); ohne JavaScript steht alles untereinander

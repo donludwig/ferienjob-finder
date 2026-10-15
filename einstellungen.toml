@@ -3,7 +3,7 @@
 [jobboerse]
 tage = 30            # nur Anzeigen der letzten N Tage
 seiten = 10          # Seiten à 100 Treffer pro Abfrage (Minijobs Berlin 50 km: rund 1.000)
-details = 150        # Volltext für die N vielversprechendsten Anzeigen laden (Cache 24 h)
+details = 1500       # Volltext laden (Cache 24 h); alle, sonst fehlen Angaben wie „Schüler:in ab 16“, die nur im Text stehen
 cache_stunden = 6
 
 # Jede Abfrage läuft einzeln, Treffer werden zusammengeführt.
