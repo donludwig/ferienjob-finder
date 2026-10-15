@@ -6,6 +6,7 @@ Alle nennenswerten Änderungen stehen hier, neueste Version zuerst. Das Format f
 
 ### Hinzugefügt
 
+- Mitwirken: `CONTRIBUTING.md`, Issue-Vorlagen für Fehler und Barrieren, vertraulicher Meldeweg über GitHub und `AGENTS.md` mit Prüfbefehlen und Regeln für Coding-Agenten.
 - Suche in der Jobbörse der Bundesagentur für Arbeit für Berlin und ganz Brandenburg, dazu offene Stellen-Feeds einzelner Arbeitgeber.
 - Automatische Bewertung jeder Anzeige mit Begründung („passt“, „prüfen“, „ab 18“, „ungeeignet“) und Erkennung des Stundenlohns.
 - Gruppen „Befristet & Saison“, „Für Schüler:innen“, „Weitere Aushilfsjobs“ und „Aussortiert“.

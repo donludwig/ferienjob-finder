@@ -1,0 +1,20 @@
+name: Barriere / Accessibility barrier
+description: Etwas ist nicht oder nur schwer zugänglich. / Something is not or hardly accessible.
+labels: ["barrierefreiheit"]
+body:
+  - type: textarea
+    id: was
+    attributes:
+      label: Was ist die Barriere? / What is the barrier?
+    validations:
+      required: true
+  - type: input
+    id: ansicht
+    attributes:
+      label: Ansicht / View
+      placeholder: z. B. Startseite, Karten, Tabelle, Filter, Ferientermine
+  - type: input
+    id: hilfsmittel
+    attributes:
+      label: Browser und Hilfsmittel / Browser and assistive technology
+      placeholder: z. B. Safari mit VoiceOver, Firefox mit 200 % Zoom

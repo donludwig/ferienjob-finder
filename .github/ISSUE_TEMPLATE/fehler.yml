@@ -1,0 +1,21 @@
+name: Fehler / Bug
+description: Etwas funktioniert nicht wie beschrieben. / Something does not work as documented.
+labels: ["fehler"]
+body:
+  - type: textarea
+    id: was
+    attributes:
+      label: Was passiert? / What happens?
+      description: Erwartetes und tatsächliches Verhalten. / Expected and actual behaviour.
+    validations:
+      required: true
+  - type: textarea
+    id: schritte
+    attributes:
+      label: Schritte / Steps
+      description: Befehl, Ausgabe oder Seite, die den Fehler zeigt. / Command, output or page that shows the bug.
+  - type: input
+    id: umgebung
+    attributes:
+      label: Browser oder Python-Version / Browser or Python version
+      placeholder: z. B. Firefox 140 oder Python 3.13

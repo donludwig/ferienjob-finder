@@ -4,6 +4,8 @@
 
 Wenn du eine Sicherheitslücke im Ferienjob-Finder findest, melde sie bitte vertraulich per E-Mail an **don@thinkrepeat.com** mit dem Betreff „Ferienjob-Finder Sicherheit“. Bitte kein öffentliches Ticket und keine Veröffentlichung, bevor eine Korrektur online ist.
 
+Alternativ geht die Meldung vertraulich über GitHub: [Sicherheitslücke melden](https://github.com/donludwig/ferienjob-finder/security/advisories/new) im Repositorium.
+
 Hilfreich in der Meldung: betroffene Seite oder Datei, Schritte zum Nachstellen, erwartetes und tatsächliches Verhalten, Auswirkung aus deiner Sicht. Ein Proof of Concept hilft; Angriffe auf die Live-Seite oder den Webspace bitte nicht.
 
 Ablauf:
@@ -35,6 +37,6 @@ Don Ludwig pflegt den Ferienjob-Finder und beantwortet Meldungen. Was geprüft w
 
 # Security (English)
 
-Report vulnerabilities privately to **don@thinkrepeat.com**, subject “Ferienjob-Finder Security”. Please do not open a public issue before a fix is online, and do not attack the live site or the hosting. You will receive an acknowledgement with an assessment within 14 days; details are published no later than 90 days after the report, earlier once the fix is out. Reporters are credited if they wish.
+Report vulnerabilities privately to **don@thinkrepeat.com**, subject “Ferienjob-Finder Security”. Please do not open a public issue before a fix is online, and do not attack the live site or the hosting. You will receive an acknowledgement with an assessment within 14 days; details are published no later than 90 days after the report, earlier once the fix is out. Reporters are credited if they wish. You can also report privately through GitHub: [report a vulnerability](https://github.com/donludwig/ferienjob-finder/security/advisories/new).
 
 In scope: the generator in `finder/`, the generated static pages at https://ferienjobs.thinkrepeat.com/ (no server code, no database, no login, no cookies) and the bundled KERN design system, Lucide icons and fonts. Out of scope: the content of job ads, the source APIs, the hosting and denial of service.
