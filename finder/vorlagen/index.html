@@ -1,0 +1,146 @@
+{% extends "basis.html" %}
+{% import "bausteine.html" as k %}
+{% block titel %}Ferienjobs für 16- bis 18-Jährige{% endblock %}
+{% block kopf %}<link rel="stylesheet" href="start.css?v={{ v }}">{% endblock %}
+{% block main_klasse %} fj-main--start{% endblock %}
+{% block inhalt %}
+{% set summe = gebiete|sum(attribute="zahlen.ohne_ausschluss") %}
+<section class="start-flaeche start-flaeche--grau start-buehne" aria-labelledby="titel">
+  <div class="start-auftakt-text">
+    <p class="kern-preline">Für alle zwischen 16 und 18 und für Eltern, die mitsuchen</p>
+    <h1 class="kern-heading-display" id="titel"><span class="start-zeile">Dein Ferienjob</span> <span class="start-zeile">in Berlin &amp; Brandenburg</span></h1>
+    <p class="kern-body kern-body--large start-lead">Hier stehen Aushilfs-, Mini- und Ferienjobs aus der Jobbörse der Arbeitsagentur. Der Finder wertet jede Anzeige automatisch aus: ob sie für unter 18 machbar ist und ob sie einen Lohn nennt.</p>
+    <div class="start-knoepfe">
+      {% for g in gebiete %}
+      <a class="kern-btn {{ 'kern-btn--primary' if loop.first else 'kern-btn--secondary' }}" href="{{ datei(g.slug) }}">{{ k.symbol("map-pin") }}<span class="kern-label">Jobs in {{ g.name }}</span></a>
+      {% endfor %}
+    </div>
+    <ul class="start-merkmale">
+      <li>{{ k.symbol("check") }}{{ summe }} Anzeigen ohne Ausschluss</li>
+      <li>{{ k.symbol("check") }}ohne Anmeldung</li>
+      <li>{{ k.symbol("check") }}ohne Tracking</li>
+    </ul>
+  </div>
+  {% if vorschau %}
+  <div class="start-vorschau" aria-hidden="true">
+    <div class="start-tafel">
+      <div class="start-leiste">
+        <span class="start-chips"><span class="start-chip start-chip--aktiv">Alle</span>{% for t, kat in vorschau.karten[:3] %}<span class="start-chip start-ton fj-f-{{ kat.slug }}">{{ kat.name }}</span>{% endfor %}</span>
+        <span class="start-schalter"><span class="start-schalter__aktiv">Karten</span><span>Tabelle</span></span>
+      </div>
+      <div class="start-minis">
+        {% for t, kat in vorschau.karten %}
+        <div class="start-mini start-ton fj-f-{{ kat.slug }}"><span class="start-plakette">{{ k.symbol(kat.symbol) }}{{ kat.name }}</span><span class="start-mini-titel">{{ t.anzeige.titel }}</span>{% if t.bewertung.lohn_stunde %}<span class="start-mini-lohn">{{ t.bewertung.lohn_stunde|euro }} pro Stunde</span>{% endif %}<span class="start-balken"></span><span class="start-balken start-balken--kurz"></span></div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</section>
+
+<section class="start-flaeche" aria-labelledby="wo">
+  <h2 class="kern-heading-large" id="wo">Wo suchst du?</h2>
+  <ul class="start-gebiete">
+    {% for g in gebiete %}
+    <li class="start-gebiet start-ton fj-f-{{ g.slug }}">
+      <div class="start-gebiet-kopf">
+        <span class="start-gebiet-symbol">{{ k.symbol("map-pin" if loop.first else "tree-palm") }}</span>
+        <div><h3 class="kern-heading-medium">{{ g.name }}</h3><p class="kern-body kern-body--small kern-body--muted">{{ g.beschreibung }}</p></div>
+      </div>
+      <ul class="start-gebiet-zahlen" aria-label="Gruppen in {{ g.name }}">
+        {% for f, (text, _) in FILTER.items() if f != "aussortiert" %}
+        <li><a class="start-zahl" href="{{ datei(g.slug, f) }}"><span class="start-zahl-wert">{{ g.zahlen[f] }}</span><span class="start-zahl-text">{{ text }}</span></a></li>
+        {% endfor %}
+      </ul>
+      <p class="kern-body kern-body--small">Dazu {{ g.zahlen.aussortiert }} aussortierte Anzeigen, <a class="kern-link" href="{{ datei(g.slug, 'aussortiert') }}">jeweils mit Begründung</a>.</p>
+      <a class="kern-btn kern-btn--secondary start-gebiet-knopf" href="{{ datei(g.slug) }}"><span class="kern-label">Jobs in {{ g.name }} ansehen</span></a>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section class="start-flaeche start-flaeche--grau" aria-labelledby="was">
+  <h2 class="kern-heading-large" id="was">Was der Finder für dich macht</h2>
+  <div class="start-merkmal-bereiche">
+    {% for titel, punkte in [
+      ("Für dich", [
+        ("list-filter", "gastro", "Sortiert", "Befristete Jobs und Saisonjobs, Jobs für Schüler:innen und weitere Aushilfsjobs stehen getrennt."),
+        ("euro", "verkauf", "Lohn auf einen Blick", "Nennt die Anzeige einen Stundenlohn, siehst du ihn sofort und kannst danach filtern."),
+        ("ban", "freizeit", "Aussortiert", "Fachberufe, Jobs ab 18 und Nachtarbeit sind raus. Warum, steht bei jeder Anzeige."),
+        ("user", "betreuung", "Ohne Konto", "Du brauchst keine Anmeldung. Die Seite setzt keine Cookies und zählt niemanden."),
+      ]),
+      ("Für Eltern", [
+        ("scale", "lager", "Regeln für unter 18", "Arbeitszeit, Pausen und Nachtruhe nach dem Jugendarbeitsschutzgesetz, mit Link zum Gesetz."),
+        ("list-checks", "reinigung", "Begründung zu jeder Anzeige", "Ob „passt“ oder „prüfen“: Die Gründe stehen dabei, damit ihr selbst urteilen könnt."),
+        ("clock", "backerei", "Hinweise", "Wochenendarbeit, Spätschicht oder Arbeit in einer Bar werden als Warnung markiert."),
+        ("file-down", "buro", "Zum Herunterladen", "Alle Anzeigen als Tabelle für Excel oder Numbers."),
+      ]),
+    ] %}
+    <div>
+      <h3 class="kern-title kern-title--small start-zwischentitel">{{ titel }}</h3>
+      <ul class="start-merkmal-liste">
+        {% for symbol, ton, fett, satz in punkte %}
+        <li class="start-ton fj-f-{{ ton }}">{{ k.symbol(symbol) }}<p class="kern-body"><strong>{{ fett }}:</strong> {{ satz }}</p></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% if feste %}
+<section class="start-flaeche" aria-labelledby="arbeitgeber">
+  <h2 class="kern-heading-large" id="arbeitgeber">Arbeitgeber, die regelmäßig Schüler:innen suchen</h2>
+  <div class="start-text"><p class="kern-body">Diese Seiten haben keine einzelnen Anzeigen in der Suche, nennen aber Jobs für junge Leute. Dort kannst du dich auch initiativ bewerben.</p></div>
+  <ul class="fj-liste fj-liste--drei">
+    {% for f in feste %}
+    <li class="fj-treffer">
+      <article class="kern-card kern-card--small fj-karte fj-f-arbeitgeber" aria-labelledby="f-{{ loop.index }}">
+        <div class="kern-card__container">
+          <header class="kern-card__header">
+            <hgroup class="kern-hgroup">
+              <h3 class="kern-title kern-title--small" id="f-{{ loop.index }}">{{ f.titel }}</h3>
+              <p class="kern-preline">{{ f.name }}</p>
+              <p class="kern-subline">{{ f.ort }}</p>
+            </hgroup>
+          </header>
+          <section class="kern-card__body"><p class="fj-badges"><span class="kern-badge fj-kat fj-f-arbeitgeber">{{ k.symbol("store") }}<span class="kern-label">Arbeitgeber</span></span></p><p class="kern-body kern-body--small">{{ f.hinweis }}</p></section>
+          <footer class="kern-card__footer">{{ k.extern(f.link, "Zur Jobseite") }}</footer>
+        </div>
+      </article>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<section class="start-flaeche start-flaeche--grau" aria-labelledby="vorgehen">
+  <h2 class="kern-heading-large" id="vorgehen">So gehst du vor</h2>
+  <div class="start-merkmal-bereiche">
+    <ol class="start-merkmal-liste start-merkmal-liste--ziffern">
+      <li class="start-ton fj-f-verkauf"><p class="kern-body"><strong>Gebiet wählen</strong> und nach Lohn, Startdatum oder Stichwort filtern.</p></li>
+      <li class="start-ton fj-f-gastro"><p class="kern-body"><strong>Anzeige lesen:</strong> Die Bewertung ist eine Textauswertung. Verbindlich ist die Originalanzeige.</p></li>
+      <li class="start-ton fj-f-betreuung"><p class="kern-body"><strong>Direkt fragen:</strong> Ruf an oder geh vorbei und sag gleich, dass du unter 18 bist. Für den Sommer suchen manche Betriebe schon im Frühjahr.</p></li>
+    </ol>
+    <div class="start-kasten">
+      <p class="kern-body start-kasten-titel">{{ k.symbol("scale") }}Bevor du zusagst</p>
+      <p class="kern-body">Unter 18 gelten besondere Regeln: wie lange, wann und was du arbeiten darfst. Der Finder prüft Texte, keine Rechtslage. <a class="kern-link" href="regeln.html">Regeln für Ferienjobs</a></p>
+      <p class="kern-body">Nicht alles steht in einer Jobbörse: <a class="kern-link" href="anlaufstellen.html">weitere Anlaufstellen</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="start-flaeche start-ruf-flaeche start-flaeche--grau" aria-labelledby="ruf">
+  <div class="start-ruf">
+    <div class="start-ruf-text">
+      <div><h2 class="kern-heading-large" id="ruf">Schau rein</h2><p class="kern-body">Wähle dein Gebiet und filter nach dem, was dir wichtig ist. Stand der Anzeigen: {{ stand }}.</p></div>
+      <div class="start-ruf-knoepfe">
+        {% for g in gebiete %}
+        <a class="kern-btn kern-btn--secondary start-ruf-knopf{{ ' start-ruf-knopf--linie' if not loop.first }}" href="{{ datei(g.slug) }}">{{ k.symbol("map-pin") }}<span class="kern-label">Jobs in {{ g.name }}</span></a>
+        {% endfor %}
+      </div>
+    </div>
+    {{ k.symbol("search", "start-ruf-zier") }}
+  </div>
+</section>
+{% endblock %}

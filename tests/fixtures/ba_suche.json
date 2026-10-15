@@ -1,0 +1,37 @@
+{
+ "ergebnisliste": [
+  {
+   "stellenangebotsart": "ARBEIT",
+   "stellenangebotsTitel": "Aushilfe Verkauf (m/w/d) – auch für Schüler:innen",
+   "eintrittszeitraum": {"von": "2026-10-19"},
+   "verguetungsangabe": "STUNDENLOHN",
+   "artDerVerguetung": "FESTGEHALT",
+   "festgehalt": 13.9,
+   "vertragsdauer": "BEFRISTET",
+   "istGeringfuegigeBeschaeftigung": true,
+   "stellenlokationen": [{"adresse": {"plz": "10115", "ort": "Berlin", "region": "BERLIN", "land": "DEUTSCHLAND"}}],
+   "datumErsteVeroeffentlichung": "2026-10-10",
+   "hauptberuf": "Helfer/in - Verkauf",
+   "firma": "Beispiel Bäckerei GmbH",
+   "referenznummer": "10000-0000000001-S",
+   "alleBerufe": ["Helfer/in - Verkauf"]
+  },
+  {
+   "stellenangebotsart": "ARBEIT",
+   "stellenangebotsTitel": "Servicekraft Bar (m/w/d)",
+   "eintrittszeitraum": {"von": "2026-11-01"},
+   "verguetungsangabe": "KEINE_ANGABEN",
+   "istGeringfuegigeBeschaeftigung": true,
+   "arbeitszeitSchichtNachtWochenende": true,
+   "stellenlokationen": [{"adresse": {"plz": "10999", "ort": "Berlin", "region": "BERLIN", "land": "DEUTSCHLAND"}}],
+   "datumErsteVeroeffentlichung": "2026-10-08",
+   "hauptberuf": "Servicekraft",
+   "firma": "Beispiel Gastro GmbH",
+   "referenznummer": "10000-0000000002-S",
+   "alleBerufe": ["Servicekraft"]
+  }
+ ],
+ "maxErgebnisse": 2,
+ "page": 1,
+ "size": 100
+}

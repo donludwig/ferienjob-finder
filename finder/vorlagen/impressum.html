@@ -1,0 +1,23 @@
+{% extends "basis.html" %}
+{% import "bausteine.html" as k %}
+{% block titel %}Impressum{% endblock %}
+{% block inhalt %}
+<div class="fj-text">
+  <h1 class="kern-heading-x-large">Impressum</h1>
+  <p class="kern-body">Dieses Impressum gilt für {% if domain %}die Seiten unter <code>{{ domain }}</code>{% else %}diese Website{% endif %}. Die Hauptseite thinkrepeat.com hat ein eigenes Impressum.</p>
+  <p class="kern-body">Angaben gemäß § 5 DDG:</p>
+  <p class="kern-body"><strong>{{ betreiber.name }}</strong>{% for z in betreiber.anschrift %}<br>{{ z }}{% endfor %}</p>
+  <p class="kern-body">Kontakt:<br>Telefon: <a class="kern-link" href="tel:{{ betreiber.telefon|replace(' ', '') }}">{{ betreiber.telefon|replace(' ', '\u00a0') }}</a><br>E-Mail: <a class="kern-link" href="mailto:{{ betreiber.email }}">{{ betreiber.email }}</a></p>
+  {% if betreiber.ustid %}<p class="kern-body">Umsatzsteuer-ID gemäß § 27 a Umsatzsteuergesetz:<br>{{ betreiber.ustid }}</p>{% endif %}
+  <p class="kern-body"><strong>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV:</strong><br>{{ betreiber.name }} (Anschrift wie oben)</p>
+
+  <h2 class="kern-heading-medium" id="haftung">Haftung</h2>
+  <p class="kern-body"><strong>Stellenanzeigen:</strong> Die Anzeigen stammen aus der Jobbörse der Bundesagentur für Arbeit und aus offenen Stellen-Feeds einzelner Arbeitgeber. Sie werden automatisch übernommen und derzeit von Hand aktualisiert; der Stand steht unten auf jeder Seite. Für Inhalt, Richtigkeit und Aktualität der Anzeigen sind die jeweiligen Arbeitgeber verantwortlich. Ob eine Stelle noch frei ist, steht in der verlinkten Originalanzeige.</p>
+  <p class="kern-body"><strong>Bewertungen:</strong> Die Einstufungen „passt“, „prüfen“, „ab 18“ und „ungeeignet“ und die erkannten Lohnangaben entstehen durch eine automatische Textauswertung. Sie können falsch oder unvollständig sein und sind keine Rechtsberatung. Ob eine Tätigkeit für Minderjährige erlaubt ist, muss vor der Zusage selbst geprüft werden.</p>
+  <p class="kern-body"><strong>Eigene Inhalte:</strong> Für die eigenen Inhalte dieser Seiten bin ich nach den allgemeinen Gesetzen verantwortlich. Die Inhalte wurden mit Sorgfalt erstellt; für Richtigkeit, Vollständigkeit und Aktualität übernehme ich keine Gewähr.</p>
+  <p class="kern-body"><strong>Links:</strong> Dieses Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte ich keinen Einfluss habe. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter verantwortlich.</p>
+  <p class="kern-body"><strong>Urheberrecht und Lizenz:</strong> Der Code des Ferienjob-Finders steht unter der EUPL-1.2. Die Lizenzen der mitgelieferten Bestandteile (KERN, Fira Sans, Lucide) und der Daten stehen unter <a class="kern-link" href="ueber.html#quellen">Quellen und Lizenzen</a>. Die Rechte an den Stellenanzeigen liegen bei den Arbeitgebern.</p>
+  <p class="kern-body"><strong>Verbraucherstreitbeilegung:</strong> Ich bin nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+  <p class="kern-body"><a class="kern-link" href="datenschutz.html">Zur Datenschutzerklärung</a></p>
+</div>
+{% endblock %}

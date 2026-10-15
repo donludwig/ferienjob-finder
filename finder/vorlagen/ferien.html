@@ -1,0 +1,34 @@
+{% extends "basis.html" %}
+{% import "bausteine.html" as k %}
+{% block titel %}Schulferien Berlin und Brandenburg{% endblock %}
+{% macro zeitraum(z) -%}
+{%- if not z %}keine{%- else %}{% set start, ende = z %}
+{%- if start == ende %}{{ start.strftime("%d.%m.") }}
+{%- elif start.year != ende.year %}{{ start.strftime("%d.%m.%Y") }} bis {{ ende.strftime("%d.%m.%Y") }}
+{%- else %}{{ start.strftime("%d.%m.") }} bis {{ ende.strftime("%d.%m.") }}{% endif %}{% endif %}
+{%- endmacro %}
+{% block inhalt %}
+<div class="fj-text">
+  <h1 class="kern-heading-x-large">Schulferien in Berlin und Brandenburg</h1>
+  <p class="kern-body">Die Schulferien der nächsten zwei Jahre im Überblick, zum Planen eines Ferienjobs.</p>
+  {% if ferien and ferien.tabelle %}
+  {% for jahr, zeilen in ferien.tabelle.items() %}
+  <h2 class="kern-heading-medium" id="j{{ jahr }}">{{ jahr }}</h2>
+  <div class="kern-table-responsive" tabindex="0" role="region" aria-labelledby="j{{ jahr }}">
+  <table class="kern-table kern-table--small fj-stapel fj-ferien">
+    <caption class="kern-title kern-sr-only">Schulferien {{ jahr }} in Berlin und Brandenburg</caption>
+    <thead class="kern-table__head"><tr class="kern-table__row"><th scope="col" class="kern-table__header">Ferien</th><th scope="col" class="kern-table__header">Berlin</th><th scope="col" class="kern-table__header">Brandenburg</th></tr></thead>
+    <tbody class="kern-table__body">
+      {% for name, werte in zeilen %}
+      <tr class="kern-table__row"><th scope="row" class="kern-table__header">{{ name }}</th><td class="kern-table__cell" data-label="Berlin">{{ zeitraum(werte.get("DE-BE")) }}</td><td class="kern-table__cell" data-label="Brandenburg">{{ zeitraum(werte.get("DE-BB")) }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% endfor %}
+  <p class="kern-body kern-body--small kern-body--muted">Quelle: OpenHolidays API (openholidaysapi.org), Daten unter Open Database License (ODbL) 1.0, abgerufen am {{ stand }}. Angaben ohne Gewähr; maßgeblich sind die Ferienordnungen der Länder. „Einzelner freier Tag“ heißt in Berlin unterrichtsfreier Tag, in Brandenburg variabler Ferientag.</p>
+  {% else %}
+  <p class="kern-body">Die Ferientermine ließen sich beim letzten Aktualisieren nicht abrufen.</p>
+  {% endif %}
+</div>
+{% endblock %}

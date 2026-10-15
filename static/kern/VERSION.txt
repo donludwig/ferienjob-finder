@@ -1,0 +1,3 @@
+@kern-ux/native 2.8.2 (npm), unverändert kopiert am 2026-10-14 aus node_modules/@kern-ux/native/dist.
+Ausnahme: fonts/ enthält nur die fünf Schnitte, die KERN nutzt (400, 400 kursiv, 500, 600, 700); fonts/fira-sans.css listet nur diese (wie in der Projektschau). Schriftdateien selbst unverändert (SHA-256 geprüft).
+Update: Version in package.json anheben, npm ci --ignore-scripts, Dateien neu kopieren, Seiten im Browser und mit den Prüfskripten prüfen.

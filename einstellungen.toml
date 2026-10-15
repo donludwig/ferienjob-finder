@@ -1,0 +1,111 @@
+# Suchen, die `python -m finder bauen` erzeugt, und Standardwerte für CLI und Server.
+
+[jobboerse]
+tage = 30            # nur Anzeigen der letzten N Tage
+seiten = 10          # Seiten à 100 Treffer pro Abfrage (Minijobs Berlin 50 km: rund 1.000)
+details = 150        # Volltext für die N vielversprechendsten Anzeigen laden (Cache 24 h)
+cache_stunden = 6
+
+# Jede Abfrage läuft einzeln, Treffer werden zusammengeführt.
+# Ohne `was` = alle Anzeigen mit dem Filter (z. B. alle Minijobs).
+[[jobboerse.abfragen]]
+name = "Minijobs"
+arbeitszeit = "mj"
+
+[[jobboerse.abfragen]]
+name = "Stichworte"
+begriffe = [
+  "Ferienjob", "Schülerjob", "Aushilfe Schüler", "Ferienaushilfe", "Aushilfe",
+  "Minijob Aushilfe", "Verkaufshilfe", "Inventurhelfer", "Küchenhilfe",
+  "Servicekraft Aushilfe", "Regalauffüller", "Bäckerei Aushilfe",
+]
+
+# Berlin und das Berliner Umland nutzen dieselbe Abfrage (50 km um Berlin, beim zweiten Mal aus dem Cache) und werden
+# nach Bundesland laut Anzeige geteilt. So ist Berlin vollständig, Brandenburg ohne Berlin.
+[[suchen]]
+name = "Berlin"
+ort = "Berlin"
+umkreis = 50
+region = "BERLIN"
+beschreibung = "ganz Berlin"
+
+[[suchen]]
+name = "Brandenburg"
+ort = "Berlin"
+umkreis = 50
+region = "BRANDENBURG"
+beschreibung = "ganz Brandenburg"
+# Eine Abfrage liefert höchstens 1.000 Treffer (150 km um Berlin wären über 2.300 Minijobs). Deshalb neun Kreise à 50 km,
+# die zusammen das Land abdecken; Treffer aus Nachbarländern fallen über region heraus, doppelte Anzeigen werden zusammengeführt.
+weitere_orte = [["Cottbus", 50], ["Frankfurt (Oder)", 50], ["Brandenburg an der Havel", 50], ["Neuruppin", 50],
+                ["Wittenberge", 50], ["Prenzlau", 50], ["Finsterwalde", 50], ["Jüterbog", 50]]
+
+# Kategorien für Symbol und Farbe der Karten. Reihenfolge zählt: die erste passende gewinnt.
+# Muster gegen den Titel, sonst gegen die Berufsangabe. Symbole: static/symbole.svg (Lucide).
+# Farben: weiße Schrift darauf mindestens 4,5:1 (geprüft 14.10.2026).
+[[kategorie]]
+name = "Bäckerei"
+muster = 'bäck|backwaren|konditor|croissant'
+symbol = "croissant"
+farbe = "#8a5a00"
+
+[[kategorie]]
+name = "Reinigung"
+muster = 'reinig|putz|hauswirtschaft|gebäudeservice'
+symbol = "sparkles"
+farbe = "#00756f"
+
+[[kategorie]]
+name = "Gastro"
+muster = 'gastro|küche|koch|restaurant|kellner|service|café|cafe|imbiss|spül|systemgastro|burger|pizza'
+symbol = "utensils"
+farbe = "#b4371f"
+
+[[kategorie]]
+name = "Verkauf"
+muster = 'verk[aä]uf|kasse|kassier|einzelhandel|regal|filiale|markt|warenverr'
+symbol = "shopping-bag"
+farbe = "#1d5fc4"
+
+[[kategorie]]
+name = "Lager"
+muster = 'lager|logistik|kommission|versand|zustell|kurier|inventur|packer'
+symbol = "package"
+farbe = "#5b4fc4"
+
+[[kategorie]]
+name = "Freizeit"
+muster = 'kino|event|veranstalt|freizeit|\bsport|bäder|schwimm|zoo|tierpark|museum|messe|ticket|halle|stadion'
+symbol = "ticket"
+farbe = "#a8287a"
+
+[[kategorie]]
+name = "Betreuung"
+muster = 'nachhilfe|betreu|kinder|babysit|pflege|senior'
+symbol = "heart-handshake"
+farbe = "#2f7d32"
+
+[[kategorie]]
+name = "Büro"
+muster = 'büro|verwaltung|empfang|rezeption|telefon|kaufm'
+symbol = "briefcase"
+farbe = "#3d5a73"
+
+[[kategorie]]
+name = "Sonstiges"
+symbol = "circle-ellipsis"
+farbe = "#5f6368"
+
+# Farben der Einstiegsboxen und der Arbeitgeber-Hinweise (weiße Schrift darauf mindestens 4,5:1)
+[gebietsfarben]
+Berlin = "#1d5fc4"
+Brandenburg = "#00756f"
+Arbeitgeber = "#a8287a"
+
+[seite]
+domain = "ferienjobs.thinkrepeat.com"   # leer = „diese Website“ in Impressum und Datenschutz
+quellcode = "https://github.com/donludwig/ferienjob-finder"   # Link im Footer und in der Dokumentation; leer = kein Link
+
+[ferien]
+land = "DE-BE"      # Bundesland (ISO 3166-2) für den Ferienhinweis
+land_name = "Berlin"

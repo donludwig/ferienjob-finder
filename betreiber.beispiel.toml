@@ -1,0 +1,7 @@
+# Vorlage: als betreiber.toml kopieren und ausfüllen. betreiber.toml steht in .gitignore, damit Anschrift und
+# Telefonnummer nicht im Repositorium landen. Fehlt sie, baut der Finder mit diesen Platzhaltern.
+name = "Vorname Nachname"
+anschrift = ["Straße 1", "12345 Ort", "Deutschland"]
+telefon = "+49 30 1234567"
+email = "kontakt@example.org"
+ustid = ""   # leer lassen, wenn keine Umsatzsteuer-ID vorhanden ist

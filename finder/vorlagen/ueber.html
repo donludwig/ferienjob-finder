@@ -1,0 +1,25 @@
+{% extends "basis.html" %}
+{% import "bausteine.html" as k %}
+{% block titel %}Über{% endblock %}
+{% block inhalt %}
+<hgroup class="kern-hgroup fj-seitenkopf">
+  <h1 class="kern-heading-x-large">Über den Ferienjob-Finder</h1>
+</hgroup>
+
+<div class="fj-text">
+  <p class="kern-body">Der Ferienjob-Finder ist ein privates, nicht-kommerzielles Projekt. Er sammelt öffentlich ausgeschriebene Aushilfs- und Ferienjobs und zeigt, welche davon für Jugendliche unter 18 in Frage kommen. Es gibt kein Konto, kein Tracking und keine Cookies. Die Seiten sind statisch und werden derzeit von Hand neu erzeugt. Wann zuletzt, steht unten auf jeder Seite.</p>
+  <p class="kern-body">Die Gestaltung folgt KERN, dem offenen Designsystem für die öffentliche Verwaltung. Der Ferienjob-Finder ist kein Angebot einer Behörde.</p>
+
+  <h2 class="kern-heading-medium" id="quellen">Quellen und Lizenzen</h2>
+  {{ k.dl([
+    ("Stellenanzeigen", "Jobbörse der Bundesagentur für Arbeit über ihre öffentliche, nicht offiziell dokumentierte Schnittstelle (Beschreibung: github.com/bundesAPI/jobsuche-api). Dazu offene Stellen-Feeds einzelner Arbeitgeber. Die Rechte an den Anzeigen liegen bei den Arbeitgebern."),
+    ("Schulferien", "OpenHolidays API (openholidaysapi.org), Daten unter Open Database License (ODbL) 1.0."),
+    ("Designsystem", "KERN 2.8.2 (kern-ux.de), Code unter EUPL-1.2, Texte und Grafiken unter CC BY-NC-SA. Symbole: Google Material Symbols, über KERN eingebunden, Apache License 2.0."),
+    ("Schrift", "Fira Sans, SIL Open Font License 1.1, lokal ausgeliefert."),
+    ("Symbole", "Lucide Icons 1.49.0 (lucide.dev), ISC-Lizenz."),
+    ("Programmcode", "Ferienjob-Finder © 2026 Don Ludwig, lizenziert unter der EUPL-1.2."),
+    ("Gesetze", "gesetze-im-internet.de, Stand 14.10.2026."),
+  ]) }}
+  <p class="kern-body">{{ k.extern("https://www.kern-ux.de/lizenz-und-nutzungsbedingungen", "Lizenz- und Nutzungsbedingungen von KERN") }}</p>
+</div>
+{% endblock %}

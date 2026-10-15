@@ -1,0 +1,208 @@
+{% extends "basis.html" %}
+{% import "bausteine.html" as k %}
+{% block titel %}{{ gebiet.name }}: {{ filter_text }}{% endblock %}
+{% block inhalt %}
+{% set z = ergebnis.zahlen %}
+{# Seitenkopf: links Gruppe, Gebiet und Anzahl mit kurzer Erklärung, rechts Ansicht und Sortierung #}
+<div class="fj-listenkopf">
+  <div class="fj-listenkopf__text">
+    <h1 class="kern-label fj-listenkopf__titel" id="liste-titel">{{ filter_text }} in {{ gebiet.name }}: <span id="anzahl">{{ gesamt }}</span></h1>
+    <p class="kern-body fj-gruppenhinweis">{{ {
+      "ferien": "Befristete Jobs und Saisonjobs, nicht alle ausdrücklich für Schüler:innen.",
+      "schueler": "Anzeigen, die Schüler:innen oder ein Alter ab 15 oder 16 nennen.",
+      "weitere": "Aushilfs- und Minijobs ohne Befristung, oft auch für Jugendliche machbar.",
+      "aussortiert": "Fachberufe, ab 18, Nachtarbeit und Ähnliches, jeweils mit Begründung."}[filter] }} Anzeigen der letzten 30 Tage<span class="fj-nur-breit">, ohne Zeitarbeit, automatisch ausgewertet</span>: <a class="kern-link" href="regeln.html">Regeln für Ferienjobs</a></p>
+  </div>
+      {# Ansicht und Sortierung: am Desktop offen ohne Kopf, auf dem Handy eingeklappt (filter.js) #}
+      <details class="kern-details fj-werkzeuge-klapp" id="werkzeuge" open><summary class="kern-details__header"><span class="kern-title kern-title--small">Ansicht und Sortierung <span class="fj-panel__auswahl">{{ "Karten" if ansicht == "karten" else "Tabelle" }}</span></span></summary>
+      <div class="fj-listenwerkzeuge">
+        <nav aria-labelledby="ansicht-titel" class="fj-ansicht">
+          <p class="kern-label" id="ansicht-titel">Ansicht</p>
+          <div class="kern-btn-wrapper fj-seg">
+            {% for a, text in [("karten", "Karten"), ("tabelle", "Tabelle")] %}
+            <a class="kern-btn kern-btn--small {{ 'kern-btn--primary' if a == ansicht else 'kern-btn--secondary' }}" href="{{ datei(gebiet.slug, filter, a) }}#liste-titel"{% if a == ansicht %} aria-current="page"{% endif %}><span class="kern-label">{{ text }}</span></a>
+            {% endfor %}
+          </div>
+  </nav>
+      <div class="kern-form-input fj-sortierung" id="sortierung" hidden>
+        <label class="kern-label" for="f-sortierung">Sortieren nach</label>
+        <div class="kern-form-input__select-wrapper">
+          <select class="kern-form-input__select" id="f-sortierung" name="sortierung" form="filter">
+            <option value="punkte">Bewertung</option>
+            <option value="lohn">Stundenlohn</option>
+            <option value="datum">neueste zuerst</option>
+          </select>
+        </div>
+      </div>
+      </div>
+      </details>
+</div>
+
+{% if ergebnis.ausgefallen %}
+{% call k.alert("warning", "Nicht alle Quellen waren erreichbar") %}
+<ul class="kern-list kern-list--small">{% for f in ergebnis.ausgefallen %}<li>{{ f }}</li>{% endfor %}</ul>
+{% endcall %}
+{% endif %}
+
+<div class="kern-row fj-layout">
+  <div class="kern-col-12 kern-col-lg-4 kern-col-xxl-3">
+    {# Gebiet zuerst und außerhalb des einklappbaren Bereichs: auch mobil sofort sichtbar.
+       Umschalter wie bei der Projektschau: zusammenhängende KERN-Buttons (Erweiterung fj-seg) #}
+    <nav class="fj-gebiet" aria-labelledby="gebiet-titel">
+      <h2 class="kern-heading-small" id="gebiet-titel">Gebiet</h2>
+      <div class="kern-btn-wrapper fj-seg">
+        {% for g in gebiete %}
+        <a class="kern-btn kern-btn--small {{ 'kern-btn--primary' if g.slug == gebiet.slug else 'kern-btn--secondary' }}" href="{{ datei(g.slug, filter, ansicht) }}"{% if g.slug == gebiet.slug %} aria-current="page"{% endif %}><span class="kern-label">{{ g.name }}</span></a>
+        {% endfor %}
+      </div>
+    </nav>
+    {# Wie bei der Projektschau: auf großen Bildschirmen offen ohne Kopf (filter.js), auf dem Smartphone einklappbar #}
+    <details class="kern-details fj-panel" id="panel" open>
+    <summary class="kern-details__header"><span class="kern-title kern-title--small">Gruppe und Filter <span class="fj-panel__auswahl">{{ filter_text }}</span></span></summary>
+    <div class="kern-details__body">
+
+    {# Facette Gruppe: echte Links (funktionieren ohne JavaScript), Anzahl je Gruppe #}
+    <nav class="fj-facette" aria-labelledby="gruppe-titel">
+      <h2 class="kern-heading-small" id="gruppe-titel">Gruppe</h2>
+      <ul class="fj-seitennav">
+        {% for f, (text, _) in FILTER.items() %}
+        <li><a class="fj-seitennav__link" href="{{ datei(gebiet.slug, f, ansicht) }}"{% if f == filter %} aria-current="page"{% endif %}>{{ text }} <span class="fj-seitennav__zahl">({{ z[f] }})</span></a></li>
+        {% endfor %}
+      </ul>
+    </nav>
+
+    <form class="fj-filter" id="filter" hidden aria-labelledby="filter-titel">
+      <h2 class="kern-heading-small" id="filter-titel">Filtern</h2>
+      <search class="kern-form-input">
+        <label class="kern-label" for="f-was">Was oder wo?</label>
+        {# Ohne Suchen-Button: die Liste filtert beim Tippen; Lupe als Zeichen im Feld (Erweiterung fj-suche) #}
+        <div class="fj-suche">
+          <span class="kern-icon kern-icon--search" aria-hidden="true"></span>
+          <input class="kern-form-input__input" id="f-was" name="was" type="search" placeholder="z. B. Kino, Pankow, 10115">
+        </div>
+      </search>
+
+
+      <fieldset class="kern-fieldset">
+        <legend class="kern-label">Bezahlung</legend>
+        <div class="kern-fieldset__body">
+          {# Erweiterung: KERN hat keinen Schieberegler; natives range-Feld mit KERN-Farben #}
+          <div class="kern-form-input fj-regler">
+            {# Ausgabe neben, nicht in der Beschriftung: sonst benennt das Label zwei Bedienelemente #}
+            <div class="kern-label"><label for="f-lohn">Mindestens pro Stunde:</label> <output id="f-lohn-wert" for="f-lohn">egal</output></div>
+            <input class="fj-regler__eingabe" id="f-lohn" name="lohn" type="range" min="0" max="20" step="0.5" value="0" aria-describedby="f-lohn-hint">
+            <div class="fj-regler__skala" aria-hidden="true">{% for w in (0, 5, 10, 15, 20) %}<span>{{ w }} €</span>{% endfor %}</div>
+            <div class="kern-hint" id="f-lohn-hint">Nur Anzeigen mit Stundenlohn ab diesem Betrag. Zum Vergleich: Mindestlohn ab 18 sind 13,90 €.</div>
+          </div>
+          <div class="kern-form-check">
+            <input class="kern-form-check__checkbox" id="f-nur-lohn" name="nur_lohn" type="checkbox">
+            <label class="kern-label" for="f-nur-lohn">Nur mit Lohnangabe</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="fj-abschnitt">
+      <fieldset class="kern-fieldset">
+        <legend class="kern-label">Arbeitszeit</legend>
+        <div class="kern-fieldset__body">
+          <div class="kern-form-check">
+            <input class="kern-form-check__checkbox" id="f-ohne-warnung" name="ohne_warnung" type="checkbox">
+            <label class="kern-label" for="f-ohne-warnung">Ohne Hinweis auf späte Zeiten, Wochenende oder Bar</label>
+          </div>
+        </div>
+      </fieldset>
+      <details class="kern-details fj-filter-mehr">
+        <summary class="kern-details__header"><span class="kern-title kern-title--small">Wann soll es losgehen?</span></summary>
+        <div class="kern-details__body">
+          {# Abweichung von KERN (dort drei Textfelder Tag/Monat/Jahr): natives Datumsfeld mit dem Kalender des Browsers, auf Wunsch (Datepicker) #}
+          <div class="kern-form-input">
+            <label class="kern-label" for="f-start">Spätestens anfangen am</label>
+            <input class="kern-form-input__input fj-datum" id="f-start" name="start" type="date">
+          </div>
+        </div>
+      </details>
+      </div>
+
+
+
+      <div class="kern-btn-wrapper">
+        <button class="kern-btn kern-btn--secondary kern-btn--small fj-zuruecksetzen" type="reset"><span class="kern-icon kern-icon--autorenew" aria-hidden="true"></span><span class="kern-label">Filter zurücksetzen</span></button>
+      </div>
+    </form>
+
+    {# Erweiterung: Dropdown auf Basis von <details>, KERN-Dropdown ist in 2.8.2 nur ein Entwurf #}
+    <details class="fj-dropdown">
+      <summary class="kern-btn kern-btn--tertiary kern-btn--small"><span class="kern-icon kern-icon--download" aria-hidden="true"></span><span class="kern-label">Herunterladen</span></summary>
+      <ul class="fj-dropdown__liste">
+        <li><a class="kern-link" href="{{ gebiet.slug }}.csv" download>CSV für Excel oder Numbers</a></li>
+        <li><a class="kern-link" href="{{ gebiet.slug }}.json" download>JSON</a></li>
+      </ul>
+    </details>
+    </div>
+    </details>
+  </div>
+
+  <div class="kern-col-12 kern-col-lg-8 kern-col-xxl-9">
+    <p class="kern-sr-only" id="status" role="status" aria-live="polite"></p>
+
+    {# Filter nach Bereich als Chips über der Liste (wie im Motiv der Startseite); braucht JavaScript wie das übrige Filterformular #}
+    {% if kategorien|length > 1 %}
+    <div class="fj-chips-rahmen">
+    <div class="fj-chips" id="chips" role="group" aria-label="Bereich" hidden>
+      <button type="button" class="fj-chip fj-chip--alle" data-kat="" aria-pressed="true">Alle</button>
+      {% for kat, anzahl in kategorien %}
+      <button type="button" class="fj-chip fj-f-{{ kat.slug }}" data-kat="{{ kat.slug }}" aria-pressed="false">{{ k.symbol(kat.symbol) }}{{ kat.name }} <span class="fj-chip__zahl">{{ anzahl }}</span></button>
+      {% endfor %}
+    </div>
+    </div>
+    {% endif %}
+
+    {% if gesamt < 10 and filter != "aussortiert" %}
+    {% call k.alert("info", "Gerade wenige Treffer in dieser Gruppe", ebene=3) %}
+    <p class="kern-body">Schau auch unter {% for f, (text, _) in FILTER.items() if f not in (filter, "aussortiert") %}<a class="kern-link" href="{{ datei(gebiet.slug, f, ansicht) }}">{{ text }}</a>{{ " und " if loop.first }}{% endfor %} oder bei den <a class="kern-link" href="index.html#arbeitgeber">Arbeitgebern, die regelmäßig Schüler:innen suchen</a>. Viele Ferienjobs stehen in keiner Jobbörse: <a class="kern-link" href="anlaufstellen.html">weitere Anlaufstellen</a>.</p>
+    {% endcall %}
+    {% endif %}
+
+    <div class="fj-leer" id="leer" hidden>
+      <p class="kern-body">Keine Anzeige passt zu diesen Filtern.</p>
+      <button class="kern-btn kern-btn--secondary fj-zuruecksetzen" type="reset" form="filter"><span class="kern-icon kern-icon--autorenew" aria-hidden="true"></span><span class="kern-label">Filter zurücksetzen</span></button>
+    </div>
+
+    {% if ansicht == "karten" %}
+    <ol class="fj-liste" id="liste" data-pro-seite="{{ pro_seite }}" aria-labelledby="liste-titel">
+      {% for t in treffer %}{{ k.karte(t, loop.index) }}{% endfor %}
+    </ol>
+    {% elif treffer %}
+    <div class="kern-table-responsive" tabindex="0" role="region" aria-labelledby="liste-titel">
+    <table class="kern-table kern-table--small kern-table--striped fj-tabelle" id="liste" data-pro-seite="{{ pro_seite }}">
+      <caption class="kern-title kern-sr-only">{{ filter_text }}, {{ gebiet.name }}</caption>
+      <thead class="kern-table__head">
+        <tr class="kern-table__row">
+          <th scope="col" class="kern-table__header kern-table__header--numeric">Punkte</th>
+          <th scope="col" class="kern-table__header">Stelle</th>
+          <th scope="col" class="kern-table__header">Ort</th>
+          <th scope="col" class="kern-table__header kern-table__header--numeric">€/Std.</th>
+          <th scope="col" class="kern-table__header">Eignung</th>
+        </tr>
+      </thead>
+      <tbody class="kern-table__body">
+        {% for t in treffer %}{% set a, b, kat = t.anzeige, t.bewertung, kategorie(t.anzeige) %}
+        <tr class="kern-table__row fj-treffer" {{ k.daten(t, kat) }}>
+          <td class="kern-table__cell kern-table__cell--numeric" data-label="Punkte">{{ b.punkte }}</td>
+          <th scope="row" class="kern-table__header"><a class="kern-link" href="{{ a.link }}" rel="noopener">{{ a.titel }}</a><br><span class="kern-body--small kern-body--muted">{{ a.firma }}</span><br>{{ k.kat_badge(kat) }}</th>
+          <td class="kern-table__cell" data-label="Ort">{{ a.plz }} {{ a.ort }}</td>
+          <td class="kern-table__cell kern-table__cell--numeric" data-label="€/Std.">{{ (b.lohn_stunde|euro) if b.lohn_stunde else "–" }}</td>
+          <td class="kern-table__cell" data-label="Eignung">{{ k.eignung_badge(b.eignung) }}{% if b.ausschluesse or b.warnungen %}<br><span class="kern-body--small">{{ (b.ausschluesse + b.warnungen)|join(" · ") }}</span>{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    {% endif %}
+
+    {# Erweiterung: Seitennavigation, wird von filter.js gefüllt; ohne JavaScript stehen alle Anzeigen untereinander #}
+    <nav class="fj-seiten" id="seiten" aria-label="Seiten der Liste" hidden></nav>
+  </div>
+</div>
+{% endblock %}
+{% block skript %}<script src="filter.js?v={{ v }}" defer></script>{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "basis.html" %}
+{% import "bausteine.html" as k %}
+{% block titel %}Weitere Anlaufstellen{% endblock %}
+{% block inhalt %}
+<div class="fj-text">
+  <hgroup class="kern-hgroup fj-seitenkopf">
+    <h1 class="kern-heading-x-large">Weitere Anlaufstellen</h1>
+    <p class="kern-subline">Viele Ferienjobs stehen in keiner Jobbörse.</p>
+  </hgroup>
+  <p class="kern-body">In der Jobbörse der Arbeitsagentur sind kaum Stellen ausdrücklich für Schüler:innen ausgeschrieben. Du kannst auch direkt im Betrieb fragen. Hier stehen Anlaufstellen und Portale dafür.</p>
+
+  <h2 class="kern-heading-medium fj-mit-symbol">{{ k.symbol("calendar-days") }}<span>Früh fragen</span></h2>
+  <p class="kern-body">Für die Sommerferien suchen manche Betriebe schon im Frühjahr. Die Berliner Bäder-Betriebe etwa hielten ab Februar 2026 regelmäßig Bewerbertage für Saisonkräfte ab ({{ k.extern("https://www.nordkurier.de/regional/brandenburg/badesaison-startet-rettungsschwimmer-dringend-gesucht-4499249", "Nordkurier, 13.04.2026") }}).</p>
+
+  <h2 class="kern-heading-medium fj-mit-symbol">{{ k.symbol("store") }}<span>Betriebe direkt anfragen</span></h2>
+  <p class="kern-body">Für eine Initiativbewerbung reichen ein paar Sätze: wer du bist, wie alt du bist, in welchen Wochen du kannst und was du gern machen würdest. Frag in Geschäften, Cafés, Bäckereien oder Freizeitbetrieben in deiner Nähe nach.</p>
+  <p class="kern-body">Für Brandenburg gibt es gedruckte Ausbildungs- und Praktikumsführer der Landkreise. Darin stehen auch Betriebe, die Ferienjobs anbieten, zum Beispiel für Potsdam, Potsdam-Mittelmark und Teltow-Fläming. Die Übersicht der Arbeitsagentur: {{ k.extern("https://www.arbeitsagentur.de/vor-ort/datei/uebersicht_ausbildungs-und_praktikumsfuehrer_2026_2027_ba273228.pdf", "Ausbildungs- und Praktikumsführer 2026/27 (PDF)") }}.</p>
+  <p class="kern-body">Auf der Startseite stehen außerdem <a class="kern-link" href="index.html#arbeitgeber">Arbeitgeber, die regelmäßig Schüler:innen suchen</a>.</p>
+
+  <h2 class="kern-heading-medium fj-mit-symbol">{{ k.symbol("database") }}<span>Andere Jobportale</span></h2>
+  <p class="kern-body">Diese Portale sammeln ebenfalls Neben- und Schülerjobs. Sie werden hier nicht ausgewertet; ob ein Job für dein Alter erlaubt ist, prüfst du dort selbst. Für Orte in Brandenburg nutzt du die Suche der allgemeinen Portale, unten jeweils mit Potsdam als Beispiel.</p>
+  <h3 class="kern-heading-small">Für Schüler:innen</h3>
+  <ul class="kern-list kern-list--bullet">
+    <li class="kern-body">{{ k.extern("https://www.jobruf.de/schuelerjobs-berlin.html", "jobruf: Schülerjobs in Berlin") }}: ab 15, nach eigener Angabe geprüft; Bewerbung über ein Profil.</li>
+    <li class="kern-body">{{ k.extern("https://www.schuelerjobs.de/", "schuelerjobs.de") }}: bundesweit, in Berlin wenige Anzeigen (Stand Oktober 2026), oft Promotion- und Reisejobs.</li>
+    <li class="kern-body">{{ k.extern("https://www.juniorjob.de/", "JuniorJob") }}: App für Schüler:innen, überwiegend Ausbildung und Praktika.</li>
+  </ul>
+  <h3 class="kern-heading-small">Allgemeine Portale mit Suche nach Schüler- und Ferienjobs</h3>
+  <ul class="kern-list kern-list--bullet">
+    <li class="kern-body">minijobs.info: {{ k.extern("https://www.minijobs.info/minijobs/schueler-in-berlin.html", "Berlin") }} · {{ k.extern("https://www.minijobs.info/minijobs/schueler-in-potsdam.html", "Potsdam") }}. Minijobs aller Art, teils mit Führerschein.</li>
+    <li class="kern-body">gelegenheitsjobs.de: {{ k.extern("https://www.gelegenheitsjobs.de/ferienjob/ferienjobs-berlin.php", "Berlin") }} · {{ k.extern("https://www.gelegenheitsjobs.de/ferienjob/ferienjobs-potsdam.php", "Potsdam") }}. Ferienjobs, oft für Studierende ausgeschrieben.</li>
+    <li class="kern-body">Kleinanzeigen: {{ k.extern("https://www.kleinanzeigen.de/s-jobs/berlin/sch%C3%BCler/k0c102l3331", "Berlin") }} · {{ k.extern("https://www.kleinanzeigen.de/s-jobs/potsdam/sch%C3%BCler/k0c102l7958", "Potsdam") }}. Viele kleine Betriebe und Privatleute. Triff dich zum Vorstellen nur an öffentlichen Orten oder im Betrieb und sag deinen Eltern Bescheid.</li>
+    <li class="kern-body">Indeed: {{ k.extern("https://de.indeed.com/Sch%C3%BClerjob-Jobs-in-Berlin", "Berlin") }} · {{ k.extern("https://de.indeed.com/Sch%C3%BCler-Jobs-in-Potsdam", "Potsdam") }}. Sehr viele Treffer, auch Ausbildung und Praktika.</li>
+    <li class="kern-body">{{ k.extern("https://www.youngcapital.de/ferienjob/berlin", "YoungCapital: Ferienjobs in Berlin") }}: ohne Altersfilter, viele Promotion-Jobs.</li>
+    <li class="kern-body">{{ k.extern("https://de.jooble.org/stellenangebote-sch%C3%BCler%2C-ferienjob-ab-16-jahre/Berlin", "Jooble: Schüler- und Ferienjobs ab 16 in Berlin") }}: Suchmaschine über viele Jobbörsen, auch Anzeigen der Arbeitsagentur.</li>
+  </ul>
+
+  <h2 class="kern-heading-medium fj-mit-symbol">{{ k.symbol("heart-handshake") }}<span>Ehrenamt statt Job</span></h2>
+  <p class="kern-body">Ab 16 kannst du bei Ferienfreizeiten und in der Jugendarbeit mitmachen, als Teamer:in oder Jugendleiter:in. Das ist ehrenamtlich, also kein bezahlter Job. Mit Ausbildung und Erste-Hilfe-Kurs gibt es dafür die Jugendleitercard (Juleica), in Berlin beantragt beim Landesjugendring ({{ k.extern("https://www.berlin.de/sen/jugend/jugend/jugendarbeit/jugendverbaende/", "Senatsverwaltung für Bildung, Jugend und Familie") }}).</p>
+
+  <h2 class="kern-heading-medium fj-mit-symbol">{{ k.symbol("list-checks") }}<span>Regeln und Fragen</span></h2>
+  <p class="kern-body">Was du unter 18 darfst, steht auf der Seite <a class="kern-link" href="regeln.html">Regeln für Ferienjobs</a>. Offizielle Stellen dazu:</p>
+  <ul class="kern-list kern-list--bullet">
+    <li class="kern-body">{{ k.extern("https://www.berlin.de/lagetsi/gesundheit/besondere-personengruppen/jugendarbeitsschutz/ferienjob-1587032.php", "Landesamt für Arbeitsschutz Berlin (LAGetSi): Ferienarbeit") }}, mit {{ k.extern("https://www.berlin.de/lagetsi/_assets/documents/infos/ferienarbeit.pdf", "Merkblatt (PDF)") }}</li>
+    <li class="kern-body">{{ k.extern("https://www.berlin.de/sen/arbeit/beschaeftigung/arbeitsschutz/service/artikel.1223735.php", "Senatsverwaltung Berlin: Arbeiten in den Schulferien") }}</li>
+    <li class="kern-body">{{ k.extern("https://masgz.brandenburg.de/masgz/de/themen/arbeit/arbeitsschutz/jugendarbeitsschutz/", "Land Brandenburg: Jugendarbeitsschutz") }}</li>
+  </ul>
+</div>
+{% endblock %}

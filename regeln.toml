@@ -1,0 +1,157 @@
+# Bewertungsregeln für Anzeigen. Muster sind reguläre Ausdrücke (Python), geprüft wird
+# der kleingeschriebene Anzeigentext. Einfache Anführungszeichen = Backslashes bleiben stehen.
+#
+# plus:       Punkte, wenn das Muster vorkommt
+# ausschluss: Anzeige passt nicht für unter 18 (zieht `ausschluss_abzug` Punkte ab)
+#             kategorie = "ab18" ergibt das Badge „ab 18“, sonst „ungeeignet“
+# warnung:    Hinweis zum Prüfen, keine Punkte
+# nur_titel:  Regel nur auf den Titel anwenden (für Wörter, die im Fließtext oft anders gemeint sind)
+# jugend:     Regel spricht ausdrücklich junge Leute an. „passt“ gibt es nur mit mindestens einem solchen Treffer.
+# saison:     Regel deutet auf einen Ferien-, Saison- oder Kurzzeitjob (Gruppe „Ferien- und Saisonjobs“).
+# nicht_jugend: Kinder oder Jugendliche sind Zielgruppe der Arbeit, nicht die Bewerber:innen. Treffer dort
+#             heben die jugend-Treffer auf (z. B. „Schulsozialarbeit“, „Trainer:in für Jugendliche“).
+#
+# Gruppen je Anzeige (ohne Ausschluss): „ferien“ = befristet laut Quelle oder saison-Treffer,
+# „schueler“ = jugend-Treffer, „weitere“ = alle übrigen. nur_titel prüft Titel und Berufsbezeichnung.
+#
+# Regeln greifen nicht, wenn kurz davor „kein“, „keine“ (auch gesperrt: „k e i n e“), „ohne“ oder „nicht“ steht
+# („keine Nachtarbeit“, „kein Führerschein nötig“, „keine Schüler“).
+
+[punkte]
+schwelle_passt = 6       # ab hier „passt“, sofern keine Warnung und mindestens ein Jugend-Treffer
+ausschluss_abzug = 10
+lohn_angegeben = 2
+minijob = 1
+
+[[plus]]
+muster = '\bsch[üu]ler'
+punkte = 3
+grund = "spricht Schüler:innen an"
+jugend = true
+
+[[plus]]
+muster = 'ferienjob|ferienaushilfe|ferienarbeit'
+punkte = 3
+grund = "ausdrücklich Ferienjob"
+jugend = true
+saison = true
+
+[[plus]]
+muster = 'herbstferien|sommerferien|osterferien|winterferien'
+punkte = 4
+grund = "nennt Schulferien"
+jugend = true
+saison = true
+
+[[plus]]
+muster = '\bab\s*1[56]\b(?![,.]\d|\s*(uhr|:|std|stunden|€|eur))|ab\s*1[56]\s*jahre'
+punkte = 4
+grund = "ab 15 oder 16 Jahren"
+jugend = true
+
+[[plus]]
+muster = 'jugendliche'
+punkte = 2
+grund = "spricht Jugendliche an"
+jugend = true
+
+[[plus]]
+muster = 'minderj[äa]hrig'
+punkte = 2
+grund = "nennt Minderjährige"
+jugend = true
+
+[[plus]]
+muster = 'keine (vor)?kenntnisse|ohne (vor)?erfahrung|quereinsteiger'
+punkte = 2
+grund = "keine Vorkenntnisse nötig"
+
+[[plus]]
+muster = 'aushilfe'
+punkte = 1
+grund = "Aushilfe"
+
+[[plus]]
+muster = '(?<!un)befristet|kurzfristig'
+punkte = 1
+grund = "befristet oder kurzfristig"
+saison = true
+
+[[plus]]
+muster = 'saison|weihnachtsmarkt|weihnachtsgeschäft|inventur|ernte|spargel|erdbeer|pop-?up|aushilfe für (den|die|ca\.?)\s|für (die|den) (zeit|zeitraum|sommer|winter|dezember|monat)'
+punkte = 2
+grund = "Saison- oder Kurzzeitjob"
+saison = true
+
+[[ausschluss]]
+muster = '\bab\s*18\b(?![,.]\d|\s*(uhr|:|std|stunden|€|eur))|mindestens\s*18\b(?!\s*(uhr|std|stunden))|volljährig|über\s*18\b(?!\s*(uhr|std|stunden))|18\s*jahre\s*alt'
+grund = "erst ab 18"
+kategorie = "ab18"
+
+[[ausschluss]]
+muster = 'k\s?e\s?i\s?n\s?e\s+sch[üu]ler|nicht\s+für\s+sch[üu]ler'
+grund = "nimmt keine Schüler:innen"
+
+[[ausschluss]]
+muster = 'werkstudent|studentische'
+grund = "Werkstudenten- oder Hilfskraftstelle: nur für Studierende"
+nur_titel = true
+
+[[ausschluss]]
+muster = 'praktik'
+grund = "Praktikum, kein bezahlter Job"
+nur_titel = true
+
+[[ausschluss]]
+muster = 'friseur|kraftfahrer|berufskraftfahr|lkw|erzieher|pflegefach|altenpfleg|krankenpfleg|\bkoch\b|köchin|meister|ingenieur|techniker|elektriker|mechani|mechatroni|buchhalt|steuerfach|kaufmann|kauffrau|therapeut|ärzt|arzt\b|apothek|lehrer|lehrkraft|pädagog|sozialarbeit|jurist|architekt|entwickler|informatik|sachbearbeit|manager|(?<!beg)leit(er|ung)'
+grund = "Fachberuf: Ausbildung, Studium oder Erfahrung nötig"
+nur_titel = true
+
+[[nicht_jugend]]
+muster = 'schulsozial|sozialarbeit|pädagog|erzieh|lehrkraft|lehrer|trainer|coach|jugendarbeit|jugendhilfe|jugendhaus|kita\b|hort\b|kinderbetreuung|schulbegleit|schulhelfer|nachhilfe'
+grund = "Arbeit mit Kindern oder Jugendlichen, nicht für sie ausgeschrieben"
+
+[[ausschluss]]
+muster = 'nachtschicht|nachtarbeit|nachtdienst'
+grund = "Nachtarbeit"
+
+[[ausschluss]]
+muster = 'führerschein|fahrerlaubnis|klasse\s*b\b'
+grund = "Führerschein nötig"
+
+[[ausschluss]]
+muster = 'stapler'
+grund = "Staplerschein"
+
+[[ausschluss]]
+muster = '§\s*34a|sicherheitsdienst|bewachung'
+grund = "Sicherheitsdienst"
+
+[[ausschluss]]
+muster = 'akkord|fließband'
+grund = "Akkord oder Fließband (für Jugendliche verboten)"
+
+[[ausschluss]]
+muster = 'abgeschlossene ausbildung|berufserfahrung von mindestens'
+grund = "Ausbildung oder Erfahrung verlangt"
+
+[[ausschluss]]
+muster = 'fachkraft|fachkräfte'
+grund = "Fachkraft gesucht"
+nur_titel = true
+
+[[warnung]]
+muster = '\bbar\b|cocktail|spirituosen|nachtclub|\bclub\b(?!\s*-?\s*mate)'
+grund = "Bar oder Club: Alkohol und späte Zeiten prüfen"
+
+[[warnung]]
+muster = 'wochenende|samstag|sonntag'
+grund = "Wochenendarbeit: für Jugendliche eingeschränkt"
+
+[[warnung]]
+muster = 'bis\s*(2[1-4]|0?[0-5])\s*uhr|spätschicht'
+grund = "späte Uhrzeit: unter 18 je nach Branche nur bis 20 oder 22 Uhr"
+
+[[warnung]]
+muster = '\b0?[0-5]:[0-5]\d\b|\b(ab|um|von)\s*0?[0-5]\s*uhr'
+grund = "früher Arbeitsbeginn: unter 18 meist erst ab 6 Uhr (Bäckereien ab 5 Uhr)"

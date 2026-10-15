@@ -1,0 +1,120 @@
+{% extends "basis.html" %}
+{% import "bausteine.html" as k %}
+{% block titel %}Dokumentation{% endblock %}
+{% macro prompt(text) %}
+<div class="fj-code"><pre class="fj-prompt"><code>{{ text }}</code></pre><button type="button" class="kern-btn kern-btn--tertiary kern-btn--x-small fj-kopieren" aria-label="Anweisung in die Zwischenablage kopieren" data-kopiert="Kopiert" hidden>{{ k.symbol("copy") }}<span class="kern-label" aria-live="polite"></span></button></div>
+{%- endmacro %}
+{% block inhalt %}
+<div class="fj-text fj-doku-kopf">
+  <h1 class="kern-heading-x-large">Dokumentation</h1>
+  <p class="kern-body">Wie der Ferienjob-Finder entstanden ist, was zur Sicherheit geprüft wurde, unter welcher Lizenz er steht und wer dahintersteckt. Wie die Anzeigen bewertet werden, steht unter <a class="kern-link" href="so-funktionierts.html">So geht’s</a>, Quellen und Lizenzen der Bestandteile unter <a class="kern-link" href="ueber.html#quellen">Über</a>.</p>
+</div>
+<div class="fj-doku">
+<div class="fj-text">
+
+  <h2 class="kern-heading-medium" id="entstehung">Entstehung und Weiterführung</h2>
+  <h3 class="kern-heading-small">Wie das Projekt entstanden ist</h3>
+  <p class="kern-body">Ausgangspunkt war ein kleines Python-Skript: Es fragte die {{ k.extern("https://github.com/bundesAPI/jobsuche-api", "Jobbörse der Bundesagentur für Arbeit") }} ab, prüfte die Anzeigentexte auf Eignung für Minderjährige, las die Bezahlung heraus und schrieb eine HTML-Seite. Daraus ist der Ferienjob-Finder mit {{ k.extern("https://claude.com/claude-code", "Claude Code") }} entstanden, dem Kommandozeilen-Werkzeug von Anthropic. Die Rollen: Ich gebe Richtung, Maßstab und Entscheidungen vor und prüfe jeden Stand im Browser. Die KI liest Quellen (Schnittstelle der Jobbörse, KERN-Doku, Nutzungsbedingungen und robots.txt möglicher Quellen, Gesetzestexte), schreibt Code, Tests und Texte, misst im Browser nach und sagt, was KERN ist und was Eigenbau.</p>
+  <p class="kern-body">Der Ablauf in Stufen:</p>
+  <ol class="kern-list kern-list--number">
+    <li><strong>Plan:</strong> Zuerst habe ich mit Claude Code geprüft, welche Quellen sich nutzen lassen. Die Schnittstelle der Jobbörse lieferte unter der bisherigen Adresse (v4) nur noch Fehler, die neue (v6) hat andere Feldnamen. Mögliche weitere Quellen wurden einzeln gegen robots.txt und Nutzungsbedingungen geprüft; aufgenommen ist nur, was beides erlaubt. Aus der KERN-Doku kam die Einschränkung, dass Kopfzeile und Bildwortmarke öffentlichen Stellen vorbehalten sind.</li>
+    <li><strong>Kern mit Tests:</strong> Suche, Bewertung und Lohn-Erkennung stammen aus dem Skript. Fehler darin wurden mit Tests belegt und behoben, etwa „1.200 € im Monat“, das als 200 € erkannt wurde. Die Regeln stehen lesbar in einer eigenen Datei.</li>
+    <li><strong>Statische Seiten mit KERN:</strong> Kein Server-Code, keine Datenbank, kein Konto. Ein Lauf erzeugt alle Seiten, dazu CSV und JSON. Hochgeladen wird getrennt davon, von Hand per FTPS. Die Seite funktioniert ohne JavaScript; Filter und Blättern kommen mit JavaScript dazu.</li>
+    <li><strong>Feinarbeit per Screenshot:</strong> Die meisten Anweisungen waren ein Bildschirmfoto mit einem Satz. Jede Änderung wurde im Browser nachgemessen, bei 320 und 1280 Pixel Breite, hell und dunkel.</li>
+    <li><strong>Veröffentlichung und Prüfung:</strong> eigene Adresse, Sicherheits-Header, die Prüfungen aus dem Abschnitt <a class="kern-link" href="#sicherheit">Sicherheit</a>.</li>
+  </ol>
+
+  <h3 class="kern-heading-small">Anweisungen zum Kopieren</h3>
+  <p class="kern-body">Anweisungen aus der Arbeit am Projekt, sprachlich geglättet. Sie lassen sich für ein ähnliches Vorhaben übernehmen; Orte und Adressen anpassen.</p>
+  {{ prompt("Prüf erst im Plan-Modus, ob sich die Jobbörse der Bundesagentur für Arbeit automatisch abfragen lässt, welche weiteren Quellen für Ferienjobs in Berlin und Brandenburg es gibt und ob deren robots.txt und Nutzungsbedingungen eine automatische Abfrage erlauben. Übernimm die Fachlogik aus dem vorhandenen Skript, statt sie neu zu erfinden, und belege Fehler darin mit Tests.") }}
+  {{ prompt("Bau die Oberfläche mit dem KERN-Designsystem, lokal eingebunden und unverändert. Markup und Klassennamen aus der Doku übernehmen, nicht raten. Die Seite muss ohne JavaScript benutzbar sein, WCAG 2.1 AA erfüllen und ab 320 Pixel Breite funktionieren.") }}
+  {{ prompt("Lade aktuelle Daten, erzeuge die Ausgabe und bau dieses Feedback ein: Wenn man die Ansicht wechselt, springt die Seite nach oben. Außerdem sind Tabelle und Karten auf dem Handy gleich groß.") }}
+  {{ prompt("Übertrag den Stil der Startseite aus einem anderen Projekt: Flächen, Motiv und Animation. Die Animation endet nach weniger als fünf Sekunden und entfällt bei „Bewegung reduzieren“. Text und Aufbau richten sich an Jugendliche und Eltern.") }}
+  {{ prompt("Geh alle meine Sicherheits-Checks durch, so wie bei meinen anderen Projekten, und schreib auf, was geprüft ist und was aussteht.") }}
+
+  <h3 class="kern-heading-small">Wie sich das Projekt erweitern lässt</h3>
+  <ul class="kern-list kern-list--bullet">
+    <li><strong>Andere Jobs, andere Zielgruppen:</strong> Die Anzeigen kommen aus der Jobbörse der Bundesagentur für Arbeit, die Stellen aus ganz Deutschland und für alle Altersgruppen enthält. Ferienjobs für unter 18 sind nur ein Ausschnitt, den die Suchbegriffe und Regeln dieses Projekts auswählen. Wer etwas anderes sucht, etwa Minijobs neben dem Studium oder Teilzeitstellen in einem Ort, tauscht die Suchbegriffe in <code>einstellungen.toml</code> und die Bewertungsregeln in <code>regeln.toml</code> aus; Abruf, Seiten und Filter bleiben gleich. Wer selbst suchen will, findet alle Anzeigen direkt in der {{ k.extern("https://www.arbeitsagentur.de/jobsuche/", "Jobsuche der Arbeitsagentur") }}.</li>
+    <li><strong>Anderes Gebiet:</strong> Ort und Umkreis in <code>einstellungen.toml</code> eintragen. Jeder Ort mit Postleitzahl in Deutschland funktioniert, weil die Jobbörse bundesweit sucht.</li>
+    <li><strong>Regeln anpassen:</strong> Pluspunkte, Ausschlüsse und Warnungen stehen als reguläre Ausdrücke mit Begründung in <code>regeln.toml</code>. Neue Regeln brauchen einen Test.</li>
+    <li><strong>Arbeitgeber ergänzen:</strong> Offene Stellen-Feeds (Personio, Recruitee, Teamtailor) in <code>arbeitgeber.toml</code>, nur wenn robots.txt und Nutzungsbedingungen es erlauben.</li>
+    <li><strong>Aktualisieren:</strong> Ein täglicher Lauf kann die Seiten automatisch neu bauen. Hochgeladen wird nur von Hand und nach ausdrücklicher Freigabe, damit kein Skript die Website verändern kann.</li>
+    <li><strong>Weitere Quellen:</strong> Einige Börsen wären mit Konto oder Absprache nutzbar. Ohne Klärung der Bedingungen kommen sie nicht dazu.</li>
+  </ul>
+
+  <h2 class="kern-heading-medium" id="kern">Gestaltung mit KERN</h2>
+  <p class="kern-body">Die Oberfläche nutzt {{ k.extern("https://www.kern-ux.de", "KERN") }}, das offene Designsystem für die öffentliche Verwaltung, in Version 2.8.2. Das Kit liegt unverändert auf diesem Server, nichts wird von fremden Servern geladen. Markup und Klassennamen stammen aus der KERN-Doku. Kopfzeile und Bildwortmarke von KERN fehlen mit Absicht, weil sie öffentlichen Stellen vorbehalten sind.</p>
+  <p class="kern-body">Was KERN 2.8.2 noch nicht als fertige Komponente liefert, ist als Erweiterung aus KERN-Tokens gebaut und im Code so markiert: Kopfzeile und Navigation dieser Seite, der Hinweis-Banner zu den Ferien, die Umschalter für Gebiet und Ansicht und die Seitenblätterung. Eigene Anpassungen stehen in einer eigenen Datei nach dem Muster „Updatesicheres Theming“, damit ein KERN-Update sie nicht überschreibt.</p>
+  <p class="kern-body">Eine bewusste Abweichung: Das Startdatum im Filter ist ein natives Datumsfeld mit dem Kalender des Browsers. KERN sieht dafür drei Textfelder für Tag, Monat und Jahr vor, weil eingebaute Kalender nicht für alle gut bedienbar sind. Hier überwiegt, dass man ein Datum in den Ferien schnell auswählen kann; eintippen lässt es sich weiterhin.</p>
+
+  <h2 class="kern-heading-medium" id="sicherheit">Sicherheit</h2>
+  <p class="kern-body">Der Ferienjob-Finder ist mit Claude Code entstanden. Deshalb steht hier, was ich geprüft habe, womit und was aussteht. Alle Prüfungen habe ich selbst gemacht, mit automatischen Werkzeugen und KI-gestützten Reviews. Eine Prüfung durch unabhängige Dritte gab es nicht. Stand: 15. Oktober 2026.</p>
+  <p class="kern-body"><strong>Auf dem Server liegt nur statisches HTML.</strong> Dazu kommen CSS, zwei kleine Skripte für Filter und Farbschema, Bilder, Schriften und die Listen als CSV und JSON. Es gibt keinen Server-Code, keine Datenbank, keine Anmeldung und kein Formular, das etwas verschickt. Die Seite setzt keine Cookies und lädt nichts von fremden Servern.</p>
+  <p class="kern-body">Dieses HTML erzeugt ein Python-Programm auf meinem Rechner. Es holt die Anzeigen aus der Jobbörse und den Feeds der Arbeitgeber, bewertet sie, schreibt die Seiten und lädt sie per FTPS hoch. Die Prüfungen gelten deshalb immer beiden Teilen: dem Quellcode des Programms mit den Daten von außen, die es verarbeitet, und den erzeugten Seiten samt Hochladen. Die Anzeigen gelten als nicht vertrauenswürdig: Bevor sie in die Seiten, die CSV- oder die JSON-Datei gelangen, werden sie bereinigt und beim Einsetzen ins HTML maskiert.</p>
+
+  <h3 class="kern-heading-small">Was die Seite schützt</h3>
+  <ul class="kern-list kern-list--bullet">
+    <li>Sicherheits-Header auf allen Seiten, auch auf den Fehlerseiten: Die Content-Security-Policy erlaubt nur eigene Dateien, keine Skripte oder Stile im Seitentext, keine fremden Inhalte.</li>
+    <li>Anzeigen aus der Jobbörse und den Feeds gelten als nicht vertrauenswürdig: Werte werden nach Typ geprüft, Steuerzeichen entfernt, Links nur mit http oder https übernommen und alles beim Einsetzen ins HTML maskiert. In der CSV-Datei werden Zellen, die ein Tabellenprogramm als Formel lesen würde, als Text markiert.</li>
+    <li>Hochgeladen wird verschlüsselt per FTPS mit Prüfung des Server-Zertifikats, nur von Hand und nur in den eigenen Ordner.</li>
+    <li>Keine Cookies, kein Tracking, keine Inhalte von fremden Servern. Die Seite funktioniert auch ohne JavaScript.</li>
+  </ul>
+
+  <h3 class="kern-heading-small">Wie geprüft wurde</h3>
+  <p class="kern-body">Automatische Tests ohne Netzzugriff, auch mit Angriffstexten und tausend zufällig verstümmelten Anzeigen; ein Mutationstest: Für jede der 20 eingetragenen Schutzmaßnahmen schlägt mindestens ein Test an, wenn man sie ausbaut; drei KI-gestützte Reviews; statische Codeanalyse; OWASP ZAP gegen die laufende Seite; Barrierefreiheit mit axe-core in drei Browsern, hell und dunkel, mobil und am Desktop, dazu Tastatur und Fokus; Prüfung der Abhängigkeiten auf bekannte Schwachstellen und des Repositoriums auf Geheimnisse.{% if quellcode %} Vorgehen, Werkzeuge und Ergebnisse im Einzelnen stehen im {{ k.extern(quellcode ~ "/blob/main/doku/pruefbericht.md", "Prüfbericht") }}.{% endif %}</p>
+
+  <h3 class="kern-heading-small">Was aussteht</h3>
+  <ul class="kern-list kern-list--bullet">
+    <li><strong>Unabhängige Prüfung:</strong> Es gab keinen Pentest und kein Audit durch Dritte.</li>
+    <li><strong>Screenreader und Nutzungstest:</strong> axe-core deckt nur einen Teil der Kriterien ab. Ein Durchgang mit Screenreader und ein Test mit Jugendlichen stehen aus.</li>
+    <li><strong>Inhalt der Anzeigen:</strong> Ob eine Anzeige seriös ist, prüft der Ferienjob-Finder nicht. Er übernimmt, was Jobbörse und Arbeitgeber veröffentlichen.</li>
+    <li><strong>Schnittstelle der Jobbörse:</strong> Sie ist öffentlich, aber nicht offiziell dokumentiert. Ändert sie sich, kann die Suche ausfallen.</li>
+    <li><strong>Automatische Prüfkette:</strong> Die Prüfungen laufen lokal von Hand, nicht bei jedem Stand von selbst. Die Abfrage bei OSV ist eine Momentaufnahme.</li>
+    <li><strong>KERN:</strong> Geprüft ist, dass die Dateien dem Paket der Registry entsprechen. Das Kit selbst habe ich nicht geprüft.</li>
+  </ul>
+  <p class="kern-body">Sicherheitslücken bitte vertraulich an <a class="kern-link" href="mailto:don@thinkrepeat.com">don@thinkrepeat.com</a> melden. Ich antworte innerhalb von 14 Tagen.</p>
+
+  <h2 class="kern-heading-medium" id="lizenz">Lizenz</h2>
+  {% if quellcode %}<p class="kern-body">Der Quellcode ist öffentlich: {{ k.extern(quellcode, quellcode.split("://")[1]) }}. Dort stehen auch die Anleitung zum Selbstbauen für andere Orte und der Weg, Sicherheitslücken zu melden.</p>
+  {% endif %}  <p class="kern-body">Code und Texte des Ferienjob-Finders: {{ k.extern("https://eupl.eu/1.2/de/", "EUPL-1.2") }} (alle Sprachfassungen gelten gleich). KERN: Code unter EUPL-1.2, Texte und Grafiken unter CC BY-NC-SA. Fira Sans: SIL Open Font License 1.1. Symbole: Lucide, ISC-Lizenz; die Symbole aus KERN sind Google Material Symbols unter Apache-2.0. Schulferien: OpenHolidays API, Open Database License. Die Rechte an den Stellenanzeigen liegen bei den Arbeitgebern. Einzelheiten mit Versionen stehen unter <a class="kern-link" href="ueber.html#quellen">Quellen und Lizenzen</a>.</p>
+
+  <h2 class="kern-heading-medium" id="absender">Über den Absender</h2>
+  <div class="fj-absender">
+    <img class="fj-absender__foto" src="don-ludwig.jpg" alt="Don Ludwig" width="160" height="160">
+    <div>
+      <p class="kern-body">Feedback, Fragen oder einfach Hallo sagen: ich freu mich.</p>
+      <p class="kern-body">Don Ludwig, freier UX-Designer. Ich baue Design-Systeme, begleite agile Produktentwicklung und arbeite daran, die Zusammenarbeit zwischen Design und Entwicklung besser zu machen. Mein Prozess: nutzerzentriert denken, iterativ arbeiten, technische Rahmenbedingungen verstehen statt ignorieren. Für den Ferienjob-Finder habe ich mit Claude Code gearbeitet; wie, steht unter <a class="kern-link" href="#entstehung">Entstehung und Weiterführung</a>.</p>
+      <p hidden id="extern-hinweis">externe Seite</p>
+      <ul class="fj-absender__links">
+        {% for href, text, sym, extern in [("https://www.linkedin.com/in/donludwig/", "LinkedIn", "external-link", true), ("mailto:don@thinkrepeat.com", "E-Mail", "mail", false), ("https://thinkrepeat.com", "thinkrepeat.com", "globe", true), ("https://github.com/donludwig", "GitHub", "external-link", true)] %}
+        <li><a class="kern-btn kern-btn--secondary kern-btn--small" href="{{ href }}"{% if extern %} rel="noopener" aria-describedby="extern-hinweis"{% endif %}>{{ k.symbol(sym) }}<span class="kern-label">{{ text }}</span></a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="kern-heading-medium" id="aenderungen">Änderungen</h2>
+  <p class="kern-body">Alle nennenswerten Änderungen, neueste Version zuerst. Das Format folgt {{ k.extern("https://keepachangelog.com/de/1.1.0/", "Keep a Changelog") }}, die Versionsnummern der {{ k.extern("https://semver.org/lang/de/", "semantischen Versionierung") }}. Jede Version trägt einen Namen. Die Datei steht als <code>CHANGELOG.md</code> im Projekt.</p>
+  {% for v in aenderungen %}
+  <h3 class="kern-heading-small">{{ v.titel }}</h3>
+  {% for gruppe, punkte in v.gruppen %}
+  <p class="kern-body"><strong>{{ gruppe }}</strong></p>
+  <ul class="kern-list kern-list--bullet">{% for x in punkte %}<li>{{ x }}</li>{% endfor %}</ul>
+  {% endfor %}
+  {% endfor %}
+</div>
+  {# Mitlaufendes Inhaltsverzeichnis wie in der Projektschau-Doku: breit rechts und haftend, schmal oben (doku.js markiert den Abschnitt) #}
+  <nav class="fj-toc" aria-labelledby="doku-inhalt">
+    <p class="kern-label" id="doku-inhalt">Auf dieser Seite</p>
+    <ul>
+      <li><a class="kern-link" href="#entstehung">Entstehung und Weiterführung</a></li>
+      <li><a class="kern-link" href="#kern">Gestaltung mit KERN</a></li>
+      <li><a class="kern-link" href="#sicherheit">Sicherheit</a></li>
+      <li><a class="kern-link" href="#lizenz">Lizenz</a></li>
+      <li><a class="kern-link" href="#absender">Über den Absender</a></li>
+      <li><a class="kern-link" href="#aenderungen">Änderungen</a></li>
+    </ul>
+  </nav>
+</div>
+{% endblock %}
+{% block skript %}<script src="doku.js?v={{ v }}" defer></script>{% endblock %}

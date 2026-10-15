@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workzag-jobs>
+<position>
+    <id>111</id>
+    <subcompany>Beispiel Betriebs GmbH</subcompany>
+    <office>Berlin Alexanderplatz</office>
+    <name>Aushilfe Service (w/m/d)</name>
+    <jobDescriptions>
+        <jobDescription>
+            <name>Dein Job</name>
+            <value><![CDATA[<p>Ferienjob in den Herbstferien, ab 16 Jahren. 14 € pro Stunde.</p>]]></value>
+        </jobDescription>
+    </jobDescriptions>
+    <employmentType>temporary</employmentType>
+    <schedule>part-time</schedule>
+    <createdAt>2026-10-01T10:00:00+00:00</createdAt>
+</position>
+<position>
+    <id>222</id>
+    <office>Bonn</office>
+    <name>Küchenhilfe (w/m/d)</name>
+    <jobDescriptions><jobDescription><name>x</name><value><![CDATA[Bonn]]></value></jobDescription></jobDescriptions>
+    <createdAt>2026-10-02T10:00:00+00:00</createdAt>
+</position>
+</workzag-jobs>

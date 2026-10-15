@@ -1,0 +1,80 @@
+{% extends "basis.html" %}
+{% import "bausteine.html" as k %}
+{% block titel %}So funktioniert’s{% endblock %}
+{% block inhalt %}
+<hgroup class="kern-hgroup fj-seitenkopf">
+  <h1 class="kern-heading-x-large">So funktioniert’s</h1>
+  <p class="kern-subline">Woher die Anzeigen kommen und wie sie bewertet werden.</p>
+</hgroup>
+
+<div class="fj-text">
+  <h2 class="kern-heading-medium fj-mit-symbol">{{ k.symbol("database") }}<span>Woher die Anzeigen kommen</span></h2>
+  <p class="kern-body">Bei jeder Aktualisierung (derzeit von Hand, der Stand steht unten auf jeder Seite) fragt der Ferienjob-Finder die Jobbörse der Bundesagentur für Arbeit ab: alle Minijobs im Gebiet und dazu Stichworte wie „Ferienjob“, „Schülerjob“ oder „Aushilfe“, nur Anzeigen der letzten 30 Tage und ohne Zeitarbeit. Dazu kommen die offenen Stellen-Feeds einiger Arbeitgeber. Doppelte Anzeigen werden zusammengefasst.</p>
+  <p class="kern-body">Andere Jobportale sind nicht dabei. Die geprüften Portale verbieten in ihren Nutzungsbedingungen, ihre Anzeigen automatisch auszulesen.</p>
+
+  <h2 class="kern-heading-medium fj-mit-symbol">{{ k.symbol("scale") }}<span>Wie bewertet wird</span></h2>
+  <p class="kern-body">Ein Programm liest Titel und Anzeigentext und sucht nach bestimmten Wörtern. Für Hinweise wie „Schüler“, „Ferienjob“ oder „ab 16“ gibt es Punkte. Wörter wie „Nachtschicht“, „Führerschein“ oder „ab 18“ schließen eine Anzeige aus. Andere wie „Wochenende“ oder „bis 22 Uhr“ ergeben einen Hinweis zum Prüfen. Steht davor „kein“, „ohne“ oder „nicht“, zählen sie nicht.</p>
+  <ul class="kern-list kern-list--bullet">
+    <li><strong>passt</strong>: mindestens {{ regeln.punkte.schwelle_passt }} Punkte, ein ausdrücklicher Hinweis auf junge Leute und keine Warnung</li>
+    <li><strong>prüfen</strong>: kein Ausschluss gefunden, aber selbst genau lesen</li>
+    <li><strong>ab 18</strong> oder <strong>ungeeignet</strong>: die Anzeige nennt einen Ausschlussgrund</li>
+  </ul>
+  <p class="kern-body">Danach wird jede Anzeige einer Gruppe zugeordnet:</p>
+  <ul class="kern-list kern-list--bullet">
+    <li><strong>Befristet &amp; Saison</strong>: laut Anzeige befristet, oder der Text nennt Ferien, Saison, Weihnachtsmarkt, Inventur, Ernte oder eine Aushilfe für einen Zeitraum</li>
+    <li><strong>Für Schüler:innen</strong>: die Anzeige nennt Schüler:innen, Jugendliche oder ein Mindestalter von 15 oder 16 Jahren. Stellen, bei denen man <em>mit</em> Kindern oder Jugendlichen arbeitet (Schulsozialarbeit, Training, Nachhilfe), zählen nicht dazu.</li>
+    <li><strong>Weitere Aushilfsjobs</strong>: alle übrigen Aushilfs- und Minijobs</li>
+  </ul>
+  <p class="kern-body">Fachberufe (zum Beispiel Friseur:in, Koch, Kraftfahrer:in), Werkstudentenstellen, Praktika und Stellen ab 18 stehen in der Gruppe „Aussortiert“, jeweils mit Begründung.</p>
+  <p class="kern-body">Der Volltext wird nur für die vielversprechendsten Anzeigen geladen. Bei den übrigen steht in der Begründung „nur Titel geprüft“. Unter jeder Anzeige zeigt „Warum …?“, welche Regel an welcher Textstelle gegriffen hat.</p>
+</div>
+
+<details class="kern-details fj-text">
+  <summary class="kern-details__header"><span class="kern-title kern-title--small">Alle Regeln ansehen</span></summary>
+  <div class="kern-details__body">
+    <div class="kern-table-responsive" tabindex="0" role="region" aria-label="Bewertungsregeln, waagerecht scrollbar">
+    <table class="kern-table kern-table--small">
+      <caption class="kern-title kern-title--small">Bewertungsregeln</caption>
+      <thead class="kern-table__head">
+        <tr class="kern-table__row">
+          <th scope="col" class="kern-table__header">Art</th>
+          <th scope="col" class="kern-table__header">Bedeutung</th>
+          <th scope="col" class="kern-table__header kern-table__header--numeric">Punkte</th>
+        </tr>
+      </thead>
+      <tbody class="kern-table__body">
+        {% for art, name in [("plus", "Plus"), ("ausschluss", "Ausschluss"), ("warnung", "Prüfen")] %}{% for r in regeln[art] %}
+        <tr class="kern-table__row">
+          <td class="kern-table__cell">{{ name }}</td>
+          <th scope="row" class="kern-table__header">{{ r.grund }}</th>
+          <td class="kern-table__cell kern-table__cell--numeric">{{ r.punkte if art == "plus" else ("−" ~ regeln.punkte.ausschluss_abzug if art == "ausschluss" else "–") }}</td>
+        </tr>
+        {% endfor %}{% endfor %}
+      </tbody>
+    </table>
+    </div>
+  </div>
+</details>
+
+<div class="kern-task-list fj-text">
+  <div class="kern-task-list__header">
+    <h2 class="kern-heading-medium fj-mit-symbol">{{ k.symbol("list-checks") }}<span>So bewirbst du dich</span></h2>
+  </div>
+  <ol class="kern-task-list__list">
+    {% for titel, status, art in [
+      ("Anzeige lesen: Zeiten, Tätigkeit, Alter", "zuerst", "info"),
+      ("Eltern fragen: Sie müssen zustimmen", "wichtig", "warning"),
+      ("Kurz bewerben: wer du bist, wann du kannst", "dann", "info"),
+      ("Lohn, Arbeitszeit und Pausen klären", "vor Start", "warning"),
+      ("Vereinbarung schriftlich geben lassen", "vor Start", "warning")] %}
+    <li class="kern-task-list__item">
+      <div class="kern-task-list__title">
+        <span class="kern-task-list__content-wrapper"><span class="kern-number">{{ loop.index }}</span> {{ titel }}</span>
+      </div>
+      <div class="kern-task-list__status">{{ k.badge(status, art) }}</div>
+    </li>
+    {% endfor %}
+  </ol>
+  <p class="kern-body fj-tasklist-mehr">Mehr dazu: <a class="kern-link" href="regeln.html">Regeln für Ferienjobs</a> · {{ k.extern("https://www.gesetze-im-internet.de/bgb/__113.html", "Erlaubnis der Eltern, § 113 BGB") }}</p>
+</div>
+{% endblock %}

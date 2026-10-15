@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block titel %}{% endblock %} – Ferienjob-Finder</title>
+<meta name="description" content="Ferien- und Aushilfsjobs für 16- bis 18-Jährige in Berlin und Brandenburg, automatisch ausgewertet nach Eignung und Lohnangabe.">
+<script src="farbschema.js?v={{ v }}"></script>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+{% if domain %}{% set adresse = "https://" ~ domain ~ "/" %}
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Ferienjob-Finder">
+<meta property="og:locale" content="de_DE">
+<meta property="og:title" content="{{ self.titel() }} – Ferienjob-Finder">
+<meta property="og:description" content="Ferien- und Aushilfsjobs für 16- bis 18-Jährige in Berlin und Brandenburg, automatisch ausgewertet nach Eignung und Lohnangabe.">
+<meta property="og:url" content="{{ adresse ~ (seite if seite != 'index.html' else '') }}">
+<meta property="og:image" content="{{ adresse }}vorschau.png?v={{ v }}">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1260">
+<meta property="og:image:alt" content="Ferienjob-Finder: Ferienjobs für 16- bis 18-Jährige in Berlin und Brandenburg">
+<meta name="twitter:card" content="summary_large_image">
+{% endif %}
+{# Schriften verkleinert aus KERN (werkzeuge/schriften.py), die zwei häufigsten Schnitte vorab laden #}
+<link rel="preload" href="schriften/FiraSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="schriften/FiraSans-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="schriften/schriften.css?v={{ v }}">
+<link rel="stylesheet" href="kern/kern.min.css?v={{ v }}">
+<link rel="stylesheet" href="erweiterungen.css?v={{ v }}">
+<link rel="stylesheet" href="farben.css?v={{ v }}">
+{% block kopf %}{% endblock %}
+</head>
+<body>
+{{ sprite }}
+<a class="fj-skiplink kern-link" href="#inhalt">Zum Inhalt springen</a>
+
+{# Erweiterung: KERN 2.8.2 hat für Header und Nav noch kein Markup. Aufbau und Verhalten wie die Kopfzeile der Projektschau:
+   Markenzeichen links (Link zur Startseite), Seiten und Farbschema rechts; schmal zwei Zeilen, Farbschema als Sonne/Mond-Umschalter #}
+<header class="fj-header">
+  <div class="kern-container fj-header__inhalt">
+    <a class="fj-header__marke" href="index.html"{% if seite == "index.html" %} aria-current="page"{% endif %}>
+      <span class="fj-zeichen" aria-hidden="true"><svg class="fj-symbol" focusable="false"><use href="#search"/></svg></span><span>Ferienjob-Finder</span>
+    </a>
+    <nav class="fj-nav" aria-label="Seiten">
+      {% for href, text in [("berlin.html", "Suche"), ("so-funktionierts.html", "So geht’s"), ("regeln.html", "Regeln"), ("ueber.html", "Über")] %}
+      <a class="kern-link" href="{{ href }}"{% if seite == href or (href == "berlin.html" and gebiet is defined) %} aria-current="page"{% endif %}>{{ text }}</a>
+      {% endfor %}
+    </nav>
+    <button type="button" class="kern-btn kern-btn--tertiary kern-btn--small fj-farbschema" id="farbschema" role="switch" aria-checked="false" aria-label="Dunkles Farbschema" hidden>
+      <svg class="fj-symbol fj-sonne" aria-hidden="true" focusable="false"><use href="#sun"/></svg>
+      <svg class="fj-symbol fj-mond" aria-hidden="true" focusable="false"><use href="#moon"/></svg>
+      <span class="kern-label">Hell / Dunkel</span>
+    </button>
+  </div>
+</header>
+
+{% if ferien %}
+{# Erweiterung: Notification Banner, in KERN 2.8.2 noch ohne Markup #}
+<div class="fj-banner" role="region" aria-label="Hinweis">
+  <div class="kern-container fj-banner__inhalt">
+    <span class="kern-icon kern-icon--calendar-today" aria-hidden="true"></span>
+    {# Breit: langer Satz, Link rechts. Schmal: kurzer Satz, Link direkt dahinter (zusammen zwei Zeilen) #}
+    <div class="fj-banner__text">
+      <p class="kern-body">{% if ferien.laeuft %}{{ ferien.name }} in {{ ferien.land }}: noch bis {{ ferien.ende }}.
+        {%- else %}<span class="fj-nur-breit">Nächste Ferien in {{ ferien.land }}: {{ ferien.name }} vom {{ ferien.start }} bis {{ ferien.ende }}.</span><span class="fj-nur-schmal">{{ ferien.name }} in {{ ferien.land }}: {{ ferien.start[:6] }} bis {{ ferien.ende }}.</span>{% endif %}</p>
+      {% if ferien.tabelle %}<a class="fj-banner__link" href="ferien.html">Alle Termine<span class="kern-sr-only"> der Schulferien in Berlin und Brandenburg</span></a>{% endif %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<main id="inhalt" class="kern-container fj-main{% block main_klasse %}{% endblock %}" tabindex="-1">
+{% block inhalt %}{% endblock %}
+</main>
+
+<footer class="fj-footer">
+  <div class="kern-container">
+    <hr class="kern-divider" aria-hidden="true">
+    <ul class="kern-list kern-list--horizontal fj-footer__links">
+      <li><a class="kern-link kern-link--small" href="impressum.html">Impressum</a></li>
+      <li><a class="kern-link kern-link--small" href="datenschutz.html">Datenschutz</a></li>
+      <li><a class="kern-link kern-link--small" href="anlaufstellen.html">Weitere Anlaufstellen</a></li>
+      <li><a class="kern-link kern-link--small" href="ferien.html">Schulferien</a></li>
+      <li><a class="kern-link kern-link--small" href="ueber.html#quellen">Quellen und Lizenzen</a></li>
+      <li><a class="kern-link kern-link--small" href="dokumentation.html">Dokumentation</a></li>
+      {% if quellcode %}<li><a class="kern-link kern-link--small" href="{{ quellcode }}" rel="noopener">Quellcode<span class="kern-sr-only"> auf GitHub (externe Seite)</span></a></li>{% endif %}
+    </ul>
+    <p class="kern-body kern-body--small kern-body--muted">{% if version %}<a class="kern-link" href="dokumentation.html#aenderungen">Version {{ version }}</a> · {% endif %}Stand der Daten: {{ stand }}. Keine Rechtsberatung. Gestaltet mit dem offenen Designsystem KERN.</p>
+  </div>
+</footer>
+<script src="kopf.js?v={{ v }}" defer></script>
+{% block skript %}{% endblock %}
+</body>
+</html>

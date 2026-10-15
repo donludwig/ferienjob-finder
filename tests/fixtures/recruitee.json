@@ -1,0 +1,9 @@
+{"offers": [
+ {"id": 1, "title": "Restaurantmitarbeiter (m/w/d)", "city": "Berlin", "postal_code": "12043",
+  "careers_url": "https://beispiel.example/o/1", "description": "<p>Minijob, keine Vorkenntnisse nötig</p>",
+  "requirements": "", "employment_type_code": "parttime", "published_at": "2026-10-12 07:00:00 UTC",
+  "salary": {"min": "13.90", "max": "15", "period": "hour", "currency": "EUR"}},
+ {"id": 2, "title": "Schichtleiter (m/w/d)", "city": "Potsdam", "postal_code": "14467",
+  "careers_url": "https://beispiel.example/o/2", "description": "", "requirements": "",
+  "employment_type_code": "fulltime", "published_at": "2026-10-12 07:00:00 UTC", "salary": {}}
+]}

@@ -1,0 +1,623 @@
+/* Ferienjob-Finder: Erweiterungen zu KERN 2.8.2.
+   KERN-Dateien bleiben unverändert (static/kern). Hier stehen nur Muster, die KERN noch nicht liefert,
+   und Layout-Anpassungen, ausschließlich mit KERN-Tokens. Präfix fj- = eigene Erweiterung. */
+
+/* KERN setzt den Außenabstand des body nicht zurück; ohne das enden Banner und Linien 8 px vor dem Rand */
+body { margin: 0; }
+/* hidden muss gewinnen, auch gegen KERN-Klassen mit display (z. B. .kern-error) */
+[hidden] { display: none !important; }
+
+/* Fokusrahmen eigener Bedienelemente wie bei KERN */
+:is(.fj-header a, .fj-regler__eingabe, button.fj-seiten__link, .fj-chip, .fj-werkzeuge-klapp > summary, .fj-banner__link, .fj-toc a):focus-visible { outline: var(--kern-metric-border-width-bold, 3px) solid var(--kern-color-action-focus-default, #ffb119); outline-offset: 2px; }
+/* Sprunglink: erst bei Tastaturfokus sichtbar */
+.fj-skiplink { position: absolute; inset-block-start: var(--kern-metric-space-small, 8px); inset-inline-start: var(--kern-metric-space-small, 8px); z-index: 100; padding: var(--kern-metric-space-small, 8px) var(--kern-metric-space-default, 16px); background: var(--kern-color-layout-background-default, #fff); border-radius: var(--kern-metric-border-radius-default, 4px); transform: translateY(-300%); }
+.fj-skiplink:focus { transform: none; }
+/* KERN setzt bei .kern-link:focus-visible position: relative und z-index: 1; der Sprunglink rutschte dadurch in den Fluss und unter die Kopfzeile */
+.fj-skiplink.kern-link:focus-visible { position: absolute; z-index: 100; }
+/* Symbole in Link-Knöpfen nehmen sonst die Farbe besuchter Links an (currentColor des <a>); die Beschriftung färbt KERN selbst */
+a.kern-btn--primary .fj-symbol { color: var(--kern-color-action-on-default, #fff); }
+a.kern-btn--secondary .fj-symbol { color: var(--kern-color-action-default, #2044aa); }
+/* Scrollbare Tabellen sind per Tab erreichbar (tabindex="0" aus dem KERN-Markup), KERN nimmt ihnen aber den Fokusrahmen ([tabindex]…:focus-visible { outline: 0 }); Rahmen wie bei KERN-Links, Selektor gleich spezifisch plus Klasse */
+.kern-table-responsive[tabindex]:not([tabindex="-1"]):focus:focus-visible { outline: 4px solid var(--kern-color-action-focus-default-contextual, #454b6b); outline-offset: 2px; }
+/* Fokus per Tab landet nicht unter Kopfzeile und Chip-Leiste (Höhen misst kopf.js); nur am fokussierten Element, Sprünge zu Ankern bleiben unberührt */
+:focus-visible { scroll-margin-top: calc(var(--kopf-hoehe, 0px) + var(--chips-hoehe, 0px) + var(--kern-metric-space-small, 8px)); }
+
+/* Kopfzeile (Erweiterung: KERN-Header und -Nav sind in 2.8.2 Platzhalter), nach der Projektschau (kern/demo.css, site/assets/start.css) */
+.fj-header__inhalt { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--kern-metric-space-small, 8px); padding-block: var(--kern-metric-space-small, 8px); min-height: 3.5rem; box-sizing: border-box; }
+.fj-header__marke { display: inline-flex; align-items: center; gap: var(--kern-metric-space-small, 8px); font-size: var(--kern-typography-font-size-medium-static, 18px); color: var(--kern-color-layout-text-default, #131525); font-weight: var(--kern-typography-font-weight-semi-bold, 600); text-decoration: none; white-space: nowrap; border-radius: var(--kern-metric-border-radius-default, 4px); }
+.fj-header__marke:hover > span:last-child { text-decoration: underline; }
+/* Markenzeichen: Lupe auf einer Kachel in der Aktionsfarbe, wie das Zeichen der Projektschau */
+.fj-zeichen { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 1.75rem; height: 1.75rem; border-radius: 6px; background: var(--kern-color-action-default, #2044aa); color: var(--kern-color-action-on-default, #fff); }
+.fj-zeichen .fj-symbol { width: 1.125rem; height: 1.125rem; stroke-width: 2.5; }
+.fj-nav { display: flex; gap: var(--kern-metric-space-default, 16px); margin-inline: auto var(--kern-metric-space-default, 16px); }
+.fj-nav .kern-link { display: inline-flex; align-items: center; min-height: 24px; padding-block: 0; line-height: 1; }
+.fj-nav [aria-current] { text-decoration: none; color: var(--kern-color-layout-text-default, #131525); font-weight: var(--kern-typography-font-weight-semi-bold, 600); }
+
+/* Hell/Dunkel: breit ein Textknopf mit Symbol, schmal nur das Symbol des aktuellen Schemas; der Name bleibt für Screenreader */
+.fj-farbschema { margin: 0; gap: var(--kern-metric-space-small, 8px); }
+.fj-farbschema .fj-symbol { width: 1rem; height: 1rem; color: var(--kern-color-action-default, #2044aa); }
+[data-kern-theme="dark"] .fj-sonne, :root:not([data-kern-theme="dark"]) .fj-mond { display: none; }
+@media (max-width: 48rem) {
+  .fj-header__inhalt { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--kern-metric-space-small, 8px) var(--kern-metric-space-default, 16px); }
+  .fj-header__marke { grid-area: 1 / 1; }
+  .fj-nav { grid-area: 2 / 1 / 3 / 3; justify-self: start; margin: 0; flex-wrap: wrap; gap: var(--kern-metric-space-x-small, 4px) var(--kern-metric-space-default, 16px); }
+  .fj-farbschema { grid-area: 1 / 2; justify-self: end; gap: 0; overflow: hidden; color: var(--kern-color-action-default-contextual, #2044aa); }
+  .fj-farbschema .kern-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+
+/* Notification Banner (Erweiterung: in KERN 2.8.2 Platzhalter), Farben aus dem Info-Alert */
+.fj-banner { background: var(--kern-color-feedback-info-background, #e9f0fb); }
+.fj-banner__inhalt { display: flex; align-items: flex-start; gap: var(--kern-metric-space-small, 8px); padding-block: var(--kern-metric-space-small, 8px); }
+.fj-banner .kern-icon { flex: none; margin-top: var(--kern-metric-space-x-small, 4px); }
+
+.fj-main { padding-block: var(--kern-metric-space-large, 24px) var(--kern-metric-space-3x-large, 48px); }
+.fj-main:focus { outline: none; }
+.fj-main > * + * { margin-top: var(--kern-metric-space-large, 24px); }
+.fj-seitenkopf { margin-bottom: var(--kern-metric-space-default, 16px); }
+
+.fj-text { max-width: 44rem; }
+.fj-text > * + * { margin-top: var(--kern-metric-space-default, 16px); }
+
+/* Raster wie bei der Projektschau: Rinne halb so groß, Zeile um die halbe Rinne nach außen,
+   so stehen Spalten und Karten auf allen Breiten bündig mit dem Container (mobil: volle Breite minus Seitenrand) */
+.fj-layout.kern-row { margin-inline: calc(-1 * var(--kern-metric-space-large, 24px) / 2); }
+.fj-layout.kern-row > [class*="kern-col"] { padding: calc(var(--kern-metric-space-large, 24px) / 2); }
+
+/* Ergebnisliste */
+.fj-liste { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); gap: var(--kern-metric-space-large, 24px); margin-inline: 0; margin-bottom: 0; padding: 0; list-style: none; }
+.fj-liste > .fj-treffer { display: flex; min-width: 0; }
+.fj-liste > .fj-treffer > .kern-card { width: 100%; min-width: 0; }
+.fj-treffer .kern-card__header .kern-title { overflow-wrap: anywhere; }
+.fj-badges { display: flex; flex-wrap: wrap; gap: var(--kern-metric-space-x-small, 4px); margin: 0; }
+.fj-gruende { padding-left: var(--kern-metric-space-large, 24px); }
+
+.kern-table th .kern-link { overflow-wrap: anywhere; }
+
+/* Umschalter (Gebiet, Ansicht) wie bei der Projektschau: KERN hat keinen Segmented Control.
+   Farben und Radius aus den Button-Regeln, nur die Segmente stoßen aneinander */
+
+.fj-seg { gap: 0; flex-wrap: nowrap; }
+.fj-seg .kern-btn { margin: 0; border-radius: 0; text-decoration: none; }
+.fj-seg .kern-btn--secondary { border-color: var(--kern-color-action-default-contextual, #2044aa); }
+.fj-seg .kern-btn + .kern-btn { margin-inline-start: calc(-1 * var(--kern-metric-border-width-light, 1px)); }
+.fj-seg .kern-btn:first-child { border-start-start-radius: var(--kern-metric-border-radius-default, 4px); border-end-start-radius: var(--kern-metric-border-radius-default, 4px); }
+.fj-seg .kern-btn:last-child { border-start-end-radius: var(--kern-metric-border-radius-default, 4px); border-end-end-radius: var(--kern-metric-border-radius-default, 4px); }
+.fj-seg .kern-btn:focus-visible, .fj-seg .kern-btn--primary { z-index: 1; }
+@media (max-width: 48rem) {
+
+  .fj-seg { display: flex; width: 100%; }
+  .fj-seg .kern-btn { flex: 1 1 0; justify-content: center; }
+}
+
+/* Filterbereich als KERN-Details: offen ohne Kopf auf großen Bildschirmen (Klasse von filter.js), sonst einklappbar */
+.fj-panel > .kern-details__body { padding-left: 0; margin-left: 0; box-shadow: none; }
+.fj-leer { display: flex; flex-direction: column; align-items: flex-start; gap: var(--kern-metric-space-small, 8px); }
+
+/* Dropdown auf Basis von <details> (Erweiterung: KERN-Dropdown ist in 2.8.2 nur ein Entwurf) */
+.fj-dropdown { position: relative; display: inline-block; }
+.fj-dropdown > summary { list-style: none; cursor: pointer; }
+.fj-dropdown > summary::-webkit-details-marker { display: none; }
+.fj-dropdown__liste { position: absolute; z-index: 10; min-width: 100%; margin: var(--kern-metric-space-x-small, 4px) 0 0; padding: var(--kern-metric-space-small, 8px) var(--kern-metric-space-default, 16px); list-style: none; white-space: nowrap; background: var(--kern-color-layout-background-default, #fff); border: var(--kern-metric-border-width-light, 1px) solid var(--kern-color-layout-border, #c0c3d5); border-radius: var(--kern-metric-border-radius-default, 4px); }
+
+/* Seitennavigation (Erweiterung: KERN 2.8.2 hat keine Pagination) */
+.fj-seiten { display: flex; flex-wrap: wrap; align-items: center; gap: var(--kern-metric-space-small, 8px); margin-top: var(--kern-metric-space-large, 24px); }
+.fj-seiten__liste { display: flex; flex-wrap: wrap; gap: var(--kern-metric-space-x-small, 4px); margin: 0; padding: 0; list-style: none; }
+.fj-seiten__link { display: inline-flex; align-items: center; justify-content: center; min-width: 2.75rem; min-height: 2.75rem; color: var(--kern-color-action-default, #2044aa); border-radius: var(--kern-metric-border-radius-default, 4px); }
+.fj-seiten__link[aria-current="page"] { background: var(--kern-color-action-default, #2044aa); color: var(--kern-color-action-on-default, #fff); text-decoration: none; font-weight: var(--kern-typography-font-weight-semi-bold, 600); }
+
+/* Tabelle auf schmalen Bildschirmen als gestapelte Blöcke, Beschriftung aus data-label */
+@media (max-width: 48rem) {
+  .fj-tabelle thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .fj-tabelle, .fj-tabelle tbody, .fj-tabelle tr, .fj-tabelle th, .fj-tabelle td { display: block; width: 100%; box-sizing: border-box; }
+  .fj-tabelle tr { display: flex; flex-direction: column; padding: var(--kern-metric-space-small, 8px); border-bottom: var(--kern-metric-border-width-light, 1px) solid var(--kern-color-layout-border, #c0c3d5); }
+  .fj-tabelle tr > th { order: -1; }
+  .fj-tabelle .kern-table__cell, .fj-tabelle .kern-table__header { box-shadow: none; }
+  .fj-tabelle td, .fj-tabelle th { text-align: start; padding: var(--kern-metric-space-2x-small, 2px) 0; }
+  /* Kompakter als die Karten: Stelle oben, Ort, Lohn und Eignung als eine Zeile darunter, Punkte nur in der breiten Tabelle */
+  .fj-tabelle tr { flex-flow: row wrap; column-gap: var(--kern-metric-space-default, 16px); }
+  /* Streifen von KERN (gleiche Spezifität, steht später): auf dem Handy trennen Linien die Zeilen */
+  .fj-tabelle .kern-table__body .kern-table__row:nth-child(n) > :is(.kern-table__cell, .kern-table__header) { background: none; padding: var(--kern-metric-space-2x-small, 2px) 0; font-size: var(--kern-typography-font-size-static-small, 0.875rem); }
+  .fj-tabelle tr > th { flex-basis: 100%; }
+  .fj-tabelle .kern-body--small { font-size: inherit; }
+  .fj-tabelle tr { row-gap: var(--kern-metric-space-x-small, 4px); }
+  .fj-tabelle tr > th br:last-of-type { display: none; }
+  .fj-tabelle tr > th .kern-badge { margin-inline-start: var(--kern-metric-space-x-small, 4px); }
+  .fj-tabelle td { width: auto; }
+  .fj-tabelle td[data-label="Punkte"] { display: none; }
+  .fj-tabelle td[data-label="€/Std."]::before { content: "€/Std.: "; font-weight: var(--kern-typography-font-weight-semi-bold, 600); }
+}
+.fj-footer { padding-bottom: var(--kern-metric-space-x-large, 32px); }
+.fj-footer__links { margin-block: var(--kern-metric-space-default, 16px) var(--kern-metric-space-small, 8px); }
+
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media print { .fj-header nav, .fj-panel, .fj-banner { display: none !important; } }
+
+/* Task List ohne Link (KERN erwartet <a>): Textfarbe aus dem Layout-Token, sonst im Dunkelmodus schwarz */
+span.kern-task-list__content-wrapper { color: var(--kern-color-layout-text-default-contextual, #131525); font-size: var(--kern-typography-font-size-medium-static, 18px); line-height: var(--kern-typography-line-height-medium-static, 24px); padding: var(--kern-metric-baseline-body-default-padding-top, 6px) 0 var(--kern-metric-baseline-body-default-padding-bottom, 2px); }
+/* Status-Badge senkrecht mittig zur Zeile, auch bei zweizeiligen Schritten */
+.kern-task-list__item { align-items: center; }
+
+/* Symbole (Lucide, static/symbole.svg) und Kategoriefarben wie bei der Projektschau.
+   --fj-farbe kommt aus einstellungen.toml; weiße Schrift darauf hat mindestens 4,5:1. */
+.fj-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.fj-symbol { width: 1em; height: 1em; flex: none; vertical-align: -0.125em; }
+.fj-kat { display: inline-flex; align-items: center; gap: var(--kern-metric-space-x-small, 4px); background: var(--fj-farbe); border-color: var(--fj-farbe); color: #fff; }
+.fj-kat .kern-label { color: #fff; }
+/* Karte leicht in der Kategoriefarbe getönt, Rand und linke Kante kräftiger */
+.fj-karte { background: color-mix(in oklab, var(--fj-farbe) 6%, var(--kern-color-layout-background-default, #fff)); border-color: color-mix(in oklab, var(--fj-farbe) 30%, var(--kern-color-layout-border, #c0c3d5)); }
+[data-kern-theme="dark"] .fj-karte { background: color-mix(in oklab, var(--fj-farbe) 14%, var(--kern-color-layout-background-default, #000)); }
+
+/* Symbol vor Überschriften und Akkordeon-Titeln: Kasten so hoch wie eine Zeile (1lh), steht so mittig zur ersten Zeile */
+.fj-mit-symbol { display: flex; align-items: flex-start; gap: var(--kern-metric-space-small, 8px); }
+.fj-mit-symbol > .fj-symbol { height: 1lh; width: 1.1em; color: var(--fj-farbe, var(--kern-color-action-default, #2044aa)); }
+[data-kern-theme="dark"] .fj-mit-symbol > .fj-symbol { color: color-mix(in oklab, var(--fj-farbe, #6b8fe0) 45%, #fff); }
+/* Abstand zwischen Listenüberschrift und Tabelle */
+.fj-layout .kern-table-responsive { margin-top: var(--kern-metric-space-small, 8px); }
+/* Nach einer Abschnittsüberschrift kleiner Abstand; beim Raster zusätzlich den oberen Spalten-Innenabstand ausgleichen */
+
+/* Fließtext: Überschrift gehört zum folgenden Text (kleiner Abstand danach), neuer Abschnitt mit größerem Abstand davor */
+.fj-text > :is(h2, h3) + * { margin-top: 0; }
+/* Task List: Überschrift näher an die Liste, Hinweis-Links mit Abstand darunter */
+.fj-text .kern-task-list__header { padding-bottom: var(--kern-metric-space-small, 8px); }
+.kern-task-list.fj-text > .kern-task-list__list { margin-top: 0; }
+.fj-tasklist-mehr { margin-top: var(--kern-metric-space-default, 16px); }
+/* Abweichung von KERN: Links mit Symbol sind dort ohne Unterstreichung. Im Fließtext wären sie dann nur über
+   die Farbe erkennbar, deshalb dort unterstrichen. Allein stehende Links (z. B. „Zur Anzeige“) bleiben wie in KERN. */
+.kern-body .kern-link:has(.kern-icon), .kern-description-list-item__value .kern-link:has(.kern-icon), .kern-accordion__body .kern-link:has(.kern-icon) { text-decoration-line: underline; text-underline-offset: 0.2em; }
+/* Task List mobil: Badge unter den Text statt daneben, eingerückt auf die Textkante (Nummer 32 px + Abstand) */
+@media (max-width: 48rem) {
+  .kern-task-list__item { flex-direction: column; align-items: flex-start; gap: var(--kern-metric-space-x-small, 4px); }
+  .kern-task-list__status { padding-inline-start: calc(var(--kern-metric-dimension-large, 32px) + var(--kern-metric-space-default, 16px)); }
+}
+
+/* Facette „Gruppe“: Liste mit Anzahl, gewählte Gruppe als Fläche (Erweiterung) */
+
+.fj-filter .kern-fieldset { margin-bottom: 0; }
+.fj-filter-mehr .kern-details__body { padding-left: 0; margin-left: 0; box-shadow: none; }
+.fj-listenkopf .fj-gruppenhinweis { margin: 2px 0 0; color: var(--kern-color-layout-text-default, #131525); }
+
+/* Schieberegler (Erweiterung: KERN hat keinen); natives Feld in Aktionsfarbe, Fokus wie KERN */
+.fj-regler__eingabe { width: 100%; min-height: 2.75rem; margin: 0; accent-color: var(--kern-color-action-default, #2044aa); cursor: pointer; }
+.fj-regler output { font-weight: var(--kern-typography-font-weight-semi-bold, 600); font-variant-numeric: tabular-nums; }
+
+/* Seitenblätterung als Buttons (filter.js) */
+button.fj-seiten__link { border: var(--kern-metric-border-width-light, 1px) solid var(--kern-color-action-default, #2044aa); background: transparent; font: inherit; padding: 0 var(--kern-metric-space-small, 8px); cursor: pointer; text-decoration: none; }
+button.fj-seiten__link:hover { background: color-mix(in oklab, var(--kern-color-action-default, #2044aa) 8%, transparent); }
+button.fj-seiten__link[aria-current="page"] { background: var(--kern-color-action-default, #2044aa); color: var(--kern-color-action-on-default, #fff); }
+.fj-seiten__luecke { display: inline-flex; align-items: center; padding: 0 var(--kern-metric-space-x-small, 4px); }
+
+/* Links im Fließtext als normaler Text (KERN: inline-flex), sonst bricht die Zeile vor dem ganzen Link um,
+   etwa hinter einer öffnenden Klammer. Symbol bleibt am letzten Wort. */
+:is(.kern-body, .kern-subline, .kern-description-list-item__value) .kern-link { display: inline; padding: 0; }
+:is(.kern-body, .kern-subline, .kern-description-list-item__value) .kern-link .kern-icon { display: inline-block; vertical-align: -0.2em; margin-inline-start: 0.15em; }
+/* Programmatischer Fokus (Seitenwechsel) ohne Rahmen; die Ansage übernimmt der Screenreader */
+[tabindex="-1"]:focus { outline: none; }
+
+/* Aufklappbereiche in Karten ohne Einzug: Text nutzt die volle Kartenbreite */
+.fj-karte .kern-details__body { padding-left: 0; margin-left: 0; box-shadow: none; }
+
+/* Skala unter dem Schieberegler: jeder Wert genau unter seiner Marke (0, 5, 10, 15, 20 €). Die Marken liegen
+   eine halbe Daumenbreite (8 px) innerhalb der Kanten; Positionen über nth-child, weil die CSP Inline-Stile verbietet */
+.fj-regler .fj-regler__eingabe, .fj-regler__skala { align-self: stretch; }
+.fj-regler__skala { position: relative; height: 1.5em; margin-bottom: var(--kern-metric-space-x-small, 4px); font-size: var(--kern-typography-font-size-small-static, 16px); color: var(--kern-color-layout-text-muted, #51577a); font-variant-numeric: tabular-nums; }
+.fj-regler__skala span { position: absolute; top: 0; white-space: nowrap; transform: translateX(-50%); }
+.fj-regler__skala span:nth-child(1) { left: 8px; transform: none; }
+.fj-regler__skala span:nth-child(2) { left: calc(8px + (100% - 16px) * 0.25); }
+.fj-regler__skala span:nth-child(3) { left: calc(8px + (100% - 16px) * 0.5); }
+.fj-regler__skala span:nth-child(4) { left: calc(8px + (100% - 16px) * 0.75); }
+.fj-regler__skala span:nth-child(5) { left: auto; right: 0; transform: none; }
+
+/* Seiteninhalt wie Fließtext: Überschrift gehört zum folgenden Text, neue Abschnitte mit deutlichem Abstand davor */
+.fj-text > * + :is(h2, h3) { margin-top: var(--kern-metric-space-2x-large, 48px); }
+
+/* Listenkopf: Überschrift links, Sortierung rechts in derselben Zeile (Beschriftung neben dem Feld);
+   beginnt auf gleicher Höhe wie „Gruppe“ in der Seitenleiste; mobil untereinander */
+.fj-listenkopf { display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: flex-start; gap: var(--kern-metric-space-small, 8px) var(--kern-metric-space-large, 24px); margin-bottom: var(--kern-metric-space-small, 8px); }
+.fj-sortierung .kern-form-input__select-wrapper { min-width: 11rem; }
+.fj-facette .kern-heading-small { padding-top: 0; }
+
+/* Tabelle: Links als Text in Zellgröße (KERN-Link hat 18 px und 6 px Innenabstand oben), seitlich 12 px statt 4 px */
+.fj-tabelle .kern-link { display: inline; padding: 0; font-size: inherit; line-height: inherit; }
+@media (min-width: 48.0625rem) {
+  .fj-tabelle .kern-table__header, .fj-tabelle .kern-table__cell { padding-inline: calc(var(--kern-metric-space-small, 8px) + var(--kern-metric-space-x-small, 4px)); }
+  .fj-tabelle .kern-table__row > :first-child { padding-inline-start: var(--kern-metric-space-small, 8px); }
+}
+
+/* Suchfeld ohne Button, Lupe im Feld (Erweiterung) */
+.fj-suche { position: relative; }
+.fj-suche .kern-icon { position: absolute; left: var(--kern-metric-space-small, 8px); top: 50%; transform: translateY(-50%); pointer-events: none; }
+.fj-suche .kern-form-input__input { width: 100%; padding-left: calc(var(--kern-metric-space-small, 8px) * 2 + 24px); }
+
+/* „Filter zurücksetzen“ sichtbar als Fläche mit Rahmen, volle Breite in der Leiste */
+.fj-zuruecksetzen.kern-btn--secondary { background: var(--kern-color-layout-background-default, #fff); }
+.fj-filter .fj-zuruecksetzen { width: 100%; justify-content: center; }
+/* KERN ordnet .kern-form-input als Spalte (links ausgerichtet): Sortierung als Zeile, Suchfeld über volle Breite,
+   Listenkopf oben bündig mit „Gruppe“ */
+.fj-suche { align-self: stretch; width: 100%; }
+/* Ab Desktop 80 px Abstand zwischen Seitenleiste und Inhalt (Rinne 24 px + 56 px in der Leiste) */
+@media (min-width: 992px) {
+  .fj-layout.kern-row > .kern-col-lg-4:first-child { padding-inline-end: calc(var(--kern-metric-space-large, 24px) / 2 + 56px); }
+}
+
+/* Listenkopf: Überschrift und Erklärsatz links (Satz bricht vor der Sortierung um), Sortierung rechts frei */
+.fj-listenkopf__text { flex: 1 1 auto; min-width: 0; }
+.fj-sortierung { flex: none; margin: 0; }
+@media (max-width: 48rem) { .fj-listenkopf { flex-wrap: wrap; } }
+/* Sortierung: Beschriftung über dem Auswahlfeld (KERN-Standard), als Block rechts neben Überschrift und Satz */
+
+.fj-dropdown > summary.kern-btn { margin: 0; padding-inline: 0; }
+.fj-filter-mehr > summary { padding-left: 0; }
+
+/* Gruppe als senkrechte Seitennavigation (übliches Muster, z. B. GOV.UK/Bund; KERN hat in 2.8.2 keine Nav):
+   Links untereinander, gewählter Eintrag ohne Unterstreichung, fett, mit Balken links; Anzahl als ruhiger Text */
+.fj-seitennav { margin: var(--kern-metric-space-small, 8px) 0 0; padding: 0; list-style: none; border-left: var(--kern-metric-border-width-light, 1px) solid color-mix(in oklab, var(--kern-color-layout-border, #c0c3d5) 40%, transparent); }
+.fj-seitennav__link { display: block; padding: var(--kern-metric-space-x-small, 4px) var(--kern-metric-space-default, 16px); margin-left: calc(-1 * var(--kern-metric-border-width-light, 1px)); border-left: var(--kern-metric-border-width-heavy, 4px) solid transparent; color: var(--kern-color-action-default, #2044aa); text-decoration: underline; text-underline-offset: 0.2em; }
+.fj-seitennav__link:hover { text-decoration-thickness: 2px; }
+.fj-seitennav__link:focus-visible { outline: var(--kern-metric-border-width-bold, 3px) solid var(--kern-color-action-focus-default, #ffb119); outline-offset: 0; }
+.fj-seitennav__link[aria-current="page"] { border-left-color: var(--kern-color-action-default, #2044aa); color: var(--kern-color-layout-text-default, #131525); font-weight: var(--kern-typography-font-weight-semi-bold, 600); text-decoration: none; }
+.fj-seitennav__zahl { color: var(--kern-color-layout-text-muted, #51577a); font-weight: var(--kern-typography-font-weight-regular, 400); font-variant-numeric: tabular-nums; }
+
+/* Listenkopf rechts: Ansicht (Karten/Tabelle) und Sortierung nebeneinander, unten bündig */
+.fj-listenwerkzeuge { display: flex; flex: none; align-items: flex-start; gap: var(--kern-metric-space-default, 16px); }
+.fj-ansicht .fj-seg { margin: 0; }
+.fj-ansicht .kern-btn { min-height: 2.75rem; }
+
+@media (max-width: 48rem) { .fj-listenwerkzeuge { flex-wrap: wrap; width: 100%; } }
+/* „Ansicht“ und „Sortieren nach“: Beschriftungen und Bedienelemente jeweils auf einer Linie */
+.fj-ansicht { display: flex; flex-direction: column; }
+.fj-ansicht > .kern-label { margin: 0 0 var(--kern-metric-space-small, 8px); }
+.fj-ansicht .kern-btn, .fj-sortierung .kern-form-input__select { height: 3rem; min-height: 3rem; box-sizing: border-box; }
+
+/* Gebiet als erster Abschnitt der Seitenleiste */
+.fj-gebiet .kern-heading-small { padding-top: 0; }
+.fj-gebiet .fj-seg { margin-top: var(--kern-metric-space-small, 8px); }
+
+/* Lange Wörter in Überschriften („Datenschutzerklärung“) passen bei 320 px nicht in eine Zeile: trennen statt überlaufen */
+.fj-main :is(h1, h2) { hyphens: auto; overflow-wrap: break-word; }
+
+/* Dokumentation: Anweisungen zum Kopieren als getönte Kästen, die umbrechen; Absender mit rundem Foto (wie Projektschau) */
+.fj-prompt, .fj-prompt code { color: var(--kern-color-layout-text-default, #131525); }
+.fj-prompt { margin: 0; padding: var(--kern-metric-space-default, 16px); border-radius: 12px; background: var(--kern-color-layout-layer-surface-contextual, #f3f4f7); white-space: pre-wrap; overflow-wrap: anywhere; font-size: var(--kern-typography-font-size-static-small, 0.875rem); }
+.fj-text > .fj-prompt + .fj-prompt { margin-top: var(--kern-metric-space-small, 8px); }
+.fj-absender { display: flex; gap: var(--kern-metric-space-large, 24px); align-items: flex-start; }
+.fj-absender > div > * + * { margin-top: var(--kern-metric-space-default, 16px); }
+.fj-absender__foto { width: 6rem; height: 6rem; flex: none; object-fit: cover; border-radius: 50%; }
+@media (max-width: 30rem) { .fj-absender { flex-direction: column; } }
+/* Textseiten: Tabellen mit langen Zellen auf schmalen Bildschirmen als Blöcke, Spaltenname aus data-label */
+@media (max-width: 48rem) {
+  .fj-stapel thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .fj-stapel, .fj-stapel caption, .fj-stapel tbody, .fj-stapel tr { display: block; }
+  .fj-stapel tr { padding: var(--kern-metric-space-small, 8px) 0; border-bottom: var(--kern-metric-border-width-light, 1px) solid var(--kern-color-layout-border, #c0c3d5); }
+  .fj-stapel .kern-table__body .kern-table__row > :is(.kern-table__cell, .kern-table__header) { display: block; padding: var(--kern-metric-space-2x-small, 2px) 0; box-shadow: none; }
+  .fj-stapel td[data-label]::before { content: attr(data-label) ": "; font-weight: var(--kern-typography-font-weight-semi-bold, 600); }
+}
+
+/* Kopfzeile wie in der Projektschau: haftet oben, reicht bis zum Fensterrand, weicht beim Runterscrollen aus (kopf.js) */
+.fj-header { position: sticky; top: 0; z-index: 30; background: var(--kern-color-layout-background-default, #fff); transition: transform .2s ease; }
+.kopf-weg .fj-header { transform: translateY(-100%); }
+main [id] { scroll-margin-top: 1.25rem; }
+@media (prefers-reduced-motion: reduce) { .fj-header { transition: none; } }
+@media print { .fj-header { position: static; } }
+/* Kopierknopf unten rechts im Anweisungskasten (wie Projektschau-Doku); rechts bleibt Platz, damit Text und Knopf sich nicht überlagern */
+.fj-code { position: relative; }
+.fj-text > .fj-code + .fj-code { margin-top: var(--kern-metric-space-small, 8px); }
+.fj-code .fj-prompt { padding-inline-end: calc(var(--kern-metric-space-x-large, 32px) * 2); line-height: 1.6; }
+.fj-code .kern-btn { position: absolute; right: var(--kern-metric-space-default, 16px); bottom: var(--kern-metric-space-default, 16px); margin: 0; min-height: 0; padding: 6px; gap: 4px; border-radius: var(--kern-metric-border-radius-default, 4px); background: var(--kern-color-layout-background-default, #fff); }
+.fj-code .kern-btn:hover, .fj-code .kern-btn:focus-visible { background: color-mix(in srgb, var(--kern-color-action-default, #2044aa) 14%, var(--kern-color-layout-background-default, #fff)); }
+.fj-code .kern-btn .kern-label:empty { display: none; }
+.fj-code .kern-btn .kern-label { padding: 0 4px; font-size: .875rem; }
+.fj-code .fj-symbol { width: 1rem; height: 1rem; color: var(--kern-color-action-default, #2044aa); }
+
+/* Kein Layoutsprung beim Laden: Mit JavaScript (Klasse js, gesetzt im <head>) steht die Seite schon so da, wie filter.js sie
+   einrichtet: Filterbereich ab 992 px ohne Kopf, darunter zugeklappt. Filter und Sortierung blendet filter.js selbst ein. */
+@media (min-width: 62rem) { .js .fj-panel > summary { display: none; } }
+@media (max-width: 61.99rem) { .js .fj-panel:not(.fj-bereit) > :not(summary) { display: none; } }
+
+/* Schnellfilter nach Bereich über der Liste (wie die Chips im Motiv der Startseite). Erweiterung: KERN hat keine Chips.
+   Ungewählt getönt in der Kategoriefarbe, gewählt deckend; „Alle“ in der Aktionsfarbe. */
+.fj-chips { display: flex; flex-wrap: wrap; gap: var(--kern-metric-space-small, 8px); margin: var(--kern-metric-space-default, 16px) 0; }
+.fj-chip { --ton: var(--fj-farbe, var(--kern-color-action-default, #2044aa)); --ton-fg: color-mix(in oklab, var(--ton) 72%, #000); display: inline-flex; align-items: center; gap: 6px; min-height: 2.25rem; padding: 4px 12px; border: 0; border-radius: var(--kern-metric-border-radius-default, 4px); background: color-mix(in srgb, var(--ton) 12%, var(--kern-color-layout-background-default, #fff)); color: var(--ton-fg); font: inherit; font-size: .9375rem; font-weight: var(--kern-typography-font-weight-semi-bold, 600); cursor: pointer; }
+[data-kern-theme="dark"] .fj-chip { --ton-fg: color-mix(in oklab, var(--ton) 40%, #fff); background: color-mix(in srgb, var(--ton) 22%, var(--kern-color-layout-background-default, #000)); }
+.fj-chip--alle { --ton: var(--kern-color-action-default, #2044aa); }
+.fj-chip .fj-symbol { width: 1rem; height: 1rem; }
+.fj-chip__zahl { font-weight: var(--kern-typography-font-weight-regular, 400); font-variant-numeric: tabular-nums; }
+.fj-chip:hover { background: color-mix(in srgb, var(--ton) 20%, var(--kern-color-layout-background-default, #fff)); }
+.fj-chip[aria-pressed="true"], [data-kern-theme="dark"] .fj-chip[aria-pressed="true"] { background: var(--ton); color: #fff; }
+[data-kern-theme="dark"] .fj-chip--alle[aria-pressed="true"] { color: var(--kern-color-action-on-default, #000); }
+@media print { .fj-chips { display: none; } }
+
+/* Handy und Tablet (unter 992 px): Bereich über der Liste kompakt.
+   „Gruppe und Filter“ als Leiste mit Rahmen und der gewählten Gruppe; Erklärung der Gruppe eingeklappt; Chips in einer Zeile zum Wischen. */
+
+.fj-panel__auswahl { font-weight: var(--kern-typography-font-weight-regular, 400); color: var(--kern-color-layout-text-muted, #51577a); }
+@media (max-width: 61.99rem) {
+
+  .fj-chips { flex-wrap: nowrap; overflow-x: auto; margin-inline: calc(-1 * var(--kern-metric-space-default, 16px)); padding: 2px var(--kern-metric-space-default, 16px) 6px; scrollbar-width: thin; }
+  .fj-chip { flex: none; }
+}
+
+/* Ansicht und Sortierung: am Desktop wie bisher (Kopf verborgen), unter 992 px als Ausklapper wie „Gruppe und Filter“ */
+.fj-werkzeuge-klapp > summary { display: none; }
+.fj-werkzeuge-klapp { flex: none; }
+.fj-nur-schmal { display: none; }
+@media (max-width: 61.99rem) {
+  .fj-werkzeuge-klapp { flex: 1 1 100%; }
+  .js .fj-werkzeuge-klapp:not(.fj-bereit) > :not(summary) { display: none; }
+  .fj-nur-breit { display: none; }
+  .fj-nur-schmal { display: inline; }
+}
+
+/* Chips: Innenabstand und Fläche; das Haften übernimmt .fj-chips-rahmen weiter unten */
+.fj-chips { padding-block: var(--kern-metric-space-small, 8px); background: var(--kern-color-layout-background-default, #fff); }
+
+/* Listenkopf: Überschrift so groß wie die Beschriftungen „Ansicht“ und „Sortieren nach“ */
+.fj-listenkopf #liste-titel { margin: 0; padding-top: 6px; }
+
+/* Checkboxen im Filter kleiner: KERN hat nur 32 px; wie in der Projektschau das kleinere Größen-Token des Kits (24 px, Mindestgröße
+   für Klickziele nach WCAG 2.2; die Beschriftung ist mit klickbar). Hinweise wie „z. B. 19 10 2026“ ohne Umbruch. */
+.fj-filter .kern-form-check { grid-template-columns: var(--kern-metric-dimension-default, 24px) auto; column-gap: 0; }
+/* zoom statt Breite/Höhe: Der Haken des Kits ist für 32 px positioniert und schrumpft so mit */
+.fj-filter .kern-form-check__checkbox { zoom: .75; }
+.fj-filter .kern-form-check .kern-label { padding-top: 0; padding-inline-start: 12px; }  /* Kit: 16 px neben 32 px, hier im selben Verhältnis */
+
+/* Natives Datumsfeld (Abweichung von KERN, siehe ergebnis.html): Breite für TT.MM.JJJJ plus Kalendersymbol, Symbol im Dunkelmodus hell */
+.fj-datum { width: auto; max-width: 13rem; }
+[data-kern-theme="dark"] .fj-datum { color-scheme: dark; }
+
+/* Seitenkopf der Ergebnisseiten: Überschrift, kurze Erklärung, Metazeile; Abstand zum Inhalt darunter */
+.fj-main > .fj-listenkopf { margin-bottom: var(--kern-metric-space-large, 24px); }
+.fj-listenkopf__text > * + * { margin-top: var(--kern-metric-space-x-small, 4px); }
+
+/* Tabelle ab Tablet: oben und unten gleich viel Luft, Trennlinien so dezent wie in der Seitenleiste (Kit: Schatten in der kräftigen
+   Randfarbe); unter dem Kopf etwas deutlicher, damit er abgesetzt bleibt */
+@media (min-width: 48.0625rem) {
+  .fj-tabelle .kern-table__header, .fj-tabelle .kern-table__cell { vertical-align: top; padding-block: var(--kern-metric-space-default, 16px); box-shadow: inset 0 -1px 0 0 color-mix(in oklab, var(--kern-color-layout-border, #c0c3d5) 40%, transparent); }
+  .fj-tabelle .kern-table__head .kern-table__header { vertical-align: bottom; padding-block: var(--kern-metric-space-small, 8px); box-shadow: inset 0 -1px 0 0 color-mix(in oklab, var(--kern-color-layout-border, #c0c3d5) 75%, transparent); }
+}
+@media (min-width: 48.0625rem) { .fj-tabelle .kern-table__cell .kern-badge { vertical-align: top; } .fj-tabelle .kern-table__cell .kern-badge + br + .kern-body--small { display: inline-block; margin-top: 4px; } }
+
+/* Seitenkopf in zwei Teilen wie „Ansicht“ und „Sortieren nach“: Überschrift in der Größe der Beschriftungen, darunter ein Text */
+.fj-listenkopf .fj-listenkopf__titel { display: block; margin: 0; padding: 6px 0 2px;  /* wie die Beschriftungen des Kits, damit die Schrift auf einer Linie mit „Ansicht“ steht */ font-size: var(--kern-typography-font-size-medium-static, 18px); line-height: var(--kern-typography-line-height-medium-static, 24px); }
+.fj-gruppenhinweis .kern-link { display: inline; padding: 0; font-size: inherit; line-height: inherit; }
+
+/* Seitenleiste: alle Bedienelemente so breit wie der Schieberegler (volle Spaltenbreite) */
+.fj-filter .fj-datum { width: 100%; max-width: none; box-sizing: border-box; }
+.fj-gebiet .fj-seg { display: flex; width: 100%; }
+.fj-gebiet .fj-seg .kern-btn { flex: 1 1 0; justify-content: center; }
+/* Ferienübersicht: alle Jahre mit gleichen Spalten, Linien so dezent wie in der Jobtabelle */
+.fj-ferien { width: 100%; table-layout: fixed; }
+.fj-ferien th:first-child { width: 34%; }
+@media (min-width: 48.0625rem) {
+  .fj-ferien .kern-table__header, .fj-ferien .kern-table__cell { padding-block: 12px; box-shadow: inset 0 -1px 0 0 color-mix(in oklab, var(--kern-color-layout-border, #c0c3d5) 40%, transparent); }
+  .fj-ferien .kern-table__head .kern-table__header { box-shadow: inset 0 -1px 0 0 color-mix(in oklab, var(--kern-color-layout-border, #c0c3d5) 75%, transparent); }
+}
+@media (max-width: 48rem) { .fj-ferien th:first-child { width: auto; } }
+
+/* Links im Fließtext (auch Links nach außen mit Symbol): Größe und Zeilenhöhe des Textes, Symbol so groß wie die Schrift,
+   sonst wird die Zeile mit dem Link höher als die anderen */
+.fj-main :is(.kern-body, li, dd) .kern-link { display: inline; padding: 0; font-size: inherit; line-height: inherit; text-decoration: underline; text-underline-offset: .2em; }
+.fj-main :is(.kern-body, li, dd) .kern-link .kern-icon { width: 1em; height: 1em; vertical-align: -.125em; }
+
+/* Begründung in der Karte: Gruppen mit Symbol und Farbe (KERN-Rückmeldefarben), Zitate klein, Punkte am Ende */
+.fj-gruende { display: flex; flex-direction: column; gap: var(--kern-metric-space-default, 16px); padding: 0; }
+.fj-gruende__titel { display: flex; align-items: center; gap: 6px; margin: 0 0 4px; font-weight: var(--kern-typography-font-weight-semi-bold, 600); }
+.fj-gruende__titel .fj-symbol { width: 1.125rem; height: 1.125rem; flex: none; }
+.fj-gruende__gruppe--ausschluss .fj-gruende__titel { color: var(--kern-color-feedback-danger, #b3261e); }
+.fj-gruende__gruppe--warnung .fj-gruende__titel { color: var(--kern-color-feedback-warning, #8c5a00); }
+.fj-gruende__gruppe--plus .fj-gruende__titel { color: var(--kern-color-feedback-success, #007155); }
+.fj-gruende__gruppe--info .fj-gruende__titel { color: var(--kern-color-feedback-info, #006b8c); }
+.fj-gruende__liste { margin: 0; padding: 0 0 0 calc(1.125rem + 6px); list-style: none; }
+.fj-gruende__liste li + li { margin-top: 4px; }
+.fj-zitat { display: block; margin-top: 2px; color: var(--kern-color-layout-text-muted, #51577a); font-size: .875rem; line-height: 1.4; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+.fj-gruende__punkte { margin: 0; color: var(--kern-color-layout-text-muted, #51577a); font-size: .875rem; }
+/* Angaben zur Anzeige kompakt in zwei Spalten */
+.fj-fakten { margin-top: var(--kern-metric-space-default, 16px); padding-top: var(--kern-metric-space-small, 8px); border-top: 1px solid color-mix(in oklab, var(--kern-color-layout-border, #c0c3d5) 40%, transparent); font-size: .875rem; }
+.fj-fakten .kern-description-list { margin: 0; }
+.fj-fakten .kern-description-list-item { padding: 4px 0; border: 0; }
+.fj-fakten :is(.kern-description-list-item__key, .kern-description-list-item__value) { font-size: inherit; line-height: 1.4; padding: 0; margin: 0; }
+.fj-gruende__liste li { color: var(--kern-color-layout-text-default, #131525); line-height: 1.55; }
+.fj-fakten .kern-description-list-item { flex-direction: row; flex-wrap: nowrap; gap: var(--kern-metric-space-small, 8px); }
+.fj-fakten .kern-description-list-item__key { flex: none; width: 7.5rem; max-width: none; word-break: normal; }
+.fj-fakten .kern-description-list-item__value { flex: 1 1 auto; min-width: 0; }
+
+/* Zeilenhöhe für Fließtext wie in der Projektschau (1,55); die 24 px des Kits bei 16 bis 18 px Schrift wirken in Absätzen eng.
+   Beschriftungen, Badges und Bedienelemente behalten die Werte des Kits. */
+.fj-main :is(p.kern-body, .kern-list > li, .fj-gruende__liste li, .kern-hint) { line-height: 1.55; }
+
+/* Über den Absender: Luft zwischen Überschrift und Foto, Absätze enger, Kontakt als Knöpfe mit Symbol */
+.fj-text > .fj-absender { margin-top: var(--kern-metric-space-large, 24px); }
+.fj-absender > div > * + * { margin-top: var(--kern-metric-space-small, 8px); }
+.fj-absender__links { display: flex; flex-wrap: wrap; gap: var(--kern-metric-space-small, 8px); margin: var(--kern-metric-space-large, 24px) 0 0 !important; padding: 0; list-style: none; }
+.fj-absender__links .kern-btn { margin: 0; gap: var(--kern-metric-space-small, 8px); text-decoration: none; }
+.fj-absender__links .fj-symbol { width: 1rem; height: 1rem; color: var(--kern-color-action-default, #2044aa); }
+
+/* Begründung in der Karte als eigene Box auf weißem Grund: Abstand zum „Warum …?“, klare Stufen in der Schrift
+   (Gruppentitel klein und fett, Gründe normal, Zitate und Angaben klein), damit sich die Karte scannen lässt */
+.fj-karte .kern-details > .kern-details__body { margin: var(--kern-metric-space-small, 8px) 0 0; padding: var(--kern-metric-space-default, 16px); border-radius: var(--kern-metric-border-radius-large, 8px); background: var(--kern-color-layout-background-default, #fff); box-shadow: none; }
+.fj-karte .fj-gruende { gap: var(--kern-metric-space-default, 14px); }
+.fj-karte .fj-gruende__titel .fj-symbol { width: 1rem; height: 1rem; }
+.fj-karte .fj-gruende__liste { padding-left: calc(1rem + 6px); }
+.fj-karte .fj-fakten .kern-description-list-item { padding: 2px 0; }
+.fj-karte .fj-fakten .kern-description-list-item__key { width: 5.5rem; color: var(--kern-color-layout-text-muted, #51577a); font-weight: var(--kern-typography-font-weight-regular, 400); }
+[data-kern-theme="dark"] .fj-karte .kern-details > .kern-details__body { background: color-mix(in oklab, #fff 7%, var(--kern-color-layout-background-default, #000)); }
+
+/* Begründung: wenige, klare Schriftstufen. Gruppentitel 14 px fett in Farbe, Gründe 15 px, Zitate 13 px kursiv, Angaben 13 px */
+.fj-karte .fj-gruende__titel { font-size: .875rem; margin-bottom: 4px; }
+.fj-karte .fj-gruende__liste li { font-size: .9375rem; line-height: 1.45; }
+.fj-karte .fj-gruende__liste li + li { margin-top: 8px; }
+.fj-karte .fj-zitat { font-size: .8125rem; line-height: 1.4; font-style: italic; margin-top: 2px; }
+.fj-karte .fj-gruende__punkte { order: 99; font-size: .75rem; }
+.fj-karte .fj-fakten { font-size: .8125rem; margin-top: var(--kern-metric-space-default, 16px); padding-top: var(--kern-metric-space-small, 8px); border-top: 1px solid color-mix(in oklab, var(--kern-color-layout-border, #c0c3d5) 40%, transparent); }
+.fj-karte .fj-fakten :is(.kern-description-list-item__key, .kern-description-list-item__value) { font-size: .8125rem; line-height: 1.5; }
+.fj-karte .kern-details__body > .fj-gruende__punkte { margin-top: var(--kern-metric-space-small, 8px); }
+
+/* Theming (updatesicher, nur Tokens): Die Info-Farben von KERN (Hellblau/Cyan) passen nicht zu den in der Aktionsfarbe getönten
+   Flächen der Seite. Info-Fläche und -Rand deshalb aus der Aktionsfarbe, für Ferienhinweis, Info-Kästen und Info-Plaketten
+   (Lohn, Schritte). Warn-, Fehler- und Erfolgsfarben bleiben, sie tragen Bedeutung. */
+:root, [data-kern-theme="light"] { --kern-color-feedback-info: var(--kern-color-action-default, #2044aa); --kern-color-feedback-info-background: color-mix(in srgb, var(--kern-color-action-default, #2044aa) 9%, var(--kern-color-layout-background-default, #fff)); }
+[data-kern-theme="dark"] { --kern-color-feedback-info: var(--kern-color-action-default, #97afe1); --kern-color-feedback-info-background: color-mix(in srgb, var(--kern-color-action-default, #97afe1) 16%, var(--kern-color-layout-background-default, #000)); }
+/* Info-Kasten als ruhige, getönte Fläche wie die Kästen der Startseite (Radius 12 px, kein Rahmen um Kopf und Inhalt) */
+.kern-alert--info { outline-color: transparent; border-radius: 12px; }
+.kern-alert--info .kern-alert__body { outline-color: transparent; background: transparent; padding-top: 0; }
+.kern-alert--info .kern-alert__header { background: transparent; }
+.kern-alert--info .kern-title, .kern-alert--info .kern-heading-small { font-size: var(--kern-typography-font-size-medium-static, 18px); }
+/* Link zu allen Ferienterminen: zurückhaltend rechts im Hinweis, Textfarbe, klein, unterstrichen */
+.fj-banner__inhalt { align-items: center; }
+.fj-banner__link { flex: none; color: var(--kern-color-layout-text-default, #131525); font-size: .875rem; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; }
+.fj-banner__link:hover { text-decoration-thickness: 2px; }
+@media (max-width: 48rem) { .fj-banner__inhalt { flex-wrap: wrap; align-items: flex-start; } .fj-banner__link { flex-basis: 100%; padding-left: calc(24px + var(--kern-metric-space-small, 8px)); margin-top: -4px; } }
+
+/* Gründe: Dafür und Hinweise als getönte Plaketten, Dagegen und Prüfen mit fettem Grund und Zitat */
+.fj-gruende__chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0 0 0 calc(1rem + 6px); list-style: none; }
+.fj-gruende__chips li { padding: 2px 8px; border-radius: var(--kern-metric-border-radius-default, 4px); font-size: .8125rem; line-height: 1.5; color: var(--kern-color-layout-text-default, #131525); background: color-mix(in srgb, var(--fj-ton, #007155) 12%, var(--kern-color-layout-background-default, #fff)); }
+.fj-gruende__gruppe--plus { --fj-ton: var(--kern-color-feedback-success, #007155); }
+.fj-gruende__gruppe--info { --fj-ton: var(--kern-color-feedback-info, #2044aa); }
+.fj-karte .fj-gruende__grund { display: block; font-weight: var(--kern-typography-font-weight-semi-bold, 600); font-size: .9375rem; line-height: 1.4; }
+
+/* Footer immer unten: Die Seite ist mindestens so hoch wie das Fenster, der Inhaltsbereich füllt den Rest */
+body { display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; }
+body > .fj-main { flex: 1 0 auto; width: 100%; box-sizing: border-box; }
+body > .fj-header, body > .fj-banner, body > .fj-footer { flex: none; }
+/* Rechte Kante: „Hell / Dunkel“ ohne Innenabstand rechts, damit Kopfzeile, Ferienhinweis und Inhalt auf einer Linie enden;
+   „Alle Termine“ als Link in der Aktionsfarbe */
+.fj-banner__link, .fj-banner__link:visited { color: var(--kern-color-action-default, #2044aa); }
+
+/* Schieberegler im Stil der Seite, in allen Browsern gleich: dünne Spur, runder Knopf in der Aktionsfarbe, kein Schatten.
+   Ohne datalist: die Browser zeichnen sonst eigene Striche, die nicht zu den Beträgen darunter passen. */
+.fj-regler__eingabe { -webkit-appearance: none; appearance: none; height: 2.75rem; background: transparent; }
+.fj-regler__eingabe::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: linear-gradient(to right, var(--kern-color-action-default, #2044aa) var(--anteil, 0%), color-mix(in srgb, var(--kern-color-action-default, #2044aa) 22%, var(--kern-color-layout-background-default, #fff)) var(--anteil, 0%)); }
+.fj-regler__eingabe::-moz-range-track { height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--kern-color-action-default, #2044aa) 22%, var(--kern-color-layout-background-default, #fff)); }
+.fj-regler__eingabe::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; margin-top: -8px; border: 0; border-radius: 50%; background: var(--kern-color-action-default, #2044aa); box-shadow: none; }
+.fj-regler__eingabe::-moz-range-thumb { width: 20px; height: 20px; border: 0; border-radius: 50%; background: var(--kern-color-action-default, #2044aa); box-shadow: none; }
+.fj-regler__eingabe::-moz-range-progress { height: 4px; border-radius: 2px; background: var(--kern-color-action-default, #2044aa); }
+/* Beträge unter dem Regler zurückhaltend: klein, gedämpft, normale Stärke */
+.fj-regler__skala { font-size: .8125rem; font-weight: var(--kern-typography-font-weight-regular, 400); color: var(--kern-color-layout-text-muted, #51577a); }
+.fj-regler__skala span { font-size: inherit; font-weight: inherit; }
+
+/* Seitenleiste: drei Schriftstufen statt sechs. 16 px fett für Abschnittstitel, 15 px für Beschriftungen, Links, Hinweise,
+   Checkboxen und Knöpfe (Beschriftungen normal, Bedienelemente fett), 13 px für die Beträge unter dem Regler */
+.fj-layout > :first-child { --fj-titel: 1rem; --fj-text: .9375rem; }
+.fj-layout > :first-child :is(h2.kern-heading-small, .kern-fieldset > legend.kern-label, .fj-filter > h2) { font-size: var(--fj-titel); line-height: 1.5; font-weight: var(--kern-typography-font-weight-semi-bold, 600); }
+.fj-layout > :first-child .kern-form-input > .kern-label, .fj-layout > :first-child .fj-regler > .kern-label { font-size: var(--fj-text); line-height: 1.5; font-weight: var(--kern-typography-font-weight-regular, 400); }
+.fj-layout > :first-child .fj-regler output { font-size: inherit; }
+.fj-layout > :first-child :is(.fj-seitennav__link, .kern-hint, .kern-form-check .kern-label, .kern-form-input__input, .kern-form-input__select) { font-size: var(--fj-text); line-height: 1.5; }
+.fj-layout > :first-child :is(.kern-btn .kern-label, summary .kern-title) { font-size: var(--fj-text); line-height: 1.5; font-weight: var(--kern-typography-font-weight-semi-bold, 600); }
+.fj-layout > :first-child details a:not(.kern-btn) { font-size: var(--fj-text); line-height: 1.5; }
+
+/* Seitenleiste kompakt und einheitlich: Titel ohne KERN-Grundlinienabstand (alle 24 px hoch), Elemente innerhalb eines Abschnitts 8 px */
+.fj-layout > :first-child :is(h2.kern-heading-small, .fj-filter > h2, .kern-fieldset > legend.kern-label) { margin: 0; padding: 0; line-height: 24px; }
+.fj-layout > :first-child .fj-gebiet .fj-seg, .fj-layout > :first-child .fj-facette .fj-seitennav { margin-top: 8px; }
+.fj-layout > :first-child .kern-fieldset__body { margin-top: 0; padding: 8px 0 0; gap: 8px; }
+.fj-layout > :first-child .kern-form-input { gap: 4px; margin: 0; }
+.fj-layout > :first-child .kern-form-input > .kern-label { margin: 0; padding: 0; }
+.fj-layout > :first-child .fj-regler + .kern-form-check, .fj-layout > :first-child .kern-fieldset__body > .kern-form-check { margin-top: 0; }
+.fj-layout > :first-child .fj-abschnitt > .fj-filter-mehr { margin-top: 8px; }
+.fj-layout > :first-child .fj-filter-mehr .kern-details__body { margin-top: 8px; padding-top: 0; padding-bottom: 0; }
+.fj-layout > :first-child .fj-regler .kern-hint { margin: 4px 0 0; padding: 0; }
+.fj-layout > :first-child .fj-regler__skala { margin-bottom: 0; }
+
+/* Dokumentation: Text links, Inhaltsverzeichnis rechts (wie Projektschau-Doku). Es haftet beim Scrollen und rückt unter die
+   Kopfzeile, solange die sichtbar ist (Höhe aus kopf.js); unter 64rem steht es oben über dem Text */
+.fj-doku { display: grid; grid-template-columns: minmax(0, 44rem) minmax(12rem, 1fr); gap: var(--kern-metric-space-x-large, 32px); align-items: start; }
+.fj-toc { position: sticky; top: var(--kern-metric-space-large, 24px); justify-self: end; width: 100%; max-width: 18rem; margin-top: 0; padding-left: var(--kern-metric-space-default, 16px); border-left: 1px solid color-mix(in oklab, var(--kern-color-layout-border, #c0c3d5) 40%, transparent); transition: top .2s ease; }
+html:not(.kopf-weg) .fj-toc { top: calc(var(--kopf-hoehe, 0px) + var(--kern-metric-space-large, 24px)); }
+.fj-toc > .kern-label { display: block; margin: 0 0 var(--kern-metric-space-small, 8px); padding: 0; font-size: .9375rem; }
+.fj-toc ul { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.fj-toc a { color: var(--kern-color-layout-text-muted, #51577a); font-size: .9375rem; line-height: 1.5; text-decoration: none; }
+.fj-toc a:hover, .fj-toc a:focus-visible { text-decoration: underline; text-underline-offset: .2em; }
+.fj-toc a[aria-current="true"] { color: var(--kern-color-action-default, #2044aa); font-weight: var(--kern-typography-font-weight-semi-bold, 600); }
+@media (max-width: 64rem) { .fj-doku { grid-template-columns: 1fr; } .fj-toc { position: static; order: -1; max-width: none; } }
+@media (prefers-reduced-motion: reduce) { .fj-toc { transition: none; } }
+@media print { .fj-toc { display: none; } }
+
+/* Seitenleiste ohne Trennlinien: die fetten Titel gliedern, zwischen den Abschnitten 24 px Weißraum, Titel zum Inhalt 8 px */
+.fj-layout > :first-child .fj-gebiet { margin-bottom: 24px; }
+.fj-layout > :first-child .fj-facette + .fj-filter { margin-top: 24px; }
+.fj-layout > :first-child .fj-filter > * + * { margin: 24px 0 0; }
+.fj-layout > :first-child .fj-filter > h2 + * { margin-top: 8px; }
+.fj-layout > :first-child .fj-filter + .fj-dropdown { display: block; margin: 8px 0 0; }
+.fj-main .fj-toc li a.kern-link { text-decoration: none; display: inline; padding: 0; font-size: .9375rem; line-height: 1.5; } .fj-main .fj-toc li a.kern-link:is(:hover, :focus-visible) { text-decoration: underline; }
+.fj-doku-kopf + .fj-doku { margin-top: var(--kern-metric-space-large, 24px); }
+.fj-doku > .fj-text > h2:first-child { margin-top: 0; padding-top: 0; }
+.fj-text > h2 + h3 { margin-top: var(--kern-metric-space-small, 8px); }
+
+/* Kopfbereich auf dem Handy in einer Größe: Navigation 16 px wie der Ferienhinweis; der Markenname bleibt 18 px fett */
+.fj-banner .kern-body, .fj-banner__link { font-size: 1rem; line-height: 1.5; }
+@media (max-width: 48rem) { .fj-nav .kern-link { font-size: 1rem; } }
+/* Seitenüberschrift zum ersten Text so nah wie zur Unterzeile (rund 16 px Schriftabstand) */
+.fj-text > h1 + * { margin-top: 0; }
+.fj-main > .fj-seitenkopf + .fj-text { margin-top: 0; }
+.fj-main > .fj-seitenkopf:has(+ .fj-text) { margin-bottom: 8px; padding-bottom: 0; }
+/* Ferienhinweis: breit Text links, Link rechts; schmal Text und Link in einem Fluss */
+.fj-banner__text { display: flex; flex: 1 1 auto; align-items: center; justify-content: space-between; gap: var(--kern-metric-space-default, 16px); min-width: 0; }
+.fj-banner__text > .kern-body { margin: 0; }
+@media (max-width: 48rem) {
+  .fj-banner__inhalt { flex-wrap: nowrap; }
+  .fj-banner__text { display: block; }
+  .fj-banner__text > .kern-body { display: inline; }
+  .fj-banner__text > .fj-banner__link { padding-left: 0; margin: 0 0 0 .25em; flex-basis: auto; }
+}
+/* Hell/Dunkel: Innenabstand bleibt (gleichmäßige Hover-Fläche), der Knopf ragt um ihn nach rechts, damit die Schrift bündig endet */
+@media (min-width: 48.0625rem) {
+  .fj-header .fj-farbschema { padding-inline-end: 8px; margin-inline-end: -16px; }
+  .fj-header .fj-farbschema .kern-label { padding-inline-end: 8px; }
+}
+/* Hell/Dunkel auf dem Handy: einfacher Symbolknopf ohne Rahmen statt zwei Felder; das Symbol zeigt den Zustand wie am Desktop */
+@media (max-width: 48rem) {
+  .fj-header .fj-farbschema { min-width: 2.75rem; min-height: 2.75rem; padding: 0; justify-content: center; align-items: center; border: 0; background: none; margin-inline-end: -10px; }
+  .fj-header .fj-farbschema .fj-symbol { width: 1.25rem; height: 1.25rem; }
+}
+.fj-footer .kern-body .kern-link { display: inline; padding: 0; font-size: inherit; line-height: inherit; }
+/* Änderungen in der Doku: Liste kompakt */
+#aenderungen ~ .kern-list { gap: 6px; }
+#aenderungen ~ p.kern-body:has(> strong:only-child) { margin-bottom: 0; }
+#aenderungen ~ p.kern-body:has(> strong:only-child) + .kern-list { margin-top: 4px; }
+/* Startseite: höchstens drei Karten nebeneinander; drei Spalten mit dem Kartenabstand (24 px) rechnen, sonst passen nur zwei */
+.fj-liste--drei { grid-template-columns: repeat(auto-fill, minmax(max(min(100%, 18rem), calc((100% - 2 * var(--kern-metric-space-large, 24px)) / 3)), 1fr)); }
+/* Linie im Footer so dezent wie die übrigen Trennlinien */
+.fj-footer .kern-divider { border: 0; height: 1px; background: color-mix(in oklab, var(--kern-color-layout-border, #c0c3d5) 40%, transparent); }
+
+/* Handy: beide Ausklapper („Ansicht und Sortierung“, „Gruppe und Filter“) gleich, KERN-Details mit Pfeil; die Auswahl in eigener
+   Zeile darunter, klein und gedämpft */
+@media (max-width: 61.99rem) {
+  :is(.fj-panel, .fj-werkzeuge-klapp) > summary.kern-details__header { display: flex; align-items: center; gap: var(--kern-metric-space-small, 8px); min-height: 0; padding: 8px 12px; border: var(--kern-metric-border-width-light, 1px) solid var(--kern-color-layout-border, #c0c3d5); border-radius: var(--kern-metric-border-radius-large, 8px); background: var(--kern-color-layout-background-hued, #f7f7f9); color: var(--kern-color-action-default, #2044aa); }
+  :is(.fj-panel, .fj-werkzeuge-klapp)[open] > summary.kern-details__header { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+  :is(.fj-panel, .fj-werkzeuge-klapp) > summary .kern-title { display: block; margin: 0; padding: 0; font-size: .9375rem; line-height: 1.3; font-weight: var(--kern-typography-font-weight-semi-bold, 600); color: inherit; }
+  :is(.fj-panel, .fj-werkzeuge-klapp) > summary .fj-panel__auswahl { display: block; margin-top: 0; font-size: .875rem; line-height: 1.3; font-weight: var(--kern-typography-font-weight-regular, 400); color: var(--kern-color-layout-text-muted, #51577a); }
+}
+/* Handy: Ansicht und Sortierung erst zeigen, wenn filter.js es hinter „Gruppe und Filter“ gesetzt hat (kein Springen) */
+@media (max-width: 61.99rem) { .js .fj-listenkopf > #werkzeuge { display: none; } .fj-panel + #werkzeuge { margin-top: var(--kern-metric-space-small, 8px); } }
+/* Handy: aufgeklappter Inhalt beider Ausklapper als Fortsetzung der Leiste, mit Rahmen und 16 px Innenabstand */
+@media (max-width: 61.99rem) {
+  .fj-panel[open] > .kern-details__body, .fj-werkzeuge-klapp[open] > .fj-listenwerkzeuge { margin: 0; padding: var(--kern-metric-space-default, 16px); border: var(--kern-metric-border-width-light, 1px) solid var(--kern-color-layout-border, #c0c3d5); border-top: 0; border-radius: 0 0 var(--kern-metric-border-radius-large, 8px) var(--kern-metric-border-radius-large, 8px); box-shadow: none; }
+}
+.fj-layout > :first-child .fj-ansicht > .kern-label { font-size: var(--fj-text); line-height: 1.5; font-weight: var(--kern-typography-font-weight-regular, 400); margin: 0 0 4px; padding: 0; }
+.fj-layout > :first-child .fj-listenwerkzeuge { gap: var(--kern-metric-space-default, 16px); }
+/* Hinweiskasten direkt unter dem Seitenkopf einer Textseite so breit wie die Textspalte */
+.fj-main > .fj-seitenkopf + .kern-alert { max-width: 44rem; }
+/* Handy: Zustand der Ausklapper deutlich. Pfeil des Kits rechts (zu: nach unten, offen: nach oben),
+   offene Leiste kräftiger getönt */
+@media (max-width: 61.99rem) {
+  :is(.fj-panel, .fj-werkzeuge-klapp) > summary.kern-details__header::before { order: 2; margin-left: auto; width: 32px; height: 32px; min-width: 32px; min-height: 32px; -webkit-mask-size: 20px; mask-size: 20px; -webkit-mask-position: center; mask-position: center; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; background-color: var(--kern-color-action-default, #2044aa); }
+  :is(.fj-panel, .fj-werkzeuge-klapp) > summary.kern-details__header > .kern-title { flex: 1 1 auto; min-width: 0; }
+  :is(.fj-panel, .fj-werkzeuge-klapp)[open] > summary.kern-details__header { background: color-mix(in srgb, var(--kern-color-action-default, #2044aa) 10%, var(--kern-color-layout-background-default, #fff)); }
+}
+/* Haften übernimmt der Rahmen um die Chips; er trägt auf dem Handy rechts einen Verlauf in der Hintergrundfarbe, solange weitere Chips
+   folgen (Klasse fj-chips--ende aus filter.js). Der Verlauf liegt über den Chips, der Inhalt darunter scheint nicht durch. */
+.fj-chips-rahmen { position: sticky; top: 0; z-index: 20; background: var(--kern-color-layout-background-default, #fff); transition: top .2s ease; }
+html:not(.kopf-weg) .fj-chips-rahmen { top: var(--kopf-hoehe, 0px); }
+@media (max-width: 61.99rem) {
+  .fj-chips-rahmen { margin-inline: calc(-1 * var(--kern-metric-space-default, 16px)); }
+  .fj-chips-rahmen > .fj-chips { margin-inline: 0; }
+  .fj-chips-rahmen::after { content: ""; position: absolute; top: 0; right: 0; bottom: 0; width: 56px; pointer-events: none; background: linear-gradient(to right, transparent, var(--kern-color-layout-background-default, #fff)); transition: opacity .2s; }
+  .fj-chips-rahmen:has(> .fj-chips--ende)::after, .fj-chips-rahmen:has(> .fj-chips[hidden])::after { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .fj-chips-rahmen, .fj-chips-rahmen::after { transition: none; } }
+/* Desktop: Seitenleiste (Gebiet, Gruppen, Ansicht, Filter) haftet beim Scrollen wie die Chip-Leiste und rückt unter die Kopfzeile,
+   solange die sichtbar ist (Höhe aus kopf.js). Sie ist oft höher als das Fenster: dann scrollt sie in sich. Ab 992px, wo KERN die
+   Spalten nebeneinanderstellt */
+@media (min-width: 992px) {
+	.fj-layout.kern-row > .kern-col-lg-4:first-child { position: sticky; top: var(--kern-metric-space-small, 8px); align-self: flex-start; max-height: calc(100dvh - 2 * var(--kern-metric-space-small, 8px)); overflow-y: auto; overscroll-behavior: contain; scroll-padding-block-end: var(--kern-metric-space-small, 8px); scrollbar-width: thin; transition: top .2s ease, max-height .2s ease; }
+	html:not(.kopf-weg) .fj-layout.kern-row > .kern-col-lg-4:first-child { top: calc(var(--kopf-hoehe, 0px) + var(--kern-metric-space-small, 8px)); max-height: calc(100dvh - var(--kopf-hoehe, 0px) - 2 * var(--kern-metric-space-small, 8px)); }
+}
+@media (min-width: 992px) and (prefers-reduced-motion: reduce) { .fj-layout.kern-row > .kern-col-lg-4:first-child { transition: none; } }

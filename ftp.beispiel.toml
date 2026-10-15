@@ -1,0 +1,9 @@
+# Vorlage: als ftp.toml kopieren und ausfüllen. ftp.toml steht in .gitignore.
+# Das Passwort gehört NICHT hierher, sondern in den macOS-Schlüsselbund:
+#   security add-generic-password -s ferienjob-finder-ftp -a BENUTZER -w
+# (fragt das Passwort ab). Auf anderen Systemen: Umgebungsvariable FTP_PASSWORT.
+
+host = "ftp.example.org"
+benutzer = "BENUTZER"
+verzeichnis = "/ferienjobs-test"   # Zielordner auf dem Server, wird angelegt
+tls = true                         # FTPS (explizit). Nur auf false setzen, wenn der Hoster kein TLS kann.
