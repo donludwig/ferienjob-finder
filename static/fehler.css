@@ -1,0 +1,25 @@
+/* Fehlerseiten 403 und 404 (finder/vorlagen/fehler.html). Bild aus SVG mit KERN-Farben, hell und dunkel; Animation einmalig
+   und unter 5 s (WCAG 2.2.2), bei „Bewegung reduzieren“ gar nicht. */
+.fj-fehler { max-width: 40rem; margin: var(--kern-metric-space-x-large, 32px) auto; text-align: center; }
+.fj-fehler .kern-btn-wrapper { justify-content: center; margin-top: var(--kern-metric-space-large, 24px); }
+.fj-fehler-bild { display: block; width: min(100%, 18rem); height: auto; margin: 0 auto var(--kern-metric-space-large, 24px); overflow: visible; }
+.fj-fehler-bild :is(line, path) { fill: none; stroke-width: 4; stroke-linecap: round; }
+.fj-fehler-strahlen line { stroke: var(--kern-color-orange-400, #e86f0c); }
+.fj-fehler-sonne circle { fill: var(--kern-color-orange-400, #e86f0c); }
+.fj-fehler-roehre { fill: var(--kern-color-layout-background-default, #fff); stroke: var(--kern-color-layout-text-default, #131525); stroke-width: 3; }
+.fj-fehler-quecksilber, .fj-fehler-kugel { fill: var(--kern-color-feedback-danger, #b0182d); }
+.fj-fehler-skala, .fj-fehler-boden, .fj-fehler-schnur { stroke: var(--kern-color-layout-text-default, #131525); }
+.fj-fehler-boden { stroke-width: 3; }
+.fj-fehler-tuer { fill: color-mix(in srgb, var(--kern-color-action-default, #2044aa) 14%, var(--kern-color-layout-background-default, #fff)); stroke: var(--kern-color-action-default, #2044aa); stroke-width: 3; }
+.fj-fehler-fenster { fill: var(--kern-color-layout-background-default, #fff); stroke: var(--kern-color-action-default, #2044aa); stroke-width: 3; }
+.fj-fehler-griff, .fj-fehler-nagel { fill: var(--kern-color-action-default, #2044aa); }
+.fj-fehler-schild rect { fill: var(--kern-color-feedback-warning-background, #fff4e5); stroke: var(--kern-color-feedback-warning, #e86f0c); stroke-width: 3; }
+.fj-fehler-schild text { fill: var(--kern-color-layout-text-default, #131525); font: 600 11px/1 var(--kern-typography-font-family-default, sans-serif); letter-spacing: .04em; }
+@media (prefers-reduced-motion: no-preference) {
+	@keyframes fj-fehler-drehen { to { transform: rotate(60deg); } }
+	@keyframes fj-fehler-steigen { from { transform: scaleY(.25); } }
+	@keyframes fj-fehler-schwingen { 0% { transform: rotate(14deg); } 25% { transform: rotate(-9deg); } 50% { transform: rotate(5deg); } 75% { transform: rotate(-2deg); } 100% { transform: rotate(0); } }
+	.fj-fehler-strahlen { transform-origin: 100px 80px; animation: fj-fehler-drehen 4s cubic-bezier(.2, .7, .3, 1) both; }
+	.fj-fehler-quecksilber { transform-box: fill-box; transform-origin: bottom; animation: fj-fehler-steigen 2.5s ease-out .3s both; }
+	.fj-fehler-schild { transform-origin: 120px 74px; animation: fj-fehler-schwingen 3.5s ease-out both; }
+}

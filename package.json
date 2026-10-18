@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "name": "ferienjob-finder",
+  "description": "Nur für KERN-Dateien, die nach static/kern kopiert werden",
+  "dependencies": {
+    "@kern-ux/native": "2.8.2"
+  },
+  "devDependencies": {
+    "axe-core": "4.14.0"
+  }
+}

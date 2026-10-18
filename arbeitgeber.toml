@@ -1,0 +1,101 @@
+# Arbeitgeber mit offenem Stellen-Feed oder bekannter Schülerjob-Seite.
+# Aufnahme nur, wenn robots.txt und Nutzungsbedingungen den Abruf nicht untersagen (Prüfung 14.10.2026).
+#
+# [[feed]]  art = "personio" | "recruitee" | "teamtailor"
+#           url = Feed-Adresse; Treffer werden auf die Orte der Suche gefiltert
+#           ort = (optional) fester Ort, wenn der Feed keinen brauchbaren Ort liefert
+# [[fest]]  Seite, die regelmäßig Jobs für Schüler:innen nennt, wird nur verlinkt
+#           regionen = Gebiete, in denen der Hinweis erscheint ("BERLIN", "BRANDENBURG")
+
+# Ortsfilter für Feeds (die keine Umkreissuche können). Für andere Orte zählt nur der Ortsname.
+[berlin]
+plz_praefix = ["10", "12", "13"]   # 14xxx ist teils Berlin, teils Brandenburg, daher über Ortsnamen
+umland_ab_km = 40                  # ab diesem Umkreis zählen auch die Umland-Orte
+umland_orte = [
+  "Potsdam", "Falkensee", "Oranienburg", "Hennigsdorf", "Bernau", "Bernau bei Berlin",
+  "Strausberg", "Erkner", "Königs Wusterhausen", "Wildau", "Schönefeld", "Ludwigsfelde", "Teltow",
+  "Kleinmachnow", "Stahnsdorf", "Werder", "Werder (Havel)", "Beelitz", "Elstal", "Wustermark",
+  "Dallgow-Döberitz", "Hoppegarten", "Neuenhagen", "Eberswalde", "Velten", "Zossen", "Blankenfelde-Mahlow",
+]
+
+[[feed]]
+name = "Vapiano"
+art = "personio"
+url = "https://vapiano.jobs.personio.de/xml"
+
+[[feed]]
+name = "ALBA Berlin"
+art = "personio"
+url = "https://albaberlin.jobs.personio.de/xml"
+
+[[feed]]
+name = "Berliner Bäder-Betriebe"
+art = "personio"
+url = "https://bbb.jobs.personio.de/xml"
+ort = "Berlin"   # Feed nennt nur „Bäder“ oder „Verwaltung“
+
+[[feed]]
+name = "Burger King"
+art = "recruitee"
+url = "https://karriere-burgerking.de/api/offers/"
+
+[[feed]]
+name = "Five Guys"
+art = "teamtailor"
+url = "https://jobs.fiveguys.de/jobs.rss"
+
+# Feste Einträge: nur mit Beleg vom Arbeitgeber selbst, dass Jugendliche unter 18 genommen werden
+# (geprüft am 14.10.2026, Zitate in der Klammer). Reihenfolge = Anzeige auf der Startseite.
+
+[[fest]]
+name = "Lidl"
+ort = "Filialen in Berlin und Brandenburg"
+titel = "Schülerjobs"
+link = "https://jobs.lidl.de/schueler/schuelerjob"
+hinweis = "Ab 16 Jahren, mit ärztlicher Jugendschutzuntersuchung; Einsatz auch an der Kasse."
+regionen = ["BERLIN", "BRANDENBURG"]
+# „Du solltest mindestens 16 Jahre alt sein und eine ärztliche Jugendschutzuntersuchung bestanden haben.“
+
+[[fest]]
+name = "Netto (Stavenhagen)"
+ort = "Filialen in Berlin und Brandenburg"
+titel = "Aushilfe im Markt"
+link = "https://karriere.netto.de/aushilfe/"
+hinweis = "Aushilfe ab 16 Jahren. Nicht verwechseln mit Netto Marken-Discount."
+regionen = ["BERLIN", "BRANDENBURG"]
+# „Du musst mindestens 16 Jahre alt sein, um als Aushilfskraft bei uns anzufangen.“
+
+[[fest]]
+name = "dm-drogerie markt"
+ort = "Märkte in Berlin und Brandenburg"
+titel = "Ferienarbeit und Minijob"
+link = "https://www.dm-jobs.de/stellenangebote/dm-markt/minijob/"
+hinweis = "Ab 15 in den Schulferien, höchstens vier Wochen im Jahr."
+regionen = ["BERLIN", "BRANDENBURG"]
+# „Wenn Du über 15, aber unter 18 und noch vollzeitschulpflichtig bist, darfst Du einmal jährlich für insgesamt vier Wochen in den Schulferien bei uns arbeiten.“
+
+[[fest]]
+name = "talk2move"
+ort = "Berlin"
+titel = "Spendenwerbung am Infostand"
+link = "https://www.talk2move.de/schuelerjobs/schueler-jobs-berlin/"
+hinweis = "Spendenwerbung für Hilfsorganisationen an Infoständen, laut Seite ab 16 Jahren."
+regionen = ["BERLIN"]
+# „Wir bieten dir sinnvolle Schülerjobs in Berlin ab 16.“ (geprüft 14.10.2026)
+
+[[fest]]
+name = "Filmpark Babelsberg"
+ort = "Potsdam"
+titel = "Aushilfen und Saisonjobs"
+link = "https://www.filmpark-babelsberg.de/jobs/aushilfen/"
+hinweis = "Laut Jobseite auch für Schüler:innen ab 16 Jahren."
+regionen = ["BRANDENBURG"]
+# „Ob als Schüler (ab 16 Jahren), Student, Rentner …“
+
+[[fest]]
+name = "Karls Erlebnis-Dorf"
+ort = "Elstal und Erdbeerstände in Berlin und Brandenburg"
+titel = "Erdbeer-Verkauf in der Saison"
+link = "https://karls.de/erdbeeren/erdbeer-jobs/"
+hinweis = "Saisonjob im Frühjahr und Sommer. Ein Mindestalter nennt die Jobseite nicht, vorher fragen."
+regionen = ["BERLIN", "BRANDENBURG"]

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:tt="https://teamtailor.com/locations">
+  <channel>
+    <title>Beispiel</title>
+    <item>
+      <title>Restaurantmitarbeiter:in - Berlin Potsdamer Platz</title>
+      <description>&lt;p&gt;Kein Führerschein nötig. Keine Nachtarbeit.&lt;/p&gt;</description>
+      <link>https://beispiel.example/jobs/1</link>
+      <guid>abc-1</guid>
+      <tt:locations>
+        <tt:location><tt:name>Berlin Potsdamer Platz</tt:name><tt:zip>10785</tt:zip><tt:city>Berlin</tt:city></tt:location>
+      </tt:locations>
+    </item>
+  </channel>
+</rss>

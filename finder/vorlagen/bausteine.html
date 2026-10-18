@@ -1,0 +1,113 @@
+{# Wiederverwendbare KERN-Bausteine #}
+
+{% macro badge(text, art) %}
+<span class="kern-badge kern-badge--{{ art }}"><span class="kern-label">{{ text }}</span></span>
+{%- endmacro %}
+
+{% macro symbol(name, klasse="") %}<svg class="fj-symbol {{ klasse }}" aria-hidden="true" focusable="false"><use href="#{{ name }}"/></svg>{% endmacro %}
+
+{% macro kat_badge(kat) %}
+<span class="kern-badge fj-kat fj-f-{{ kat.slug }}">{{ symbol(kat.symbol) }}<span class="kern-label">{{ kat.name }}</span></span>
+{%- endmacro %}
+
+{% macro eignung_badge(eignung) %}
+{{ badge(eignung, {"passt": "success", "prüfen": "warning", "ab 18": "danger", "ungeeignet": "danger"}[eignung]) }}
+{%- endmacro %}
+
+{% macro alert(art, titel, text="", ebene=2) %}
+<div class="kern-alert kern-alert--{{ art }}"{% if art in ("danger", "warning") %} role="alert"{% endif %}>
+  <div class="kern-alert__header">
+    <span class="kern-icon kern-icon--{{ art }}" aria-hidden="true"></span>
+    <h{{ ebene }} class="kern-title">{{ titel }}</h{{ ebene }}>
+  </div>
+  {% if text or caller is defined %}
+  <div class="kern-alert__body">
+    {% if text %}<p class="kern-body">{{ text }}</p>{% endif %}
+    {% if caller is defined %}{{ caller() }}{% endif %}
+  </div>
+  {% endif %}
+</div>
+{%- endmacro %}
+
+{% macro extern(href, text) %}
+<a class="kern-link" href="{{ href }}" rel="noopener">{{ text }}&#8288;<span class="kern-icon kern-icon--open-in-new kern-icon--small" aria-hidden="true"></span><span class="kern-sr-only"> (externe Seite)</span></a>
+{%- endmacro %}
+
+{% macro dl(paare, spalte=false) %}
+<dl class="kern-description-list{{ ' kern-description-list--col' if spalte }}">
+  {% for k, v in paare if v is not none and v != "" %}
+  <div class="kern-description-list-item">
+    <dt class="kern-description-list-item__key">{{ k }}</dt>
+    <dd class="kern-description-list-item__value">{{ v }}</dd>
+  </div>
+  {% endfor %}
+</dl>
+{%- endmacro %}
+
+{% macro gruende_liste(b) %}
+{# Begründung für Jugendliche: nach Wirkung gruppiert, mit Symbol und Farbe; Zitat aus der Anzeige klein darunter, Punkte nur am Ende #}
+<div class="fj-gruende">
+  {% for art, titel, sym in [("ausschluss", "Spricht dagegen", "thumbs-down"), ("warnung", "Darauf achten", "triangle-alert"), ("plus", "Spricht dafür", "thumbs-up"), ("info", "Gut zu wissen", "info")] %}
+  {% set items = b.gruende|selectattr("art", "eq", art)|list %}
+  {% if items %}
+  <div class="fj-gruende__gruppe fj-gruende__gruppe--{{ art }}">
+    <p class="fj-gruende__titel">{{ symbol(sym) }}{{ titel }}</p>
+    {% if art in ("plus", "info") %}
+    {# Was dafür spricht, als kurze Plaketten: schnell zu überblicken, ohne Zitate (die wiederholen meist den Titel) #}
+    <ul class="fj-gruende__chips">{% for g in items %}<li>{{ g.text }}</li>{% endfor %}</ul>
+    {% else %}
+    {# Was dagegen spricht oder zu prüfen ist: Grund fett, darunter die Stelle aus der Anzeige #}
+    <ul class="fj-gruende__liste">
+      {% for g in items %}<li><span class="fj-gruende__grund">{{ g.text }}</span>{% if g.fundstelle %}<span class="fj-zitat">„{{ g.fundstelle }}“</span>{% endif %}</li>{% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+  {% endif %}
+  {% endfor %}
+</div>
+{%- endmacro %}
+
+{# Datenattribute für filter.js: gleiche Felder in Karten und Tabelle #}
+{% macro daten(t, kat) -%}
+{%- set a, b = t.anzeige, t.bewertung -%}
+data-text="{{ (a.titel ~ ' ' ~ a.firma ~ ' ' ~ a.ort ~ ' ' ~ a.plz ~ ' ' ~ kat.name)|lower }}" data-kat="{{ kat.slug }}" data-lohn="{{ b.lohn_stunde or 0 }}" data-hatlohn="{{ 1 if (b.lohn_stunde or b.lohn_monat) else 0 }}" data-punkte="{{ b.punkte }}" data-datum="{{ a.veroeffentlicht }}" data-eintritt="{{ a.eintritt }}" data-warnung="{{ 1 if b.warnungen else 0 }}"
+{%- endmacro %}
+
+{% macro karte(t, i) %}
+{% set a, b, kat = t.anzeige, t.bewertung, kategorie(t.anzeige) %}
+<li class="fj-treffer" {{ daten(t, kat) }}>
+<article class="kern-card kern-card--small fj-karte fj-f-{{ kat.slug }}" aria-labelledby="t{{ i }}">
+  <div class="kern-card__container">
+    <header class="kern-card__header">
+      <hgroup class="kern-hgroup">
+        <h3 class="kern-title kern-title--small" id="t{{ i }}">{{ a.titel }}</h3>
+        <p class="kern-preline">{{ a.firma or a.quelle }}</p>
+        <p class="kern-subline">{{ a.plz }} {{ a.ort }}{% if a.veroeffentlicht %} · seit {{ a.veroeffentlicht|datum }}{% endif %}</p>
+      </hgroup>
+    </header>
+    <section class="kern-card__body">
+      <p class="fj-badges">
+        {{ kat_badge(kat) }}
+        {{ eignung_badge(b.eignung) }}
+        {% if b|lohn_text %}{{ badge(b|lohn_text, "info") }}{% endif %}
+      </p>
+      {% set hinweis = (b.ausschluesse + b.warnungen) %}
+      {% if hinweis %}<p class="kern-body kern-body--small">{{ hinweis|join(" · ") }}</p>{% endif %}
+      <details class="kern-details">
+        <summary class="kern-details__header"><span class="kern-title kern-title--small">Warum „{{ b.eignung }}“?</span></summary>
+        <div class="kern-details__body">
+          {{ gruende_liste(b) }}
+          <div class="fj-fakten">{{ dl([("Beginn", (a.eintritt|datum) or "keine Angabe"),
+                 ("Bezahlung", ((b|lohn_text) ~ (" laut Text" if b.lohn_quelle == "Text" else "")) if b|lohn_text else "keine Angabe"),
+                 ("Quelle", a.quelle)]) }}</div>
+          <p class="fj-gruende__punkte">{{ b.punkte }} Punkte · automatische Textauswertung, keine Rechtsprüfung</p>
+        </div>
+      </details>
+    </section>
+    <footer class="kern-card__footer">
+      <a class="kern-link" href="{{ a.link }}" rel="noopener" aria-describedby="t{{ i }}">Zur Anzeige<span class="kern-icon kern-icon--open-in-new kern-icon--small" aria-hidden="true"></span><span class="kern-sr-only"> bei {{ a.quelle }} (externe Seite)</span></a>
+    </footer>
+  </div>
+</article>
+</li>
+{%- endmacro %}

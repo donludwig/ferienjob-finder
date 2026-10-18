@@ -1,0 +1,78 @@
+{% extends "basis.html" %}
+{% import "bausteine.html" as k %}
+{% set gii = "https://www.gesetze-im-internet.de/" %}
+{% block titel %}Regeln für Ferienjobs{% endblock %}
+{% block inhalt %}
+<hgroup class="kern-hgroup fj-seitenkopf">
+  <h1 class="kern-heading-x-large">Regeln für Ferienjobs</h1>
+  <p class="kern-subline">Die Regeln unter 18, kurz zusammengefasst und mit Links zum Gesetz.</p>
+</hgroup>
+
+{% call k.alert("warning", "Keine Rechtsberatung") %}
+<p class="kern-body">Diese Seite fasst Gesetze zusammen, sie ersetzt keine Beratung. Im Zweifel hilft die Berufsberatung der Arbeitsagentur oder das Amt für Arbeitsschutz. Maßgeblich ist immer der Gesetzestext.</p>
+{% endcall %}
+
+<div class="fj-text">
+  <h2 class="kern-heading-medium fj-mit-symbol">{{ k.symbol("school") }}<span>Zuerst: Bist du noch vollzeitschulpflichtig?</span></h2>
+  <p class="kern-body">Das Jugendarbeitsschutzgesetz unterscheidet zwei Gruppen. Für Jugendliche, die noch der Vollzeitschulpflicht unterliegen, gelten die Regeln für Kinder ({{ k.extern(gii ~ "jarbschg/__2.html", "§ 2 Abs. 3 JArbSchG") }}). Sie dürfen in den Schulferien höchstens vier Wochen im Kalenderjahr arbeiten ({{ k.extern(gii ~ "jarbschg/__5.html", "§ 5 Abs. 4") }}). Außerhalb der Ferien sind nur leichte Tätigkeiten mit Einwilligung der Eltern erlaubt, höchstens zwei Stunden am Tag, nicht zwischen 18 und 8 Uhr und nicht vor oder während des Unterrichts (§ 5 Abs. 3).</p>
+  <p class="kern-body">Die Berliner Senatsverwaltung nennt für Ferienjobs von Jugendlichen zwischen 15 und 17 pauschal: höchstens vier Wochen im Kalenderjahr während der Schulferien, und am Wochenende grundsätzlich nicht ({{ k.extern("https://www.berlin.de/sen/asgiva/presse/pressemitteilungen/2026/pressemitteilung.1691158.php", "Pressemitteilung vom 08.07.2026") }}). Fragen dazu beantwortet das Landesamt für Arbeitsschutz (LAGetSi), das auch ein {{ k.extern("https://www.berlin.de/lagetsi/_assets/documents/infos/ferienarbeit.pdf", "Merkblatt zur Ferienarbeit (PDF)") }} herausgibt.</p>
+  <p class="kern-body">Wie lange die Vollzeitschulpflicht dauert, regelt jedes Bundesland selbst. In Berlin nennt das Schulgesetz zehn Schulbesuchsjahre (§ 42 Abs. 4 SchulG Berlin); für die Zeit danach regelt § 43 die Schulpflicht in der Sekundarstufe II. Ob das im Sinne des Jugendarbeitsschutzgesetzes als Vollzeitschulpflicht zählt, klärt diese Seite nicht. Frag im Zweifel in der Schule oder bei der Berufsberatung nach.</p>
+
+  <h2 class="kern-heading-medium fj-mit-symbol">{{ k.symbol("list-checks") }}<span>Die wichtigsten Regeln für 15- bis 17-Jährige</span></h2>
+  <p class="kern-body">Sie gelten für Jugendliche, die nicht mehr vollzeitschulpflichtig sind, und nach § 5 Abs. 4 auch für den Ferienjob von Schüler:innen.</p>
+</div>
+
+<div class="kern-accordion-group fj-text">
+  <details class="kern-accordion">
+    <summary class="kern-accordion__header"><span class="kern-title fj-mit-symbol">{{ k.symbol("clock") }}<span>Wie lange darf ich arbeiten?</span></span></summary>
+    <section class="kern-accordion__body">
+      <p class="kern-body">Höchstens acht Stunden am Tag und 40 Stunden in der Woche ({{ k.extern(gii ~ "jarbschg/__8.html", "§ 8") }}), an höchstens fünf Tagen pro Woche ({{ k.extern(gii ~ "jarbschg/__15.html", "§ 15") }}). Zwischen zwei Arbeitstagen liegen mindestens zwölf Stunden Freizeit ({{ k.extern(gii ~ "jarbschg/__13.html", "§ 13") }}).</p>
+    </section>
+  </details>
+  <details class="kern-accordion">
+    <summary class="kern-accordion__header"><span class="kern-title fj-mit-symbol">{{ k.symbol("coffee") }}<span>Welche Pausen stehen mir zu?</span></span></summary>
+    <section class="kern-accordion__body">
+      <p class="kern-body">Bei mehr als viereinhalb bis sechs Stunden Arbeit mindestens 30 Minuten, bei mehr als sechs Stunden mindestens 60 Minuten. Als Pause zählt nur eine Unterbrechung von mindestens 15 Minuten ({{ k.extern(gii ~ "jarbschg/__11.html", "§ 11") }}).</p>
+    </section>
+  </details>
+  <details class="kern-accordion">
+    <summary class="kern-accordion__header"><span class="kern-title fj-mit-symbol">{{ k.symbol("moon") }}<span>Bis wann abends, ab wann morgens?</span></span></summary>
+    <section class="kern-accordion__body">
+      <p class="kern-body">Grundsätzlich nur zwischen 6 und 20 Uhr. Ab 16 Jahren gibt es Ausnahmen: in Gaststätten bis 22 Uhr, in Bäckereien und Konditoreien ab 5 Uhr. Ab 17 Jahren in Bäckereien ab 4 Uhr ({{ k.extern(gii ~ "jarbschg/__14.html", "§ 14") }}).</p>
+    </section>
+  </details>
+  <details class="kern-accordion">
+    <summary class="kern-accordion__header"><span class="kern-title fj-mit-symbol">{{ k.symbol("calendar-days") }}<span>Darf ich am Wochenende arbeiten?</span></span></summary>
+    <section class="kern-accordion__body">
+      <p class="kern-body">Samstags nur in bestimmten Bereichen, zum Beispiel in Geschäften, Bäckereien, Gaststätten, beim Sport oder bei Aufführungen ({{ k.extern(gii ~ "jarbschg/__16.html", "§ 16") }}). Sonntags noch seltener, zum Beispiel in Gaststätten oder beim Sport, nicht im Einzelhandel; mindestens zwei Sonntage im Monat bleiben frei ({{ k.extern(gii ~ "jarbschg/__17.html", "§ 17") }}). Wer am Wochenende arbeitet, bekommt dafür einen anderen Tag in derselben Woche frei.</p>
+    </section>
+  </details>
+  <details class="kern-accordion">
+    <summary class="kern-accordion__header"><span class="kern-title fj-mit-symbol">{{ k.symbol("ban") }}<span>Welche Arbeiten sind verboten?</span></span></summary>
+    <section class="kern-accordion__body">
+      <p class="kern-body">Arbeiten, die dich körperlich überfordern, gefährlich sind oder bei denen du großer Hitze, Kälte, Lärm oder Gefahrstoffen ausgesetzt bist ({{ k.extern(gii ~ "jarbschg/__22.html", "§ 22") }}). Verboten sind auch Akkordarbeit und Arbeiten mit vorgegebenem Arbeitstempo, etwa am Fließband ({{ k.extern(gii ~ "jarbschg/__23.html", "§ 23") }}).</p>
+    </section>
+  </details>
+  <details class="kern-accordion">
+    <summary class="kern-accordion__header"><span class="kern-title fj-mit-symbol">{{ k.symbol("stethoscope") }}<span>Brauche ich eine ärztliche Untersuchung?</span></span></summary>
+    <section class="kern-accordion__body">
+      <p class="kern-body">Für einen Minijob oder eine Beschäftigung von höchstens zwei Monaten mit leichten Arbeiten nicht ({{ k.extern(gii ~ "jarbschg/__32.html", "§ 32 Abs. 2") }}). Sonst schon: Wer ins Berufsleben einsteigt, braucht eine Erstuntersuchung, die nicht älter als 14 Monate ist.</p>
+    </section>
+  </details>
+  <details class="kern-accordion">
+    <summary class="kern-accordion__header"><span class="kern-title fj-mit-symbol">{{ k.symbol("euro") }}<span>Steht mir der Mindestlohn zu?</span></span></summary>
+    <section class="kern-accordion__body">
+      <p class="kern-body">Den bundesweiten Mindestlohn nicht: Er gilt nicht unter 18 ohne abgeschlossene Berufsausbildung ({{ k.extern(gii ~ "milog/__22.html", "§ 22 Abs. 2 MiLoG") }}). Der Lohn ist dann Verhandlungssache. Zum Vergleich: Der gesetzliche Mindestlohn beträgt seit 1. Januar 2026 13,90 Euro brutto pro Stunde ({{ k.extern(gii ~ "milov5/BJNR10C0A0025.html", "Fünfte Mindestlohnanpassungsverordnung") }}).</p>
+      <p class="kern-body">Anders in Berlin bei Stellen, an denen das Land beteiligt ist: im Landesdienst, in landeseigenen Unternehmen und bei Trägern, die Fördergeld vom Land bekommen. Dort gilt der Berliner Landesmindestlohn, seit 1. Januar 2026 14,84 Euro pro Stunde ({{ k.extern("https://www.berlin.de/sen/arbeit/beschaeftigung/mindestlohngesetze/", "Senatsverwaltung, Mindestlohngesetze") }}), laut Senatsverwaltung grundsätzlich auch unter 18 ({{ k.extern("https://www.berlin.de/sen/asgiva/presse/pressemitteilungen/2026/pressemitteilung.1691158.php", "Pressemitteilung vom 08.07.2026") }}). Bei privaten Arbeitgebern ohne Beteiligung oder Fördergeld des Landes gilt er nicht. Frag vor der Zusage, was du bekommst.</p>
+    </section>
+  </details>
+  <details class="kern-accordion">
+    <summary class="kern-accordion__header"><span class="kern-title fj-mit-symbol">{{ k.symbol("tree-palm") }}<span>Habe ich Anspruch auf Urlaub?</span></span></summary>
+    <section class="kern-accordion__body">
+      <p class="kern-body">Ja, bezahlten Urlaub: mindestens 30 Werktage im Jahr, wenn du zu Jahresbeginn noch nicht 16 warst, 27 Werktage unter 17 und 25 Werktage unter 18 ({{ k.extern(gii ~ "jarbschg/__19.html", "§ 19") }}).</p>
+    </section>
+  </details>
+</div>
+
+<p class="kern-body kern-body--small kern-body--muted fj-text">Gesetzestexte geprüft am 14.10.2026 auf gesetze-im-internet.de.</p>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "basis.html" %}
+{% import "bausteine.html" as k %}
+{# Eigene Fehlerseiten 403 und 404 (ErrorDocument in .htaccess): Die Fehlerseiten des Hosters liegen außerhalb dieses Ordners,
+   für sie gelten die Sicherheits-Header der .htaccess nicht. Der Bau stellt alle Pfade auf ab der Wurzel um (ausgabe.ab_wurzel),
+   damit die Seite auch unter Unterordnern (z. B. /kern/x) vollständig erscheint. Bild nur Schmuck (aria-hidden), Animation einmalig unter 5 s. #}
+{% block titel %}{{ "Hitzefrei" if code == 404 else "Kein Zutritt" }}{% endblock %}
+{% block kopf %}<link rel="stylesheet" href="fehler.css?v={{ v }}">{% endblock %}
+{% block inhalt %}
+<div class="fj-fehler">
+  {% if code == 404 %}
+  <svg class="fj-fehler-bild" viewBox="0 0 240 180" aria-hidden="true" focusable="false">
+    <g class="fj-fehler-sonne">
+      <g class="fj-fehler-strahlen">
+        {% for w in range(0, 360, 30) %}<line x1="100" y1="34" x2="100" y2="16" transform="rotate({{ w }} 100 80)"/>{% endfor %}
+      </g>
+      <circle cx="100" cy="80" r="30"/>
+    </g>
+    <g>
+      <rect class="fj-fehler-roehre" x="186" y="24" width="18" height="104" rx="9"/>
+      <rect class="fj-fehler-quecksilber" x="191" y="36" width="8" height="96" rx="4"/>
+      <circle class="fj-fehler-kugel" cx="195" cy="140" r="16"/>
+      {% for y in (48, 68, 88, 108) %}<line class="fj-fehler-skala" x1="208" y1="{{ y }}" x2="216" y2="{{ y }}"/>{% endfor %}
+    </g>
+    <path class="fj-fehler-boden" d="M10 166 Q60 154 110 166 T210 166 T240 162"/>
+  </svg>
+  <hgroup class="kern-hgroup fj-seitenkopf">
+    <h1 class="kern-heading-x-large">Hitzefrei!</h1>
+    <p class="kern-subline">Fehler 404: Diese Seite gibt es nicht.</p>
+  </hgroup>
+  <p class="kern-body">Diese Seite hat heute frei. Vielleicht hat sich die Adresse geändert, oder es steckt ein Tippfehler drin. Auf der Startseite findest du alle aktuellen Jobs.</p>
+  <div class="kern-btn-wrapper">
+    <a class="kern-btn kern-btn--primary" href="index.html">{{ k.symbol("search") }}<span class="kern-label">Zur Startseite</span></a>
+    <a class="kern-btn kern-btn--secondary" href="ferien.html">{{ k.symbol("calendar-days") }}<span class="kern-label">Wann sind Ferien?</span></a>
+  </div>
+  {% else %}
+  <svg class="fj-fehler-bild" viewBox="0 0 240 180" aria-hidden="true" focusable="false">
+    <rect class="fj-fehler-tuer" x="70" y="14" width="100" height="160" rx="4"/>
+    <rect class="fj-fehler-fenster" x="88" y="30" width="64" height="34" rx="2"/>
+    <circle class="fj-fehler-griff" cx="154" cy="104" r="6"/>
+    <circle class="fj-fehler-nagel" cx="120" cy="74" r="3"/>
+    <g class="fj-fehler-schild">
+      <path class="fj-fehler-schnur" d="M120 74 L92 96 M120 74 L148 96"/>
+      <rect x="80" y="94" width="80" height="34" rx="4"/>
+      <text x="120" y="110" text-anchor="middle">LEHRER-</text>
+      <text x="120" y="122" text-anchor="middle">ZIMMER</text>
+    </g>
+    <line class="fj-fehler-boden" x1="10" y1="174" x2="230" y2="174"/>
+  </svg>
+  <hgroup class="kern-hgroup fj-seitenkopf">
+    <h1 class="kern-heading-x-large">Kein Zutritt</h1>
+    <p class="kern-subline">Fehler 403: wie beim Lehrerzimmer, nur für Befugte.</p>
+  </hgroup>
+  <p class="kern-body">Diesen Bereich zeigt der Ferienjob-Finder nicht öffentlich. Alles, was du brauchst, erreichst du über die Startseite.</p>
+  <div class="kern-btn-wrapper">
+    <a class="kern-btn kern-btn--primary" href="index.html">{{ k.symbol("search") }}<span class="kern-label">Zur Startseite</span></a>
+    <a class="kern-btn kern-btn--secondary" href="so-funktionierts.html">{{ k.symbol("info") }}<span class="kern-label">So geht’s</span></a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

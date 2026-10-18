@@ -1,0 +1,63 @@
+{% extends "basis.html" %}
+{% import "bausteine.html" as k %}
+{% block titel %}Datenschutz{% endblock %}
+{% block inhalt %}
+<div class="fj-text">
+  <h1 class="kern-heading-x-large">Datenschutzerklärung</h1>
+
+  <h2 class="kern-heading-medium">Verantwortliche Stelle</h2>
+  <p class="kern-body">Verantwortlich für die Datenverarbeitung auf {% if domain %}<code>{{ domain }}</code>{% else %}dieser Website{% endif %} im Sinne der Datenschutz-Grundverordnung (DSGVO) ist:</p>
+  <p class="kern-body">{{ betreiber.name }}{% for z in betreiber.anschrift %}<br>{{ z }}{% endfor %}<br>E-Mail: <a class="kern-link" href="mailto:{{ betreiber.email }}">{{ betreiber.email }}</a></p>
+
+  <h2 class="kern-heading-medium">Was diese Seiten selbst verarbeiten</h2>
+  <p class="kern-body">Diese Seiten sind statische Dateien. Es gibt keine Datenbank, keinen Login, kein Kontaktformular und keinen serverseitigen Code. Es werden keine Cookies gesetzt, keine Besucher:innen gezählt und keine Tracking-Skripte geladen. Was du in die Filter eingibst, bleibt in deinem Browser und wird nicht übertragen.</p>
+  <p class="kern-body"><strong>Keine externen Ressourcen.</strong> Beim Öffnen der Seiten werden keine Dateien von fremden Servern nachgeladen. Schriften, Stylesheets, Skripte und Symbole liegen auf diesem Server.</p>
+  <p class="kern-body"><strong>Speicher im Browser.</strong> Damit die Wahl zwischen hellem und dunklem Farbschema beim Wechsel zwischen den Seiten erhalten bleibt, legt die Seite sie im lokalen Speicher deines Browsers ab (<code>fj-farbschema</code>) und hängt sie an die Links innerhalb der Seite an (<code>?theme=</code>). Der Wert enthält keine personenbezogenen Daten, verlässt den Browser nur als Teil dieser Seitenadressen und lässt sich über die Browsereinstellungen löschen.</p>
+  <p class="kern-body"><strong>Downloads.</strong> Die Listen als CSV und JSON sind Dateien auf diesem Server. Für den Abruf gilt, was unten zu den Server-Logfiles steht.</p>
+  <p class="kern-body"><strong>E-Mail.</strong> Wenn du mir schreibst, verarbeite ich deine Angaben, um die Anfrage zu beantworten (Art. 6 Abs. 1 lit. f DSGVO), und lösche sie, wenn sie dafür nicht mehr gebraucht werden.</p>
+
+  <h2 class="kern-heading-medium">Angaben aus Stellenanzeigen</h2>
+  <p class="kern-body">Die Seiten zeigen Stellenanzeigen, die Arbeitgeber öffentlich ausgeschrieben haben: aus der Jobbörse der Bundesagentur für Arbeit und aus offenen Stellen-Feeds einzelner Arbeitgeber. Dazu gehören der Name des Arbeitgebers, der Arbeitsort, Titel und Text der Anzeige. Ist der Arbeitgeber eine Privatperson, ist ihr Name eine personenbezogene Angabe.</p>
+  <p class="kern-body">Diese Angaben werden genutzt, um Jugendlichen und Eltern die Suche nach passenden Ferienjobs zu erleichtern (Art. 6 Abs. 1 lit. f DSGVO, berechtigtes Interesse an der Auffindbarkeit öffentlich ausgeschriebener Stellen). Die Seiten werden derzeit von Hand neu erzeugt; eine Anzeige verschwindet beim nächsten Durchlauf, wenn sie in der Quelle nicht mehr veröffentlicht oder älter als 30 Tage ist. Wer als Arbeitgeber nicht genannt werden möchte, kann sich formlos an die oben genannte Adresse wenden.</p>
+
+  <h2 class="kern-heading-medium">Externe Links</h2>
+  <p class="kern-body">Die Seiten enthalten Links zu Websites Dritter, vor allem zu den Anzeigen in der Jobbörse der Bundesagentur für Arbeit (arbeitsagentur.de) und auf den Karriereseiten der Arbeitgeber, außerdem zu gesetze-im-internet.de und kern-ux.de. Diese Links werden nur aufgerufen, wenn du sie anklickst; vorher werden keine Daten dorthin übertragen. Beim Klick erhält der Zielserver wie bei jedem Aufruf deine IP-Adresse und Angaben zum Browser. Die Seite überträgt dabei nicht, von welcher Seite du kommst (Referrer-Policy <code>no-referrer</code>). Dort gelten die Datenschutzerklärungen der jeweiligen Anbieter.</p>
+
+  <h2 class="kern-heading-medium">Hosting und Server-Logfiles</h2>
+  <p class="kern-body">Diese Website wird gehostet bei:</p>
+  <p class="kern-body">manitu GmbH<br>Welvertstraße 2<br>66606 St. Wendel<br>Deutschland<br>HRB 19076 (Amtsgericht Saarbrücken), USt-ID DE 274284838<br>Web: <a class="kern-link" href="https://www.manitu.de">manitu.de</a></p>
+  <p class="kern-body">Beim Aufruf der Website erfasst der Hosting-Provider technisch notwendige Verbindungsdaten in den Webserver-Logfiles. Verarbeitet werden:</p>
+  <ul class="kern-list kern-list--bullet">
+    <li>IP-Adresse des anfragenden Geräts, vollständig anonymisiert (siehe unten)</li>
+    <li>Datum und Uhrzeit des Zugriffs</li>
+    <li>Name und Adresse der abgerufenen Datei</li>
+    <li>Übertragene Datenmenge und HTTP-Statuscode</li>
+    <li>Browser-Typ, Browser-Version und Betriebssystem</li>
+    <li>Referrer-Adresse (zuvor besuchte Seite, falls übermittelt)</li>
+  </ul>
+  <p class="kern-body"><strong>IP-Anonymisierung:</strong> Im Webhosting-Paket bei manitu ist die Option „volle Anonymisierung“ aktiviert. Dadurch werden alle IP-Adressen in den Webserver-Logfiles beim Schreiben durch <code>127.0.0.1</code> bzw. <code>::1</code> ersetzt. Eine Zuordnung der Einträge zu einer Person ist damit technisch ausgeschlossen.</p>
+  <p class="kern-body">Diese Daten werden ausschließlich zur Sicherstellung eines störungsfreien Betriebs, zur Abwehr von Angriffen und zur statistischen Auswertung verarbeitet. Eine Zusammenführung mit anderen Datenquellen findet nicht statt.</p>
+  <p class="kern-body"><strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einem stabilen und sicheren Webhosting).<br><strong>Speicherdauer:</strong> manitu hält die Logfiles laut seinen technischen und organisatorischen Maßnahmen nur kurz vor und löscht sie dann automatisch.<br><strong>Auftragsverarbeitung:</strong> Mit der manitu GmbH besteht ein Vertrag zur Auftragsverarbeitung gemäß Art. 28 DSGVO.</p>
+
+  <h2 class="kern-heading-medium">Verschlüsselung</h2>
+  <p class="kern-body">Diese Website nutzt eine TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennst du an <code>https://</code> in der Adresszeile.</p>
+
+  <h2 class="kern-heading-medium">Deine Rechte als betroffene Person</h2>
+  <p class="kern-body">Nach der DSGVO stehen dir hinsichtlich deiner personenbezogenen Daten folgende Rechte zu:</p>
+  <ul class="kern-list kern-list--bullet">
+    <li>Auskunft (Art. 15 DSGVO)</li>
+    <li>Berichtigung (Art. 16 DSGVO)</li>
+    <li>Löschung (Art. 17 DSGVO)</li>
+    <li>Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
+    <li>Datenübertragbarkeit (Art. 20 DSGVO)</li>
+    <li>Widerspruch gegen die Verarbeitung (Art. 21 DSGVO)</li>
+  </ul>
+  <p class="kern-body">Zur Ausübung dieser Rechte wende dich formlos an <a class="kern-link" href="mailto:don@thinkrepeat.com">don@thinkrepeat.com</a>.</p>
+
+  <h2 class="kern-heading-medium">Beschwerderecht bei der Aufsichtsbehörde</h2>
+  <p class="kern-body">Du hast das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren (Art. 77 DSGVO). Zuständig für die verantwortliche Stelle ist:</p>
+  <p class="kern-body"><strong>Berliner Beauftragte für Datenschutz und Informationsfreiheit</strong><br>Alt-Moabit 59-61<br>10555 Berlin<br>E-Mail: <a class="kern-link" href="mailto:mailbox@datenschutz-berlin.de">mailbox@datenschutz-berlin.de</a><br>Web: <a class="kern-link" href="https://www.datenschutz-berlin.de">datenschutz-berlin.de</a></p>
+
+  <p class="kern-body kern-body--small kern-body--muted">Stand: 15. Oktober 2026. Bei wesentlichen Änderungen an den Seiten, am Hoster oder an der Datenverarbeitung wird diese Erklärung aktualisiert.</p>
+</div>
+{% endblock %}

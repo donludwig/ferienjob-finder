@@ -1,0 +1,4 @@
+html, body { margin: 0; background: transparent; }
+img { display: block; }
+#i32 { width: 16px; height: 16px; }
+#i180 { width: 90px; height: 90px; background: #2044aa; }  /* iOS rundet selbst ab: Ecken füllen */

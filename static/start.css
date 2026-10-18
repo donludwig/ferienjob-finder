@@ -1,0 +1,156 @@
+/* Startseite: übernommen aus der Projektschau für KERN (github.com/donludwig/projektschau-kern, website/assets/start.css) und an den
+   Ferienjob-Finder angepasst. Nur KERN-Tokens und eigene Variablen; die Farben der Kategorien kommen als --fj-farbe aus farben.css. */
+
+/* Ein Eckenradius für alle eigenen Flächen (Tafeln, Kästen, Aufruf); Bedienelemente behalten den kleinen Radius des Kits */
+:root { --ps-radius: calc(var(--kern-metric-border-radius-large, 8px) * 1.5); --ps-auf: #fff; }
+:root { --ps-tafel: var(--kern-color-layout-background-default, #fff); --ps-tafel-oben: var(--kern-color-layout-background-default, #fff); --ps-schatten: 0 2px 6px color-mix(in srgb, var(--kern-color-action-default, #2044aa) 8%, transparent), 0 16px 40px color-mix(in srgb, var(--kern-color-action-default, #2044aa) 16%, transparent); }
+[data-kern-theme="dark"] { --ps-tafel: color-mix(in srgb, var(--kern-color-action-default, #97afe1) 13%, var(--kern-color-layout-background-hued, #131525)); --ps-tafel-oben: color-mix(in srgb, var(--kern-color-action-default, #97afe1) 24%, var(--kern-color-layout-background-hued, #131525)); --ps-schatten: 0 10px 28px rgb(0 0 0 / 45%); }
+/* Ton je Kategorie: Fläche in der Kategoriefarbe, Schrift auf getönter Fläche abgedunkelt (hell) bzw. aufgehellt (dunkel) */
+.start-ton { --ton: var(--fj-farbe, var(--kern-color-action-default, #2044aa)); --ton-fg: color-mix(in oklab, var(--ton) 72%, #000); }
+[data-kern-theme="dark"] .start-ton { --ton-fg: color-mix(in oklab, var(--ton) 40%, #fff); }
+
+/* Flächen: jeder Abschnitt ist eine Fläche bis zum Fensterrand; die Farbe läuft über einen Schatten nach außen, oben und unten beschnitten */
+.start-flaeche { --flaeche: var(--kern-color-layout-background-default, #fff); padding-block: calc(var(--kern-metric-space-x-large, 32px) * 1.75); background: var(--flaeche); box-shadow: 0 0 0 100vmax var(--flaeche); clip-path: inset(0 -100vmax); }
+.start-flaeche--grau { --flaeche: var(--kern-color-layout-background-hued, #f7f7f9); }
+
+.start-flaeche > .kern-heading-large { margin: 0 0 var(--kern-metric-space-small, 8px); padding-top: 0; }
+/* Die erste Fläche schließt an die Kopfzeile an, die letzte an die Fußzeile; die Fußzeile steht ohne Linie darüber */
+.fj-main--start { padding-block: 0; }
+.fj-main--start + .fj-footer .kern-divider { display: none; }
+
+/* Auftakt: Text links, angerissene Karten rechts */
+.start-buehne { display: grid; grid-template-columns: minmax(0, 11fr) minmax(0, 10fr); gap: var(--kern-metric-space-x-large, 32px); align-items: center; padding-block: calc(var(--kern-metric-space-x-large, 32px) * 2); }
+.start-buehne .kern-heading-display { margin: 0; padding: 0; font-weight: var(--kern-typography-font-weight-semi-bold, 600); }
+.start-auftakt-text { container-type: inline-size; }
+.start-auftakt-text > .kern-preline { margin: 0 0 var(--kern-metric-space-small, 8px); }
+@media (min-width: 48rem) { .start-zeile { display: block; white-space: nowrap; } .start-buehne .kern-heading-display { font-size: min(4.5rem, 8cqi); line-height: 1.08; } }
+@media (max-width: 47.99rem) { .start-buehne .kern-heading-display { font-size: var(--kern-typography-font-size-x-large-adaptive, 32px); line-height: var(--kern-typography-line-height-x-large-adaptive, 40px); } }
+.start-lead { margin-top: var(--kern-metric-space-default, 16px); max-width: 36rem; line-height: 1.55; }
+.start-knoepfe { display: flex; flex-wrap: wrap; gap: var(--kern-metric-space-default, 16px); margin-top: var(--kern-metric-space-large, 24px); }
+.start-knoepfe .kern-btn { gap: var(--kern-metric-space-small, 8px); text-decoration: none; }
+.start-knoepfe .fj-symbol { width: 1.25em; height: 1.25em; }
+.start-merkmale { list-style: none; margin: var(--kern-metric-space-large, 24px) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--kern-metric-space-small, 8px) var(--kern-metric-space-large, 24px); font-weight: var(--kern-typography-font-weight-semi-bold, 600); color: var(--kern-color-layout-text-default, #131525); }
+.start-merkmale li { display: inline-flex; align-items: center; gap: var(--kern-metric-space-x-small, 4px); }
+.start-merkmale .fj-symbol { width: 1.25rem; height: 1.25rem; color: var(--kern-color-feedback-success, #1f7a32); }
+
+/* Motiv im Auftakt: echte Anzeigen als Zierde (aria-hidden), Schriftgrößen fest, damit das Bild in sich stimmt */
+.start-vorschau { min-width: 0; padding-inline-end: 28px; font-size: .8125rem; line-height: 1.3; }
+.start-tafel { background: var(--ps-tafel); border-radius: var(--ps-radius); padding: var(--kern-metric-space-default, 16px); box-shadow: var(--ps-schatten); }
+.start-leiste { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--kern-metric-space-small, 8px); margin-bottom: var(--kern-metric-space-default, 16px); }
+.start-chips { display: flex; flex-wrap: wrap; gap: var(--kern-metric-space-x-small, 4px); }
+.start-chip { padding: 4px 9px; border-radius: var(--kern-metric-border-radius-default, 4px); background: color-mix(in srgb, var(--ton, var(--kern-color-action-default, #2044aa)) 14%, var(--ps-tafel)); color: var(--ton-fg, var(--kern-color-action-default, #2044aa)); font-weight: var(--kern-typography-font-weight-semi-bold, 600); }
+.start-chip--aktiv, .start-schalter .start-schalter__aktiv { background: var(--kern-color-action-default, #2044aa); color: var(--kern-color-action-on-default, #fff); }
+.start-schalter { display: inline-flex; border-radius: var(--kern-metric-border-radius-default, 4px); overflow: hidden; background: color-mix(in srgb, var(--kern-color-action-default, #2044aa) 12%, var(--ps-tafel)); font-weight: var(--kern-typography-font-weight-semi-bold, 600); color: var(--kern-color-action-default, #2044aa); }
+.start-schalter span { padding: 4px 10px; }
+@media (max-width: 47.99rem) { .start-leiste .start-schalter { display: none; } }
+.start-minis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--kern-metric-space-small, 8px); }
+/* Karten im Motiv deuten nur an: Kategorie, Titel, Lohn und zwei Zeilen als Balken */
+.start-mini { display: flex; flex-direction: column; gap: 6px; padding: 12px; border-radius: var(--kern-metric-border-radius-large, 8px); background: color-mix(in srgb, var(--ton) 11%, var(--ps-tafel)); min-width: 0; }
+.start-plakette { display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; padding: 2px 8px; border-radius: var(--kern-metric-border-radius-default, 4px); background: var(--ton); color: var(--ps-auf); font-size: .6875rem; font-weight: var(--kern-typography-font-weight-semi-bold, 600); }
+.start-plakette .fj-symbol { width: .8125rem; height: .8125rem; }
+.start-mini-titel { color: var(--ton-fg); font-size: .9375rem; font-weight: var(--kern-typography-font-weight-semi-bold, 600); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; hyphens: auto; overflow-wrap: anywhere; }
+.start-mini-lohn { color: var(--ton-fg); font-size: .75rem; }
+.start-balken { display: block; height: 6px; border-radius: 3px; background: color-mix(in srgb, var(--ton) 24%, var(--ps-tafel)); }
+.start-balken--kurz { width: 62%; }
+
+/* Auftritt des Motivs: einmal beim Laden, alles endet nach 4,9 s; ab fünf Sekunden verlangt WCAG 2.2.2 eine Taste zum Anhalten.
+   Keine Schleife. Mit „Bewegung reduzieren“ entfällt alles. Ablauf wie in der Projektschau: Karten tauchen auf, eine Sekunde Ruhe,
+   dann ein kurzer Filterlauf über die ersten beiden Kategorien und zurück zu „Alle“. */
+@media (prefers-reduced-motion: no-preference) {
+	@keyframes start-auf { from { opacity: 0; transform: translateY(14px); } }
+	@keyframes start-ein { from { opacity: 0; transform: translateY(8px) scale(.98); } }
+	@keyframes start-punkt { from { opacity: 0; transform: translateX(-6px); } }
+	.start-vorschau > .start-tafel { animation: start-auf .45s cubic-bezier(.2, .7, .3, 1) both; }
+	@keyframes start-chip-an { 30%, 70% { background: var(--ton); color: var(--ps-auf); } }
+	@keyframes start-chip-aus { 12%, 88% { background: color-mix(in srgb, var(--kern-color-action-default, #2044aa) 14%, var(--ps-tafel)); color: var(--kern-color-action-default, #2044aa); } }
+	/* Abweichung von der Projektschau: Die übrigen Karten werden grau statt halbtransparent, damit der Kontrast auch mitten im Lauf hält */
+	@keyframes start-karte-1 { 0%, 38% { filter: none; } 56%, 84% { filter: grayscale(1); } }
+	@keyframes start-karte-2 { 16%, 38% { filter: grayscale(1); } 56%, 100% { filter: none; } }
+	@keyframes start-karte-rest { 16%, 84% { filter: grayscale(1); } }
+	.start-chips > .start-chip:nth-child(1) { animation: start-chip-aus 2.7s ease-in-out 2.05s; }
+	.start-chips > .start-chip:nth-child(2) { animation: start-chip-an 1.65s ease-in-out 1.9s; }
+	.start-chips > .start-chip:nth-child(3) { animation: start-chip-an 1.65s ease-in-out 3.25s; }
+	.start-minis > .start-mini:nth-child(1) { animation: start-ein .35s cubic-bezier(.2, .7, .3, 1) .1s both, start-karte-1 2.7s ease-in-out 2.05s; }
+	.start-minis > .start-mini:nth-child(2) { animation: start-ein .35s cubic-bezier(.2, .7, .3, 1) .17s both, start-karte-2 2.7s ease-in-out 2.05s; }
+	.start-minis > .start-mini:nth-child(3) { animation: start-ein .35s cubic-bezier(.2, .7, .3, 1) .24s both, start-karte-rest 2.7s ease-in-out 2.05s; }
+	.start-minis > .start-mini:nth-child(4) { animation: start-ein .35s cubic-bezier(.2, .7, .3, 1) .31s both, start-karte-rest 2.7s ease-in-out 2.05s; }
+}
+
+/* Gebiete: zwei Tafeln mit Knopf und Zahlen je Gruppe */
+.start-gebiete { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: var(--kern-metric-space-large, 24px); margin: var(--kern-metric-space-default, 16px) 0 0; padding: 0; list-style: none; }
+.start-gebiet { display: flex; flex-direction: column; gap: var(--kern-metric-space-default, 16px); padding: var(--kern-metric-space-large, 24px); border-radius: var(--ps-radius); background: var(--ps-tafel); box-shadow: var(--ps-schatten); }
+.start-gebiet .kern-heading-medium { margin: 0; padding: 0; }
+.start-gebiet .kern-body { margin: 0; }
+.start-gebiet-kopf { display: flex; align-items: center; gap: var(--kern-metric-space-default, 16px); }
+/* Name und Unterzeile gehören zusammen: ohne den Grundlinien-Innenabstand des Kits und mit enger Zeilenhöhe */
+.start-gebiet-kopf .kern-heading-medium { line-height: 1.2; }
+.start-gebiet-kopf .kern-body { padding-top: 2px; }
+.start-gebiet-symbol { display: flex; flex: none; align-items: center; justify-content: center; width: 3rem; height: 3rem; border-radius: 50%; background: color-mix(in srgb, var(--ton) 14%, var(--ps-tafel)); color: var(--ton-fg); }
+.start-gebiet-symbol .fj-symbol { width: 1.5rem; height: 1.5rem; }
+/* Drei Gruppen als Kacheln mit großer Zahl; die ganze Kachel ist der Link */
+.start-gebiet-zahlen { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--kern-metric-space-small, 8px); margin: 0; padding: 0; list-style: none; }
+.start-zahl { display: flex; flex-direction: column; gap: 2px; height: 100%; box-sizing: border-box; padding: 12px; border-radius: var(--kern-metric-border-radius-large, 8px); background: color-mix(in srgb, var(--ton) 9%, var(--ps-tafel)); color: var(--ton-fg); text-decoration: none; }
+.start-zahl:hover { background: color-mix(in srgb, var(--ton) 16%, var(--ps-tafel)); }
+.start-zahl:hover .start-zahl-text { text-decoration: underline; }
+.start-zahl:focus-visible { outline: var(--kern-metric-border-width-bold, 3px) solid var(--kern-color-action-focus-default, #ffb119); outline-offset: 2px; }
+.start-zahl-wert { font-size: var(--kern-typography-font-size-large-adaptive, 1.75rem); line-height: 1.1; font-weight: var(--kern-typography-font-weight-semi-bold, 600); font-variant-numeric: tabular-nums; }
+.start-zahl-text { font-size: .875rem; line-height: 1.3; hyphens: auto; overflow-wrap: anywhere; }
+.start-gebiet-knopf.kern-btn { align-self: flex-start; margin: 0; text-decoration: none; }
+@media (max-width: 30rem) { .start-gebiet-zahlen { grid-template-columns: 1fr; } .start-zahl { flex-direction: row; align-items: baseline; gap: var(--kern-metric-space-small, 8px); padding: 8px 12px; } .start-zahl-wert { min-width: 3.2ch; font-size: 1.25rem; } .start-zahl-text { font-size: 1rem; hyphens: manual; } }
+
+/* Merkmale in zwei Spalten, kleines farbiges Symbol ohne Fläche, Merkmal fett */
+.start-text { max-width: 46rem; }
+.start-text .kern-body { line-height: 1.55; }
+.start-text .kern-body + .kern-body { margin-top: var(--kern-metric-space-small, 8px); }
+.start-merkmal-bereiche { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--kern-metric-space-large, 24px) calc(var(--kern-metric-space-x-large, 32px) * 2); margin-top: var(--kern-metric-space-small, 8px); }
+.start-zwischentitel { margin: 0 0 var(--kern-metric-space-large, 24px); padding: 0; color: var(--kern-color-layout-text-default, #131525); font-weight: var(--kern-typography-font-weight-regular, 400); }
+.start-merkmal-liste { list-style: none; margin: var(--kern-metric-space-small, 8px) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--kern-metric-space-default, 16px); }
+.start-merkmal-liste li { display: flex; align-items: flex-start; gap: var(--kern-metric-space-default, 16px); }
+.start-merkmal-liste li > .kern-body { margin: 0; line-height: 1.55; }
+.start-merkmal-liste .fj-symbol { flex: none; width: 1.75rem; height: 1.75rem; color: var(--ton-fg); }
+.start-merkmal-liste--ziffern { counter-reset: schritt; }
+.start-merkmal-liste--ziffern li { counter-increment: schritt; }
+.start-merkmal-liste--ziffern li::before { content: counter(schritt); display: flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; flex: none; border-radius: 50%; background: var(--ton); color: var(--ps-auf); font-weight: var(--kern-typography-font-weight-semi-bold, 600); }
+.start-kasten { background: var(--ps-tafel); border-radius: var(--ps-radius); padding: var(--kern-metric-space-large, 24px) calc(var(--kern-metric-space-large, 24px) * 1.25); box-shadow: var(--ps-schatten); }
+.start-kasten > * + * { margin-top: var(--kern-metric-space-small, 8px); }
+.start-kasten-titel { display: flex; align-items: center; gap: var(--kern-metric-space-small, 8px); font-weight: var(--kern-typography-font-weight-semi-bold, 600); }
+.start-kasten-titel .fj-symbol { width: 1.5rem; height: 1.5rem; color: var(--kern-color-action-default, #2044aa); }
+.start-kasten .kern-body { line-height: 1.55; }
+.start-flaeche .fj-liste { margin-top: var(--kern-metric-space-default, 16px); }
+
+/* Aufruf am Ende: blauer Kasten, rechts die Lupe groß und blass als Zierde */
+.start-ruf-flaeche { padding-top: 0; }
+.start-ruf { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: var(--kern-metric-space-x-large, 32px); padding: calc(var(--kern-metric-space-x-large, 32px) * 1.5); border-radius: var(--ps-radius); background: var(--kern-color-action-default, #2044aa); color: var(--kern-color-action-on-default, #fff); }
+.start-ruf-text { display: flex; flex-direction: column; align-items: flex-start; gap: var(--kern-metric-space-large, 24px); min-width: 0; }
+.start-ruf-zier { flex: none; width: 13rem; height: 13rem; margin: -2rem 1rem -2rem 0; color: var(--kern-color-action-on-default, #fff); opacity: .16; transform: rotate(-8deg); }
+.start-ruf .kern-heading-large, .start-ruf .kern-body { color: inherit; }
+.start-ruf .kern-heading-large { margin: 0 0 var(--kern-metric-space-small, 8px); padding: 0; }
+.start-ruf .kern-body { max-width: 46rem; line-height: 1.55; }
+.start-ruf-knoepfe { display: flex; flex-wrap: wrap; align-items: center; gap: var(--kern-metric-space-default, 16px); }
+/* Der helle Knopf bleibt in jedem Zustand deckend: Selektoren bewusst stärker als die des Kits */
+.start-ruf .start-ruf-knopf.kern-btn { gap: var(--kern-metric-space-small, 8px); text-decoration: none; background: var(--kern-color-action-on-default, #fff); border-color: var(--kern-color-action-on-default, #fff); color: var(--kern-color-action-default, #2044aa); }
+.start-ruf .start-ruf-knopf.kern-btn:hover, .start-ruf .start-ruf-knopf.kern-btn:active { background: color-mix(in srgb, var(--kern-color-action-on-default, #fff) 86%, var(--kern-color-action-default, #2044aa)); }
+.start-ruf .start-ruf-knopf--linie.kern-btn { background: transparent; color: var(--kern-color-action-on-default, #fff); }
+.start-ruf .kern-btn .fj-symbol { color: inherit; }   /* Knöpfe auf der Aktionsfläche färben sich selbst, nicht nach der Regel für Link-Knöpfe */
+.start-ruf .start-ruf-knopf--linie.kern-btn:hover, .start-ruf .start-ruf-knopf--linie.kern-btn:active { background: color-mix(in srgb, var(--kern-color-action-on-default, #fff) 16%, var(--kern-color-action-default, #2044aa)); }
+.start-ruf-knopf .kern-label, .start-ruf-knopf .fj-symbol { color: inherit; }
+.start-ruf { --kern-color-action-focus-default-contextual: var(--kern-color-action-on-default, #fff); }
+.start-ruf a:focus-visible { outline-color: var(--kern-color-action-on-default, #fff); }
+
+@media (max-width: 64rem) { .start-buehne { grid-template-columns: 1fr; } }
+@media (max-width: 56rem) { .start-ruf-zier { display: none; } }
+@media (max-width: 48rem) {
+	.start-flaeche { padding-block: var(--kern-metric-space-x-large, 32px); }
+		.start-vorschau { padding-inline-end: 8px; }
+	.start-ruf { padding: var(--kern-metric-space-large, 24px); }
+	.start-merkmal-bereiche { grid-template-columns: 1fr; row-gap: calc(var(--kern-metric-space-x-large, 32px) * 1.5); }
+	.start-zwischentitel { margin-bottom: var(--kern-metric-space-small, 8px); }
+}
+@media print { .start-knoepfe, .start-vorschau, .start-ruf { display: none; } .start-buehne { grid-template-columns: 1fr; } .start-flaeche { box-shadow: none; clip-path: none; background: none; padding-block: var(--kern-metric-space-default, 16px); } }
+/* Flächen schließen ohne Lücke aneinander (die allgemeine Regel .fj-main > * + * setzt sonst 24 px dazwischen) */
+.fj-main--start > .start-flaeche { margin-top: 0; }
+/* Ziffern: an der Grundlinie der ersten Zeile ausrichten, dann steht die Ziffer auf derselben Linie wie der Text */
+.start-merkmal-liste--ziffern li { align-items: baseline; }
+.start-merkmal-liste--ziffern li::before { align-self: baseline; }
+/* Symbol mittig zur ersten Zeile: der Absatz hat 6 px Innenabstand oben (KERN-Grundlinie), die Zeile ist so hoch wie das Symbol (28 px) */
+.start-merkmal-liste .fj-symbol { margin-top: calc(var(--kern-metric-baseline-body-default-padding-top, 6px) + (1.55 * 1.125rem - 1.75rem) / 2); }
